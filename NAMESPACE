@@ -2,6 +2,8 @@
 
 export(gmt2mat)
 export(gset.cor)
+export(gset.fisher)
+export(gset.fisher2)
 export(mat2gmt)
 export(read.gmt)
 export(ultraGSEA)

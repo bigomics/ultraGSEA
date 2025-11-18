@@ -54,10 +54,15 @@ head(res)
 
 ```{r}
 fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
-
 ```
 
 
+# Benchmarking
+
+```{r}
+
+
+```
 
 
 # Session info
