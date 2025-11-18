@@ -36,7 +36,6 @@ full dataset.
 
 ```{r}
 library("ultraGSEA")
-##load(system.file("extdata", "pbmc3k-50cells.rda", package = "plaid"),verbose=TRUE)
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 length(gmt)

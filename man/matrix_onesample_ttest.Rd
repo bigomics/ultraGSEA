@@ -7,7 +7,21 @@ grouping matrix G (e.g. gene sets).}
 \usage{
 matrix_onesample_ttest(F, G)
 }
+\arguments{
+\item{F}{Numeric vector or matrix of (log)foldchanges}
+
+\item{G}{Numeric matrix of gene sets, with genes as row names}
+}
+\value{
+List with components:
+\itemize{
+\item mean - Mean values
+\item t - t-test statistics
+\item p - p-values from t-test
+}
+}
 \description{
 Fast one sample t-test for matrix object F (e.g. foldchanges) and
 grouping matrix G (e.g. gene sets).
 }
+\keyword{internal}

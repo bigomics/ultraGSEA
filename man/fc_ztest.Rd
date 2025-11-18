@@ -7,7 +7,25 @@ grouping matrix G (e.g. gene sets).}
 \usage{
 fc_ztest(fc, G, zmat = FALSE, alpha = 0.5)
 }
+\arguments{
+\item{fc}{Numeric vector of (log)foldchanges, with genes as names}
+
+\item{G}{Numeric matrix of gene sets, with genes as row names}
+
+\item{zmat}{Logical indicating whether to compute z-score matrix}
+
+\item{alpha}{Numeric value between 0 and 1 for Bayesian shrinkage}
+}
+\value{
+List with components:
+\itemize{
+\item z_statistic - Vector of z-test statistics
+\item p_value - Vector of p-values
+\item zmat - Z-score matrix (if zmat = TRUE)
+}
+}
 \description{
 Fast one sample z-test for matrix object F (e.g. foldchanges) and
 grouping matrix G (e.g. gene sets).
 }
+\keyword{internal}

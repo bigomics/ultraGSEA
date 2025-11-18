@@ -47,6 +47,19 @@ UltraGSEA is the main gene set scoring algorithm in OmicsPlayground,
 our Bioinformatics platform at BigOmics Analytics. In OmicsPlayground,
 you can perform ultraGSEA without coding needs.
 
+## Example
+
+```{r}
+library("ultraGSEA")
+gs <- msigdbr::msigdbr(collection = "H")
+gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
+G <- gmt2mat(gmt)
+fc <- rnorm(nrow(G))
+names(fc) <- rownames(G)
+res <- ultraGSEA(fc, G, format='as.gsea', method='ztest')
+head(res)
+```
+
 ## References
 
 For more technical details please refer to our papers. Please cite us when you use
