@@ -1,4 +1,4 @@
-# ultraGSEA: Ultrafast preranked gene set enrichment analysis  <img src='man/figures/logo.png' align="right" height="150"/>
+# ultraGSEA: Ultrafast preranked gene set enrichment analysis  <img src='man/figures/logoXX.png' align="right" height="150"/>
 
 [![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultraGSEA)
 
