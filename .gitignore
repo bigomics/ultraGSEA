@@ -1,2 +1,20 @@
+# Build and documentation
 /doc/
 /Meta/
+/pkgdown/
+
+# Editor backups and temp files
+*~
+#*#
+.#*
+*.swp
+*.swo
+*/.DS_Store
+.DS_Store
+
+# R specific
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj.user/
+Rplots.pdf
