@@ -1,12 +1,15 @@
-# ultraGSEA: Ultrafast preranked gene set enrichment analysis  <img src='man/figures/logoXX.png' align="right" height="150"/>
+# ultraGSEA: Ultrafast preranked gene set enrichment analysis (WIP)
 
 [![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultraGSEA)
 
 [ultraGSEA](https://bigomics.github.io/ultraGSEA) is an ultrafast
-method to compute gene set enrichment on a preranked list of genes not
-unlike GSEA and its faster cousin fGSEA. UltraGSEA computes the
-enrichment scores using fast sparse computation and parametric
-p-values and typically is more than 100 times faster than fGSEA.
+method to compute gene set enrichment on a preranked list of genes
+like GSEA and fGSEA. Although UltraGSEA uses a different statistical
+test (namely z-test and correlation), its scores are highly correlated
+and its p-values are highly similar to those from GSEA's weighted
+Kolmogorov-Smirnov test. UltraGSEA computes its scores using fast
+sparse computation and parametric p-values and typically is more than
+100x faster than fGSEA.
 
 #### Key features
 
