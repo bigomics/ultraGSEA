@@ -1,0 +1,68 @@
+---
+title: "Getting Started with ultraGSEA"
+author: "BigOmics Analytics"
+package: ultraGSEA
+output: 
+    BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Getting Started with ultraGSEA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+# Introduction
+
+UltraGSEA is a novel, ultrafast and memory optimized gene set
+enrichment scoring algorithm not unlike fGSEA. UltraGSEA demonstrates
+highly correlated gene set scores and p-values and typically is 100
+times faster than fGSEA.
+
+# Example
+
+## Preparing gensets
+
+For this vignette, our package includes a small subset of the the
+pmbc3k single-cell dataset of just 50 cells. Please install the Seurat
+and SeuratData packages if you want to run this vignette against the
+full dataset.
+
+```{r}
+library("ultraGSEA")
+##load(system.file("extdata", "pbmc3k-50cells.rda", package = "plaid"),verbose=TRUE)
+gs <- msigdbr::msigdbr(collection = "H")
+gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
+length(gmt)
+```
+
+## Performing the statistical test
+
+```{r}
+G <- gmt2mat(gmt)
+fc <- rnorm(nrow(G))
+names(fc) <- rownames(G)
+res <- ultraGSEA(fc, G, format='as.gsea', method='ztest')
+head(res)
+```
+## Plotting
+
+```{r}
+fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
+
+```
+
+
+
+
+# Session info
+
+```{r}
+sessionInfo()
+```

@@ -1,0 +1,12 @@
+^LICENSE$
+^README\.Rmd$
+^Makefile$
+^dev$
+^[.].*$
+^.*/[.].*$
+^Meta$
+^doc$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

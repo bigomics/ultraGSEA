@@ -1,0 +1,224 @@
+library(playbase)
+source("~/Playground/playbase/dev/include.R",chdir=TRUE)
+source("../R/zgsea.R")
+
+counts  <- playbase::COUNTS
+samples <- playbase::SAMPLES
+head(samples)
+X <- logCPM(counts)
+y <- samples$activated
+
+pgx <- pgx.load("~/Playground/pgx/tcga-brca_pub.pgx")
+X <- pgx$X
+head(pgx$samples)
+y <- 1*(pgx$samples$ER_STATUS=="Positive")
+#y <- 1*(pgx$samples$.cell_cycle=="G1")
+
+## compute logFC
+res <- gx.limma(X, pheno=y, fdr=1, lfc=0)
+fc <- res$logFC
+names(fc) <- rownames(res)
+head(res)
+
+G <- Matrix::t(playdata::GSETxGENE)
+G <- G[,grep("HALLMARK",colnames(G))]
+G <- G[,grep("^GO_",colnames(G))]
+gg <- intersect(rownames(X),rownames(G))
+G <- G[gg,]
+X <- X[gg,]
+gmt <- mat2gmt(G)
+head(names(gmt))
+length(gmt)
+
+## top lists for fisher tests
+up.100 <- names(tail(sort(fc),100))
+dn.100 <- names(head(sort(fc),100))
+up.500 <- names(tail(sort(fc),500))
+dn.500 <- names(head(sort(fc),500))
+bg = names(fc)
+
+res <- list()
+
+tt <- peakRAM::peakRAM(
+  res$ft.100 <- gset.fisher2( up.100, dn.100, gmt, background=bg, fdr=1),
+  res$ft.500 <- gset.fisher2( up.500, dn.500, gmt, background=bg, fdr=1),  
+  res$fgsea <- fgsea::fgsea(gmt, fc, eps=0),
+  res$rankcor  <- gset.rankcor(fc, G, compute.p=TRUE),
+  res$ttest.n0 <- gset.ttest(fc, G, nprior=0),
+  res$ttest.n3 <- gset.ttest(fc, G, nprior=3),
+  res$ttest.n100 <- gset.ttest(fc, G, nprior=100),  
+  res$ztest.n0 <- gset.ttest(fc, G, nprior=0, method="ztest"),
+  res$ztest.n3 <- gset.ttest(fc, G, nprior=3, method="ztest"),
+  res$ztest.n100 <- gset.ttest(fc, G, nprior=100, method="ztest"),
+  res$fcPlaid.n0 <- plaid::plaid(fc, G, nsmooth=0),
+  res$fcPlaid.n3 <- plaid::plaid(fc, G, nsmooth=3), 
+  res$fcPlaid.n100 <- plaid::plaid(fc, G, nsmooth=100),
+  res$zgsea <- zgsea(fc, G)
+)
+tt
+tt[,1] <- names(res)
+tt
+
+## align results
+gs <- names(gmt)
+ft.100 <- res$ft.100[gs,]
+ft.500 <- res$ft.500[gs,]
+ftz.100 <- sign(ft.100$sign) * log(ft.100$odd.ratio)
+ftz.500 <- sign(ft.500$sign) * log(ft.500$odd.ratio)
+res$fgsea <- res$fgsea[match(gs,res$fgsea$pathway),]
+res$zgsea <- res$zgsea[match(gs,res$zgsea$pathway),]
+
+## show test-statistics (e.g. NES,rho,t)
+Z <- cbind(
+  zgsea = res$zgsea$score,  
+  fgsea = res$fgsea$NES,
+  rankcor = res$rankcor$rho[gs,1],  
+  fisher.n100 = ftz.100,
+  fisher.n500 = ftz.500,  
+#  fcTtest.n0 = res$ttest.n0[gs,1],
+#  fcTtest.n3 = res$ttest.n3[gs,1],
+#  fcTtest.n100 = res$ttest.n100[gs,1],
+  fcPlaid.n0 = res$fcPlaid.n0[gs,1],
+  fcPlaid.n3 = res$fcPlaid.n3[gs,1],
+  fcPlaid.n100 = res$fcPlaid.n100[gs,1]
+)
+head(Z)
+pairs(Z, cex=1, pch=20)
+pairs(Z, cex=2, pch='.')
+
+x11()
+P <- cbind(
+  zgsea = res$zgsea$pval,  
+  fgsea = res$fgsea$pval,
+  rankcor = res$rankcor$p.value[gs,1],  
+  fisher.n100 = res$ft.100[gs,"p.value"],
+  fisher.n500 = res$ft.500[gs,"p.value"],
+  ttest.n0 = res$ttest.n0[gs,"pvalue"],
+  ttest.n3 = res$ttest.n3[gs,"pvalue"],
+  ttest.n100 = res$ttest.n100[gs,"pvalue"],
+  ztest.n0 = res$ztest.n0[gs,"pvalue"],
+  ztest.n3 = res$ztest.n3[gs,"pvalue"],
+  ztest.n100 = res$ztest.n100[gs,"pvalue"]
+)
+pairs(-log10(P), cex=0.5, pch=20)
+pairs(-log10(P), cex=2, pch='.')
+
+##---------------------------------------------------------------
+##----------------------- zGSEA ---------------------------------
+##---------------------------------------------------------------
+source("R/zgsea.R")
+
+G <- Matrix::t(playdata::GSETxGENE)
+#G <- G[,grep("HALLMARK",colnames(G))]
+G <- G[,grep("^GO_",colnames(G))]
+gg <- intersect(rownames(X),rownames(G))
+G <- G[gg,]
+X <- X[gg,]
+gmt <- mat2gmt(G)
+dim(G)
+head(names(gmt))
+
+sdx <- matrixStats::rowSds(X)
+res <- gx.limma(X, y, fdr=1, lfc=0, sort.by='none')
+fc <- res$logFC
+names(fc) <- rownames(res)
+
+rc <- signedRank(fc)
+zc <- fc / sdx
+rzc <- signedRank(zc)
+
+gs <- colnames(G)
+res <- list()
+tt <- peakRAM::peakRAM(
+  res$fgsea <- fgsea::fgseaMultilevel(gmt, fc, eps=0),
+  res$fgsea.rc <- fgsea::fgseaMultilevel(gmt, rc, eps=0),
+  res$fgsea.zc <- fgsea::fgseaMultilevel(gmt, zc, eps=0),
+  res$fgsea.rzc <- fgsea::fgseaMultilevel(gmt, rzc, eps=0),
+
+  res$zgsea <- zgsea(fc, G[,gs], addLE=FALSE),
+  res$zgsea.rc <- zgsea(rc, G[,gs], addLE=FALSE),
+  res$zgsea.zc <- zgsea(zc, G[,gs], addLE=FALSE),
+  res$zgsea.rzc <- zgsea(rzc, G[,gs], addLE=FALSE),
+
+  res$cor <- gset.rankcor(fc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
+  res$cor.rc <- gset.rankcor(rc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
+  res$cor.zc <- gset.rankcor(zc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
+  res$cor.rzc <- gset.rankcor(rzc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
+
+  res$ttest <- gset.ttest(fc, G, nprior=0)[gs,"pvalue"],
+  res$ttest.rc <- gset.ttest(rc, G, nprior=0)[gs,"pvalue"],
+  res$ttest.zc <- gset.ttest(zc, G, nprior=0)[gs,"pvalue"],
+  res$ttest.rzc <- gset.ttest(rzc, G, nprior=0)[gs,"pvalue"]
+)
+tt
+
+for(i in 1:8) {
+  res[[i]] <- res[[i]][match(gs, res[[i]]$pathway),"pval"]
+}
+
+P <- do.call(cbind, res)
+dim(P)
+
+labels <- paste(colnames(P),"\n",round(tt[,2],3),"sec")
+pairs(-log10(P), labels, pch='.', cex=4)
+pairs(-log10(P[,1:12]), labels, pch='.', cex=4)
+
+
+##---------------------------------------------------------------
+##--------------- zgsea vs fgsea versions -----------------------
+##---------------------------------------------------------------
+
+gmt1 <- head(gmt, 1000)
+gmt1 <- gmt
+tt <- peakRAM::peakRAM(
+  res.rankcor <- gset.rankcor(fc, G[,names(gmt1)], compute.p=TRUE),
+  res.zgsea <- zgsea(fc, G[,names(gmt1)]),    
+  res.fgsea <- fgsea::fgsea(gmt1, fc),
+  fgseaM.e0 <- fgsea::fgseaMultilevel(gmt1, fc, eps=0),
+  fgseaM.e1 <- fgsea::fgseaMultilevel(gmt1, fc, eps=1, nPermSimple=100),
+  fgseaS.n1000 <- fgsea::fgseaSimple(gmt1, fc, nperm = 1000),
+  fgseaS.n100 <- fgsea::fgseaSimple(gmt1, fc, nperm = 100)
+)
+tt
+
+## match all results
+gs <- names(gmt1)
+res.zgsea <- res.zgsea[match(gs, res.zgsea$pathway),]
+res.fgsea <- res.fgsea[match(gs,res.fgsea$pathway),]
+fgseaM.e0 <- fgseaM.e0[match(gs,fgseaM.e0$pathway),]
+fgseaM.e1 <- fgseaM.e1[match(gs,fgseaM.e1$pathway),]
+fgseaS.n1000 <- fgseaS.n1000[match(gs,fgseaS.n1000$pathway),]
+fgseaS.n100 <- fgseaS.n100[match(gs,fgseaS.n100$pathway),]
+
+## check Leading edge
+e1 <- res.fgsea$leadingEdge[[2]]
+e2 <- res.zgsea$leadingEdge[[2]]
+sort(fc[e1])
+sort(fc[e2])
+
+S <- cbind(
+  rankcor = res.rankcor$rho[gs,1], 
+  zgsea = res.zgsea$NES,  
+  fgsea = res.fgsea$NES,
+  fgseaM.e0 = fgseaM.e0$NES,
+  fgseaM.e1 = fgseaM.e1$NES,  
+  fgseaS.n1000 = fgseaS.n1000$NES,
+  fgseaS.n100 = fgseaS.n100$NES
+)
+
+P <- cbind(
+  rankcor = res.rankcor$p.value[gs,1],   
+  zgsea = res.zgsea$pval,  
+  fgsea = res.fgsea$pval,
+  fgseaM.e0 = fgseaM.e0$pval,
+  fgseaM.e1 = fgseaM.e1$pval,  
+  fgseaS.n1000 = fgseaS.n1000$pval,
+  fgseaS.n100 = fgseaS.n100$pval
+)
+
+head(S)
+head(P)
+
+labels <- paste(colnames(S),"\n",round(tt[,2],3),"sec")
+pairs(S, labels, pch='.', cex=3)
+pairs(-log(P), labels, pch='.', cex=4)

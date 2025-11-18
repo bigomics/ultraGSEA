@@ -1,0 +1,12 @@
+Changes in version 0.99.0
+-------------------------
+
+INITIAL RELEASE
+
+  * zgsea: ultra-fast GSEA enrichment scoring methods
+    
+  * Full Bioconductor integration with SummarizedExperiment, 
+    SingleCellExperiment, and BiocSet support
+  
+  * GMT utilities for reading, writing, and converting gene set files
+  

@@ -1,0 +1,64 @@
+# zGSEA: ultrafast gene set enrichment analysis  <img src='man/figures/logo.png' align="right" height="150"/>
+
+[![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/zgsea)
+
+[ZGSEA](https://bigomics.github.io/zgsea) is an ultrafast method to
+compute enrichment scores for gene expression or proteomics
+data. ZGSEA computes the gene set enrichment score using fast sparse
+computation and parametric p-values. Typically, ZGSEA can be more than
+100 times faster than fGSEA and requiring 10 times less memory than
+the original algorithm.
+
+#### Key features
+
+- Ultra-fast single-sample gene set enrichment scoring
+- Works with regular matrices, sparse matrices, and Bioconductor data structures
+- Automatically detects and handles Bioconductor objects 
+([`SummarizedExperiment`](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html), 
+[`SingleCellExperiment`](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html), [`BiocSet`](https://bioconductor.org/packages/release/bioc/html/BiocSet.html))
+- Built-in differential enrichment testing
+
+#### Warning
+
+ZGSEA is fast. Ludicrously fast. Please fasten your seatbelts before usage.
+
+## Installation
+
+You can install ZGSEA from Bioconductor:
+
+```r
+BiocManager::install("zgsea")
+```
+
+You can also install the development version from GitHub:
+
+```r
+remotes::install_github("bigomics/zgsea")
+```
+
+## Usage
+
+For detailed usage examples and tutorials, please see our vignettes:
+
+- [Getting Started with ZGSEA](https://bigomics.github.io/zgsea/articles/01_zgsea-vignette.html)
+- [Comparing ZGSEA with fGSEA](https://bigomics.github.io/zgsea/articles/02_compare-vignette.html)
+
+ZGSEA is the main single-sample gene set scoring algorithm in OmicsPlayground, our 
+Bioinformatics platform at BigOmics Analytics. In OmicsPlayground, you 
+can perform ZGSEA without coding needs.
+
+## References
+
+For more technical details please refer to our papers. Please cite us when you use
+ZGSEA as part of your research. 
+
+- Zito A., et al. ZGSEA: ultrafast single-sample gene set enrichment scoring. Bioinformatics, 2025, [btaf621](https://doi.org/10.1093/bioinformatics/btaf621).
+- Akhmedov M., et al., Omics Playground: a comprehensive self-service platform for visualization, analytics and exploration of Big Omics Data, NAR Genomics and Bioinformatics, 2020, [lqz019](https://doi.org/10.1093/nargab/lqz019).
+
+## Support
+
+For support feel free to reach our Bioinformatics Data Science Team at
+BigOmics Analytics: help@bigomics.ch
+
+If you like ZGSEA, please recommend us to your friends, buy us [coffee](https://buymeacoffee.com/bigomics)
+and brag about ZGSEA on your social media. 

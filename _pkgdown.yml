@@ -1,0 +1,4 @@
+url: https://bigomics.github.io/zgsea/
+template:
+  bootstrap: 5
+  bootswatch: default
