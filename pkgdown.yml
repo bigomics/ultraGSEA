@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   01_getting_started: 01_getting_started.html
   02_compare-vignette: 02_compare-vignette.html
-last_built: 2025-11-19T21:55Z
+last_built: 2025-11-19T21:58Z
 urls:
   reference: https://bigomics.github.io/ultragsea/reference
   article: https://bigomics.github.io/ultragsea/articles
