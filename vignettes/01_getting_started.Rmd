@@ -51,10 +51,13 @@ names(fc) <- rownames(G)
 res <- ultragsea(fc, G, format='as.gsea', method='ztest')
 head(res)
 ```
+
 ## Plotting
 
 ```{r}
-fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
+#library(fgsea)
+#fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
+#enrichplot::gseaplot2(edo2, geneSetID = 1:3)
 ```
 
 

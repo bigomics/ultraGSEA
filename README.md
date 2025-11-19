@@ -1,8 +1,8 @@
-# ultragsea: Ultrafast preranked gene set enrichment analysis (WIP)
+# UltraGSEA: Ultrafast preranked gene set enrichment analysis (WIP) <img src='man/figures/logo.png' align="right" height="150"/>
 
 [![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultragsea)
 
-(***work in progress***! do not use for production purposes)
+(Warning: ***work in progress***! do not use for production purposes)
 
 [ultragsea](https://bigomics.github.io/ultragsea) is an ultrafast
 method to compute gene set enrichment on a preranked list of genes
