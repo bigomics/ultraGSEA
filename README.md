@@ -2,6 +2,8 @@
 
 [![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultraGSEA)
 
+(***work in progress***! do not use for production purposes)
+
 [ultraGSEA](https://bigomics.github.io/ultraGSEA) is an ultrafast
 method to compute gene set enrichment on a preranked list of genes
 like GSEA and fGSEA. Although UltraGSEA uses a different statistical
