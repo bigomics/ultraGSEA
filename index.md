@@ -42,7 +42,7 @@ remotes::install_github("bigomics/ultragsea")
 For detailed usage examples and tutorials, please see our vignettes:
 
 - [Getting Started with
-  ultragsea](https://bigomics.github.io/ultragsea/articles/01_ultragsea-vignette.html)
+  ultragsea](https://bigomics.github.io/ultragsea/articles/01_getting_started.html)
 - [Comparing ultragsea with
   fGSEA](https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html)
 
