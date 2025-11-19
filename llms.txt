@@ -1,6 +1,6 @@
 # UltraGSEA: Ultrafast preranked gene set enrichment analysis (WIP)
 
-[![codecov](https://codecov.io/github/bigomics/zgsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultragsea)
+[![codecov](https://codecov.io/github/bigomics/ultragsea/graph/badge.svg?token=66J6W41C0G)](https://codecov.io/github/bigomics/ultragsea)
 
 (Warning: ***work in progress***! do not use for production purposes)
 

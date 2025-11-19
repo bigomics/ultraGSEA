@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/bigomics/zgsea/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/bigomics/ultragsea/blob/master/DESCRIPTION)
 
 Kwee I (2025). *ultragsea: Ultrafast preranked gene set enrichment
 analysis*. R package version 0.99.12,
