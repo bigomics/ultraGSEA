@@ -1,0 +1,40 @@
+# Comparing ultragsea with fGSEA
+
+## Introduction
+
+ultragsea is a novel, ultrafast and memory optimized gene set enrichment
+scoring algorithm much like fGSEA. ultragsea typically is 10-100x faster
+than fGSEA but demonstrates highly correlated enrichment scores and
+highly similar p-values.
+
+## Benchmarking
+
+``` r
+library("ultragsea")
+gs <- msigdbr::msigdbr(collection = "H")
+gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
+gmt <- rep(gmt,1000)  ## augment
+names(gmt) <- make.unique(names(gmt))
+length(gmt)
+G <- gmt2mat(gmt)
+```
+
+``` r
+fc <- rnorm(nrow(G))
+names(fc) <- rownames(G)
+top.up <- tail(names(sort(fc)),100)
+top.dn <- head(names(sort(fc)),100)
+
+res <- list()
+tt <- peakRAM::peakRAM(
+  res$fgsea <- fgsea::fgsea(gmt, fc, eps=0),
+  res$fisher <- gset.fisher2(top.up, top.dn, gmt, fdr=1),
+  res$camera <- limma::cameraPR(fc, gmt, use.ranks=FALSE),
+  res$ultragsea.z <- ultragsea(fc, G, method='ztest'),
+  res$ultragsea.t <- ultragsea(fc, G, method='ttest'),
+  res$ultragsea.c <- ultragsea(fc, G, method='cor'),
+  res$cor <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE)
+)
+tt[,1] <- names(res)
+kableExtra::kable(tt)
+```
