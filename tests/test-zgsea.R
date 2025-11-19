@@ -1,6 +1,6 @@
 library(playbase)
 source("~/Playground/playbase/dev/include.R",chdir=TRUE)
-source("../R/zgsea.R")
+source("../R/ultragsea.R")
 
 counts  <- playbase::COUNTS
 samples <- playbase::SAMPLES
@@ -53,7 +53,7 @@ tt <- peakRAM::peakRAM(
   res$fcPlaid.n0 <- plaid::plaid(fc, G, nsmooth=0),
   res$fcPlaid.n3 <- plaid::plaid(fc, G, nsmooth=3), 
   res$fcPlaid.n100 <- plaid::plaid(fc, G, nsmooth=100),
-  res$zgsea <- zgsea(fc, G)
+  res$ultragsea <- ultragsea(fc, G)
 )
 tt
 tt[,1] <- names(res)
@@ -66,11 +66,11 @@ ft.500 <- res$ft.500[gs,]
 ftz.100 <- sign(ft.100$sign) * log(ft.100$odd.ratio)
 ftz.500 <- sign(ft.500$sign) * log(ft.500$odd.ratio)
 res$fgsea <- res$fgsea[match(gs,res$fgsea$pathway),]
-res$zgsea <- res$zgsea[match(gs,res$zgsea$pathway),]
+res$ultragsea <- res$ultragsea[match(gs,res$ultragsea$pathway),]
 
 ## show test-statistics (e.g. NES,rho,t)
 Z <- cbind(
-  zgsea = res$zgsea$NES,  
+  ultragsea = res$ultragsea$NES,  
   fgsea = res$fgsea$NES,
   rankcor = res$rankcor$rho[gs,1],  
   fisher.n100 = ftz.100,
@@ -88,7 +88,7 @@ pairs(Z, cex=2, pch='.')
 
 x11()
 P <- cbind(
-  zgsea = res$zgsea$pval,  
+  ultragsea = res$ultragsea$pval,  
   fgsea = res$fgsea$pval,
   rankcor = res$rankcor$p.value[gs,1],  
   fisher.n100 = res$ft.100[gs,"p.value"],
@@ -106,7 +106,7 @@ pairs(-log10(P), cex=2, pch='.')
 ##---------------------------------------------------------------
 ##----------------------- zGSEA ---------------------------------
 ##---------------------------------------------------------------
-source("R/zgsea.R")
+source("R/ultragsea.R")
 
 G <- Matrix::t(playdata::GSETxGENE)
 #G <- G[,grep("HALLMARK",colnames(G))]
@@ -135,10 +135,10 @@ tt <- peakRAM::peakRAM(
   res$fgsea.zc <- fgsea::fgseaMultilevel(gmt, zc, eps=0),
   res$fgsea.rzc <- fgsea::fgseaMultilevel(gmt, rzc, eps=0),
 
-  res$zgsea <- zgsea(fc, G[,gs], addLE=FALSE),
-  res$zgsea.rc <- zgsea(rc, G[,gs], addLE=FALSE),
-  res$zgsea.zc <- zgsea(zc, G[,gs], addLE=FALSE),
-  res$zgsea.rzc <- zgsea(rzc, G[,gs], addLE=FALSE),
+  res$ultragsea <- ultragsea(fc, G[,gs], addLE=FALSE),
+  res$ultragsea.rc <- ultragsea(rc, G[,gs], addLE=FALSE),
+  res$ultragsea.zc <- ultragsea(zc, G[,gs], addLE=FALSE),
+  res$ultragsea.rzc <- ultragsea(rzc, G[,gs], addLE=FALSE),
 
   res$cor <- gset.rankcor(fc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
   res$cor.rc <- gset.rankcor(rc, G, compute.p=TRUE, use.rank=FALSE)$p.value[gs,1],
@@ -165,14 +165,14 @@ pairs(-log10(P[,1:12]), labels, pch='.', cex=4)
 
 
 ##---------------------------------------------------------------
-##--------------- zgsea vs fgsea versions -----------------------
+##--------------- ultragsea vs fgsea versions -----------------------
 ##---------------------------------------------------------------
 
 gmt1 <- head(gmt, 1000)
 gmt1 <- gmt
 tt <- peakRAM::peakRAM(
   res.rankcor <- gset.rankcor(fc, G[,names(gmt1)], compute.p=TRUE),
-  res.zgsea <- zgsea(fc, G[,names(gmt1)]),    
+  res.ultragsea <- ultragsea(fc, G[,names(gmt1)]),    
   res.fgsea <- fgsea::fgsea(gmt1, fc),
   fgseaM.e0 <- fgsea::fgseaMultilevel(gmt1, fc, eps=0),
   fgseaM.e1 <- fgsea::fgseaMultilevel(gmt1, fc, eps=1, nPermSimple=100),
@@ -183,7 +183,7 @@ tt
 
 ## match all results
 gs <- names(gmt1)
-res.zgsea <- res.zgsea[match(gs, res.zgsea$pathway),]
+res.ultragsea <- res.ultragsea[match(gs, res.ultragsea$pathway),]
 res.fgsea <- res.fgsea[match(gs,res.fgsea$pathway),]
 fgseaM.e0 <- fgseaM.e0[match(gs,fgseaM.e0$pathway),]
 fgseaM.e1 <- fgseaM.e1[match(gs,fgseaM.e1$pathway),]
@@ -192,13 +192,13 @@ fgseaS.n100 <- fgseaS.n100[match(gs,fgseaS.n100$pathway),]
 
 ## check Leading edge
 e1 <- res.fgsea$leadingEdge[[2]]
-e2 <- res.zgsea$leadingEdge[[2]]
+e2 <- res.ultragsea$leadingEdge[[2]]
 sort(fc[e1])
 sort(fc[e2])
 
 S <- cbind(
   rankcor = res.rankcor$rho[gs,1], 
-  zgsea = res.zgsea$NES,  
+  ultragsea = res.ultragsea$NES,  
   fgsea = res.fgsea$NES,
   fgseaM.e0 = fgseaM.e0$NES,
   fgseaM.e1 = fgseaM.e1$NES,  
@@ -208,7 +208,7 @@ S <- cbind(
 
 P <- cbind(
   rankcor = res.rankcor$p.value[gs,1],   
-  zgsea = res.zgsea$pval,  
+  ultragsea = res.ultragsea$pval,  
   fgsea = res.fgsea$pval,
   fgseaM.e0 = fgseaM.e0$pval,
   fgseaM.e1 = fgseaM.e1$pval,  

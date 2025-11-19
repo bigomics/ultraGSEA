@@ -14,9 +14,10 @@ BugReports: https://github.com/bigomics/zgsea/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Suggests: 
+Suggests:
     BiocStyle,
     knitr,
+    msigdbr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

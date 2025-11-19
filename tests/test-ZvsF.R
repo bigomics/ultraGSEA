@@ -1,6 +1,6 @@
 library(playbase)
 source("~/Playground/playbase/dev/include.R",chdir=TRUE)
-source("../R/zgsea.R")
+source("../R/ultragsea.R")
 
 counts  <- playbase::COUNTS
 samples <- playbase::SAMPLES
@@ -35,12 +35,12 @@ head(f1)
 head(f2)
 plot(f1$NES, f2$NES)
 
-z1 <- zgsea(fc, G)
+z1 <- ultragsea(fc, G)
 head(z1)
 z1 <- z1[match(f1$pathway,z1$pathway),]
 plot(f1$NES, z1$NES)
 
-z2 <- zgsea(sign(fc)*abs(fc)**2, G)
+z2 <- ultragsea(sign(fc)*abs(fc)**2, G)
 head(z2)
 z2 <- z2[match(f1$pathway,z2$pathway),]
 plot(f1$NES, z2$NES)
@@ -89,13 +89,13 @@ for(j in 1:ncol(G)) {
 f0 <- fgsea::fgsea(gmt, fc, eps=0)
 f0 <- f0[match(names(ks),f0$pathway),]
 
-z0 <- zgsea(fc, G)
+z0 <- ultragsea(fc, G)
 z0 <- z0[match(names(ks),z0$pathway),]
 
 K <- cbind(ES=f0$ES, NES=f0$NES, zES=z0$NES, ks=ks, kss=kss)
 pairs(K, pch='.', cex=3)
 
-P <- cbind(fgsea=f0$pval, KS=kp, zgsea=z0$pval)
+P <- cbind(fgsea=f0$pval, KS=kp, ultragsea=z0$pval)
 pairs(-log(P), pch='.', cex=3)
 
 

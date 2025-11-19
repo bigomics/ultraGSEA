@@ -36,6 +36,7 @@ full dataset.
 
 ```{r}
 library("ultragsea")
+library("msigdbr")
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 length(gmt)
