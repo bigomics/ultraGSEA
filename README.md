@@ -10,8 +10,8 @@ like GSEA and fGSEA. Although ultragsea uses a different statistical
 test (namely z-test and correlation), its scores are highly correlated
 and its p-values are highly similar to those from GSEA's weighted
 Kolmogorov-Smirnov test. ultragsea computes its scores using fast
-sparse computation and parametric p-values and typically is more than
-100x faster than fGSEA.
+sparse computation and parametric p-values and typically is
+10-100x faster than fGSEA.
 
 #### Key features
 
