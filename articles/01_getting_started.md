@@ -54,10 +54,10 @@ head(res)
 ### Plotting
 
 ``` r
-fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
+#library(fgsea)
+#fgsea::plotEnrichment(gmt[[1]], fc,ticksSize = 0.2)
+#enrichplot::gseaplot2(edo2, geneSetID = 1:3)
 ```
-
-![](01_getting_started_files/figure-html/unnamed-chunk-4-1.png)
 
 ## Benchmarking
 
@@ -89,25 +89,21 @@ sessionInfo()
 #> [1] msigdbr_25.1.1    ultragsea_0.99.12 BiocStyle_2.38.0 
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10              generics_0.1.4           fgsea_1.36.0            
-#>  [4] lattice_0.22-7           digest_0.6.38            magrittr_2.0.4          
-#>  [7] RColorBrewer_1.1-3       evaluate_1.0.5           sparseMatrixStats_1.22.0
-#> [10] grid_4.5.2               bookdown_0.45            fastmap_1.2.0           
-#> [13] jsonlite_2.0.0           Matrix_1.7-4             BiocManager_1.30.27     
-#> [16] scales_1.4.0             codetools_0.2-20         textshaping_1.0.4       
-#> [19] jquerylib_0.1.4          cli_3.6.5                rlang_1.1.6             
-#> [22] cowplot_1.2.0            withr_3.0.2              cachem_1.1.0            
-#> [25] yaml_2.3.10              tools_4.5.2              parallel_4.5.2          
-#> [28] BiocParallel_1.44.0      dplyr_1.1.4              ggplot2_4.0.1           
-#> [31] fastmatch_1.1-6          curl_7.0.0               assertthat_0.2.1        
-#> [34] babelgene_22.9           vctrs_0.6.5              R6_2.6.1                
-#> [37] matrixStats_1.5.0        lifecycle_1.0.4          fs_1.6.6                
-#> [40] ragg_1.5.0               pkgconfig_2.0.3          desc_1.4.3              
-#> [43] pkgdown_2.2.0            pillar_1.11.1            bslib_0.9.0             
-#> [46] gtable_0.3.6             glue_1.8.0               data.table_1.17.8       
-#> [49] Rcpp_1.1.0               systemfonts_1.3.1        xfun_0.54               
-#> [52] tibble_3.3.0             tidyselect_1.2.1         MatrixGenerics_1.22.0   
-#> [55] knitr_1.50               farver_2.1.2             htmltools_0.5.8.1       
-#> [58] labeling_0.4.3           rmarkdown_2.30           compiler_4.5.2          
-#> [61] S7_0.2.1
+#>  [1] Matrix_1.7-4             babelgene_22.9           jsonlite_2.0.0          
+#>  [4] dplyr_1.1.4              compiler_4.5.2           BiocManager_1.30.27     
+#>  [7] Rcpp_1.1.0               tidyselect_1.2.1         parallel_4.5.2          
+#> [10] assertthat_0.2.1         jquerylib_0.1.4          systemfonts_1.3.1       
+#> [13] textshaping_1.0.4        yaml_2.3.10              fastmap_1.2.0           
+#> [16] lattice_0.22-7           R6_2.6.1                 generics_0.1.4          
+#> [19] curl_7.0.0               knitr_1.50               tibble_3.3.0            
+#> [22] bookdown_0.45            MatrixGenerics_1.22.0    desc_1.4.3              
+#> [25] bslib_0.9.0              pillar_1.11.1            rlang_1.1.6             
+#> [28] cachem_1.1.0             xfun_0.54                fs_1.6.6                
+#> [31] sass_0.4.10              cli_3.6.5                pkgdown_2.2.0           
+#> [34] withr_3.0.2              magrittr_2.0.4           digest_0.6.38           
+#> [37] grid_4.5.2               sparseMatrixStats_1.22.0 lifecycle_1.0.4         
+#> [40] vctrs_0.6.5              data.table_1.17.8        evaluate_1.0.5          
+#> [43] glue_1.8.0               ragg_1.5.0               rmarkdown_2.30          
+#> [46] matrixStats_1.5.0        tools_4.5.2              pkgconfig_2.0.3         
+#> [49] htmltools_0.5.8.1
 ```
