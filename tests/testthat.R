@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(zgsea)
+library(ultragsea)
 
-test_check("zgsea")
+test_check("ultragsea")
