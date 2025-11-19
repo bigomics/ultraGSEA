@@ -1,13 +1,13 @@
 
 ##---------------------------------------------------------------
-##-------------------- ultraGSEA --------------------------------
+##-------------------- ultragsea --------------------------------
 ##---------------------------------------------------------------
 
 #' Ultra-fast GSEA using z-score or geneset correlation. Results of
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
-#' 
+#'
 #' @export
-ultraGSEA <- function(fc, G, alpha=0.5, minLE=1,
+ultragsea <- function(fc, G, alpha=0.5, minLE=1,
                       method=c("ztest","ttest","cor","rankcor")[1],
                       format=c("simple","as.gsea")[1]) {
 

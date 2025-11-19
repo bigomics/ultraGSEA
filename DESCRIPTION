@@ -1,4 +1,4 @@
-Package: ultraGSEA
+Package: ultragsea
 Title: Ultrafast preranked gene set enrichment analysis
 Version: 0.99.12
 Authors@R: c(
@@ -7,9 +7,9 @@ Authors@R: c(
     person("Antonino", "Zito", , "antonino.zito@bigomics.ch", role = "cre",
         comment = c(ORCID = "0000-0003-1931-984X"))
   )
-Description: UltraGSEA is an ultra-fast method to compute gene set enrichment scores for preranked gene expression or proteomics data.
+Description: ultragsea is an ultra-fast method to compute gene set enrichment scores for preranked gene expression or proteomics data.
 License: GPL-3
-URL: https://github.com/bigomics/ultraGSEA, https://bigomics.github.io/ultraGSEA/
+URL: https://github.com/bigomics/ultragsea, https://bigomics.github.io/ultragsea/
 BugReports: https://github.com/bigomics/zgsea/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

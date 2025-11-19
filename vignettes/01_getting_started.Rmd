@@ -1,11 +1,11 @@
 ---
-title: "Getting Started with ultraGSEA"
+title: "Getting Started with ultragsea"
 author: "BigOmics Analytics"
-package: ultraGSEA
-output: 
+package: ultragsea
+output:
     BiocStyle::html_document
 vignette: >
-  %\VignetteIndexEntry{Getting Started with ultraGSEA}
+  %\VignetteIndexEntry{Getting Started with ultragsea}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,8 +20,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-UltraGSEA is a novel, ultrafast and memory optimized gene set
-enrichment scoring algorithm not unlike fGSEA. UltraGSEA demonstrates
+ultragsea is a novel, ultrafast and memory optimized gene set
+enrichment scoring algorithm not unlike fGSEA. ultragsea demonstrates
 highly correlated gene set scores and p-values and typically is 100
 times faster than fGSEA.
 
@@ -35,7 +35,7 @@ and SeuratData packages if you want to run this vignette against the
 full dataset.
 
 ```{r}
-library("ultraGSEA")
+library("ultragsea")
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 length(gmt)
@@ -47,7 +47,7 @@ length(gmt)
 G <- gmt2mat(gmt)
 fc <- rnorm(nrow(G))
 names(fc) <- rownames(G)
-res <- ultraGSEA(fc, G, format='as.gsea', method='ztest')
+res <- ultragsea(fc, G, format='as.gsea', method='ztest')
 head(res)
 ```
 ## Plotting

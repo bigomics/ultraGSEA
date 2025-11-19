@@ -1,11 +1,11 @@
 ---
-title: "Comparing ultraGSEA with fGSEA"
+title: "Comparing ultragsea with fGSEA"
 author: "BigOmics Analytics"
-package: ultraGSEA
-output: 
+package: ultragsea
+output:
     BiocStyle::html_document
 vignette: >
-  %\VignetteIndexEntry{Getting Started with ultraGSEA}
+  %\VignetteIndexEntry{Getting Started with ultragsea}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,8 +20,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-UltraGSEA is a novel, ultrafast and memory optimized gene set
-enrichment scoring algorithm much like fGSEA. UltraGSEA typically is
+ultragsea is a novel, ultrafast and memory optimized gene set
+enrichment scoring algorithm much like fGSEA. ultragsea typically is
 10-100x faster than fGSEA but demonstrates highly correlated
 enrichment scores and highly similar p-values.
 
@@ -30,7 +30,7 @@ enrichment scores and highly similar p-values.
 
 
 ```r
-library("ultraGSEA")
+library("ultragsea")
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 gmt <- rep(gmt,1000)  ## augment
@@ -49,10 +49,10 @@ res <- list()
 tt <- peakRAM::peakRAM(
   res$fgsea <- fgsea::fgsea(gmt, fc, eps=0),
   res$fisher <- gset.fisher2(top.up, top.dn, gmt, fdr=1),
-  res$camera <- limma::cameraPR(fc, gmt, use.ranks=FALSE),  
-  res$ultraGSEA.z <- ultraGSEA(fc, G, method='ztest'),
-  res$ultraGSEA.t <- ultraGSEA(fc, G, method='ttest'),
-  res$ultraGSEA.c <- ultraGSEA(fc, G, method='cor'),
+  res$camera <- limma::cameraPR(fc, gmt, use.ranks=FALSE),
+  res$ultragsea.z <- ultragsea(fc, G, method='ztest'),
+  res$ultragsea.t <- ultragsea(fc, G, method='ttest'),
+  res$ultragsea.c <- ultragsea(fc, G, method='cor'),
   res$cor <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE)
 )
 tt[,1] <- names(res)

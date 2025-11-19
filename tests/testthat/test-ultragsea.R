@@ -1,6 +1,6 @@
-# Unit tests for ultraGSEA main function
+# Unit tests for ultragsea main function
 
-test_that("ultraGSEA basic functionality works", {
+test_that("ultragsea basic functionality works", {
   # Create test data
   set.seed(123)
   fc <- rnorm(100, mean = 0, sd = 1)
@@ -12,7 +12,7 @@ test_that("ultraGSEA basic functionality works", {
   colnames(G) <- paste0("geneset_", 1:10)
 
   # Test basic call
-  result <- ultraGSEA(fc, G)
+  result <- ultragsea(fc, G)
 
   # Check output structure
   expect_s3_class(result, "data.frame")
@@ -21,7 +21,7 @@ test_that("ultraGSEA basic functionality works", {
   expect_named(result, c("pathway", "pval", "padj", "score", "size"))
 })
 
-test_that("ultraGSEA returns correct column types", {
+test_that("ultragsea returns correct column types", {
   set.seed(456)
   fc <- rnorm(50)
   names(fc) <- paste0("g", 1:50)
@@ -29,7 +29,7 @@ test_that("ultraGSEA returns correct column types", {
   rownames(G) <- names(fc)
   colnames(G) <- paste0("gs", 1:5)
 
-  result <- ultraGSEA(fc, G)
+  result <- ultragsea(fc, G)
 
   expect_is(result$pathway, "character")
   expect_is(result$pval, "numeric")
@@ -38,7 +38,7 @@ test_that("ultraGSEA returns correct column types", {
   expect_is(result$size, "numeric")
 })
 
-test_that("ultraGSEA with format='as.gsea' returns data.table", {
+test_that("ultragsea with format='as.gsea' returns data.table", {
   set.seed(789)
   fc <- rnorm(30)
   names(fc) <- paste0("g", 1:30)
@@ -46,7 +46,7 @@ test_that("ultraGSEA with format='as.gsea' returns data.table", {
   rownames(G) <- names(fc)
   colnames(G) <- paste0("gs", 1:3)
 
-  result <- ultraGSEA(fc, G, format = "as.gsea")
+  result <- ultragsea(fc, G, format = "as.gsea")
 
   expect_s3_class(result, "data.table")
   expect_equal(ncol(result), 8)
@@ -54,7 +54,7 @@ test_that("ultraGSEA with format='as.gsea' returns data.table", {
                          "NES", "size", "leadingEdge"))
 })
 
-test_that("ultraGSEA with different methods", {
+test_that("ultragsea with different methods", {
   set.seed(101)
   fc <- rnorm(40)
   names(fc) <- paste0("g", 1:40)
@@ -63,27 +63,27 @@ test_that("ultraGSEA with different methods", {
   colnames(G) <- paste0("gs", 1:4)
 
   # Test ztest method
-  result_ztest <- ultraGSEA(fc, G, method = "ztest")
+  result_ztest <- ultragsea(fc, G, method = "ztest")
   expect_s3_class(result_ztest, "data.frame")
   expect_equal(nrow(result_ztest), 4)
 
   # Test ttest method
-  result_ttest <- ultraGSEA(fc, G, method = "ttest")
+  result_ttest <- ultragsea(fc, G, method = "ttest")
   expect_s3_class(result_ttest, "data.frame")
   expect_equal(nrow(result_ttest), 4)
 
   # Test cor method
-  result_cor <- ultraGSEA(fc, G, method = "cor")
+  result_cor <- ultragsea(fc, G, method = "cor")
   expect_s3_class(result_cor, "data.frame")
   expect_equal(nrow(result_cor), 4)
 
   # Test rankcor method
-  result_rankcor <- ultraGSEA(fc, G, method = "rankcor")
+  result_rankcor <- ultragsea(fc, G, method = "rankcor")
   expect_s3_class(result_rankcor, "data.frame")
   expect_equal(nrow(result_rankcor), 4)
 })
 
-test_that("ultraGSEA with alpha parameter", {
+test_that("ultragsea with alpha parameter", {
   set.seed(202)
   fc <- rnorm(35)
   names(fc) <- paste0("g", 1:35)
@@ -92,14 +92,14 @@ test_that("ultraGSEA with alpha parameter", {
   colnames(G) <- paste0("gs", 1:3)
 
   # Different alpha values
-  result_low <- ultraGSEA(fc, G, alpha = 0.1)
-  result_high <- ultraGSEA(fc, G, alpha = 0.9)
+  result_low <- ultragsea(fc, G, alpha = 0.1)
+  result_high <- ultragsea(fc, G, alpha = 0.9)
 
   # Results should be different
   expect_false(isTRUE(all.equal(result_low$score, result_high$score)))
 })
 
-test_that("ultraGSEA with minLE parameter", {
+test_that("ultragsea with minLE parameter", {
   set.seed(303)
   fc <- rnorm(25)
   names(fc) <- paste0("g", 1:25)
@@ -107,12 +107,12 @@ test_that("ultraGSEA with minLE parameter", {
   rownames(G) <- names(fc)
   colnames(G) <- paste0("gs", 1:2)
 
-  result <- ultraGSEA(fc, G, minLE = 2, format = "as.gsea")
+  result <- ultragsea(fc, G, minLE = 2, format = "as.gsea")
 
   expect_is(result$leadingEdge, "list")
 })
 
-test_that("ultraGSEA handles gene intersection", {
+test_that("ultragsea handles gene intersection", {
   set.seed(404)
   fc <- rnorm(100)
   names(fc) <- paste0("g", 1:100)
@@ -122,14 +122,14 @@ test_that("ultraGSEA handles gene intersection", {
   rownames(G) <- paste0("g", 51:100)  # Partial overlap
   colnames(G) <- paste0("gs", 1:5)
 
-  result <- ultraGSEA(fc, G)
+  result <- ultragsea(fc, G)
 
   expect_equal(nrow(result), 5)
   # Check that size reflects only overlapping genes
   expect_true(all(result$size <= 50))
 })
 
-test_that("ultraGSEA produces valid p-values", {
+test_that("ultragsea produces valid p-values", {
   set.seed(505)
   fc <- rnorm(60)
   names(fc) <- paste0("g", 1:60)
@@ -137,7 +137,7 @@ test_that("ultraGSEA produces valid p-values", {
   rownames(G) <- names(fc)
   colnames(G) <- paste0("gs", 1:6)
 
-  result <- ultraGSEA(fc, G)
+  result <- ultragsea(fc, G)
 
   # Check p-values are between 0 and 1
   expect_true(all(result$pval >= 0 & result$pval <= 1))
@@ -147,18 +147,18 @@ test_that("ultraGSEA produces valid p-values", {
   expect_true(all(result$padj >= result$pval - 1e-10))
 })
 
-test_that("ultraGSEA throws error for invalid method", {
+test_that("ultragsea throws error for invalid method", {
   fc <- rnorm(20)
   names(fc) <- paste0("g", 1:20)
   G <- matrix(rbinom(20 * 2, 1, 0.5), nrow = 20, ncol = 2)
   rownames(G) <- names(fc)
   colnames(G) <- paste0("gs", 1:2)
 
-  expect_error(ultraGSEA(fc, G, method = "invalid"),
+  expect_error(ultragsea(fc, G, method = "invalid"),
                "unknown method")
 })
 
-test_that("ultraGSEA with sparse matrix input", {
+test_that("ultragsea with sparse matrix input", {
   skip_if_not_installed("Matrix")
 
   set.seed(606)
@@ -171,8 +171,8 @@ test_that("ultraGSEA with sparse matrix input", {
   colnames(G_dense) <- paste0("gs", 1:5)
   G_sparse <- Matrix::Matrix(G_dense, sparse = TRUE)
 
-  result_sparse <- ultraGSEA(fc, G_sparse)
-  result_dense <- ultraGSEA(fc, G_dense)
+  result_sparse <- ultragsea(fc, G_sparse)
+  result_dense <- ultragsea(fc, G_dense)
 
   # Results should be identical
   expect_equal(as.numeric(result_sparse$score),
