@@ -13,17 +13,6 @@ Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse
 computation and parametric p-values and typically is 10-100x faster than
 fGSEA.
 
-#### Key features
-
-- Ultra-fast preranked gene set enrichment scoring
-- Works with regular matrices, sparse matrices, and Bioconductor data
-  structures
-- Automatically detects and handles Bioconductor objects
-  ([`SummarizedExperiment`](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html),
-  [`SingleCellExperiment`](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html),
-  [`BiocSet`](https://bioconductor.org/packages/release/bioc/html/BiocSet.html))
-- Built-in differential enrichment testing
-
 #### Warning
 
 ultragsea is fast. Ludicrously fast. Please fasten your seatbelts before
