@@ -9,9 +9,8 @@
 #' @export
 ultragsea <- function(fc, G, alpha=0.5, minLE=1,
                       method=c("ztest","ttest","cor","rankcor")[1],
-                      format=c("simple","as.gsea")[1]) {
+                      format=c("simple","as.gsea","as.gsea2")[1]) {
 
-  ##if(class(G)=="list") G <- gmt2mat(G)
   gg <- intersect(names(fc), rownames(G))
   fc <- fc[gg]
   G <- G[gg,]
@@ -33,7 +32,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
     use.rank <- (method == "rankcor")
     res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank) 
     p_value <- res$p.value[,1]
-    stat_value <- res$rho[,1]    
+    stat_value <- res$rho[,1]
   } else {
     stop("unknown method: ", method)
   }
@@ -57,14 +56,28 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
   size <- Matrix::colSums(G!=0)
   q_value <- p.adjust(p_value, method="fdr")
 
-  if(format == "as.gsea") {
+  if(format %in% c("as.gsea","as.gsea2")) {
+    if(format == "as.gsea") {
+      # normalize like GSEA
+      stat_value0 <-  stat_value / max(abs(stat_value),na.rm=TRUE) 
+      stat_value1 <-  stat_value / sd(stat_value,na.rm=TRUE)
+    }
+    if(format == "as.gsea2") {
+      # run fgseaSimple only for few iterations only for NES
+      gmt <- mat2gmt(G)  
+      suppressWarnings(res <- fgsea::fgseaSimple(gmt, fc, nperm=10))
+      res <- res[match(colnames(G),res$pathway),]  
+      stat_value0 <-  res$ES
+      stat_value1 <-  res$NES
+      leading_edge <- res$leadingEdge                
+    }
     df <- data.table::data.table(
       pathway = names(p_value),
       pval = p_value,
       padj = q_value,
       log2err = as.numeric(NA),
-      ES = as.numeric(NA),
-      NES = stat_value,
+      ES = stat_value0,
+      NES = stat_value1,
       size = size,
       leadingEdge = leading_edge        
     )

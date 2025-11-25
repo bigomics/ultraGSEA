@@ -28,33 +28,76 @@ enrichment scores and highly similar p-values.
 
 # Benchmarking
 
+## Preparing the sparse gene set matrix
 
 ```r
 library("ultragsea")
+library("msigdbr")
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 gmt <- rep(gmt,1000)  ## augment
 names(gmt) <- make.unique(names(gmt))
 length(gmt)
-G <- gmt2mat(gmt)
+system.time(G <- gmt2mat(gmt))
+
+G <- Matrix::t(playdata::GSETxGENE)
+gmt <- mat2gmt(G)
 ```
 
+
+## Running the methods
+
 ```r
-fc <- rnorm(nrow(G))
-names(fc) <- rownames(G)
+pgx <- playdata::GEIGER_PGX
+fc <- playbase::pgx.getMetaMatrix(pgx)$fc[,1]
+fc <- rnorm(nrow(G)); names(fc) <- rownames(G)
 top.up <- tail(names(sort(fc)),100)
 top.dn <- head(names(sort(fc)),100)
 
+gg <- intersect(names(fc),rownames(G))
+G <- G[gg,]
+fc <- fc[gg]
+
 res <- list()
+gs <- names(gmt)
 tt <- peakRAM::peakRAM(
   res$fgsea <- fgsea::fgsea(gmt, fc, eps=0),
-  res$fisher <- gset.fisher2(top.up, top.dn, gmt, fdr=1),
-  res$camera <- limma::cameraPR(fc, gmt, use.ranks=FALSE),
-  res$ultragsea.z <- ultragsea(fc, G, method='ztest'),
-  res$ultragsea.t <- ultragsea(fc, G, method='ttest'),
-  res$ultragsea.c <- ultragsea(fc, G, method='cor'),
+  res$fisher <- gset.fisher2(top.up, top.dn, gmt, fdr=1)[gs,],
+  res$camera <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
+  res$ultragsea.z <- ultragsea(fc, G, method='ztest')[gs,],
+  res$ultragsea.t <- ultragsea(fc, G, method='ttest')[gs,],
+  res$ultragsea.c <- ultragsea(fc, G, method='cor')[gs,],
   res$cor <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE)
 )
+res$fgsea <- res$fgsea[match(gs,res$fgsea$pathway),]
 tt[,1] <- names(res)
 kableExtra::kable(tt)
+```
+
+
+```r
+Z <- cbind(
+  fgsea = res$fgsea$NES,
+  fisher = res$fisher$sign,
+  #cameraPR = -log(res$camera$PValue),
+  ultragsea.ztest = res$ultragsea.z$score,
+  ultragsea.ttest = res$ultragsea.t$score,
+  ultragsea.c = res$ultragsea.c$score,
+  cor = res$cor$rho[gs,1]
+)
+pairs(Z, pch='.',cex=4)
+
+P <- cbind(
+  fgsea = res$fgsea$pval,
+  fisher = res$fisher$p.value,
+  cameraPR = res$camera$PValue,
+  ultragsea.ztest = res$ultragsea.z$pval,
+  ultragsea.ttest = res$ultragsea.t$pval,
+  ultragsea.c = res$ultragsea.c$pval,
+  cor = res$cor$p.value[gs,1]
+)
+pairs(-log10(P), pch='.',cex=4)
+  
+
+
 ```

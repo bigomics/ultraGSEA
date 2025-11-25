@@ -1,3 +1,5 @@
+##install.packages("tidydr")
+
 library(playbase)
 source("~/Playground/playbase/dev/include.R",chdir=TRUE)
 
@@ -10,21 +12,14 @@ pgx <- playdata::GEIGER_PGX
 counts  <- pgx$counts
 samples <- pgx$samples
 head(samples)
-X <- playbase::logCPM(counts)
 y <- samples$activated
-
-## compute logFC
-res <- playbase::gx.limma(X, pheno=y, fdr=1, lfc=0)
-fc <- res$logFC
-names(fc) <- rownames(res)
-head(res)
+fc <- pgx.getMetaMatrix(pgx)$fc[,1]
+head(fc)
 
 G <- Matrix::t(playdata::GSETxGENE)
-#G <- G[,grep("HALLMARK",colnames(G))]
 G <- G[,grep("GO",colnames(G))]
-gg <- intersect(rownames(X),rownames(G))
+gg <- intersect(names(fc),rownames(G))
 G <- G[gg,]
-X <- X[gg,]
 fc <- fc[gg]
 gmt <- mat2gmt(G)
 head(names(gmt))
@@ -37,21 +32,29 @@ res1 <- fgsea::fgsea(gmt, fc, eps=0)
 res2 <- ultragsea(fc, G, method='ztest', format='as.gsea')
 res3 <- ultragsea(fc, G, method='cor', format='as.gsea')
 
-res1 <- res1[order(res1$pval),]
-res2 <- res2[order(res2$pval),]
-res3 <- res3[order(res3$pval),]
+gs <- names(gmt)
+res1 <- res1[match(gs,res1$pathway),]
+res2 <- res2[match(gs,res2$pathway),,]
+res3 <- res3[match(gs,res3$pathway),,]
 head(res1)
+head(res2)
+head(res3)
 
+Z <- cbind(res1$NES, res2$NES, res3$NES)
+pairs(Z, pch='.', cex=3)
+P <- cbind(res1$pval, res2$pval, res3$pval)
+pairs(P, pch='.', cex=3)
+pairs(-log10(P), pch='.', cex=3)
+
+##BiocManager::install(c("clusterProfiler","enrichplot"))
 library(fgsea)
 library(dplyr)
 library(ggplot2)
-#BiocManager::install("clusterProfiler")
-#BiocManager::install("enrichplot")
 library(clusterProfiler)
 library(enrichplot)
 
 contrast=1
-pgx.createGseaResult <- function(pgx, contrast, sig=0.05, filter=NULL) {
+pgx.makeGseaResult <- function(pgx, contrast, sig=0.05, filter=NULL) {
   gx.meta <- pgx.getMetaFoldChangeMatrix(pgx)
   fc <- gx.meta$fc[,contrast]
   pv <- gx.meta$pv[,contrast]
@@ -82,7 +85,7 @@ pgx.createGseaResult <- function(pgx, contrast, sig=0.05, filter=NULL) {
     size = gs.size,
     leadingEdge = le.genes
   )
-  res <- new.gseaResult(res, geneList=fc, geneSets=gmt)
+  res <- makeGseaResult(res, geneList=fc, geneSets=gmt)
   res
 }
 
@@ -92,43 +95,60 @@ res <- res[order(res$pval),]
 head(res)
 
 gs <- res$pathway[1]
-playbase::gsea.enplot( fc, gmt[[gs]])
+playbase::gsea.enplot(fc, gmt[[gs]])
+
+detach("package:clusterProfiler", unload=TRUE)
+detach("package:enrichplot", unload=TRUE)
+library(enrichplot)
 
 ## Here we create a gseaResults object from fc+gmt
-obj <- new.gseaResult(res, geneList=fc, geneSets=gmt)
-obj <- pgx.createGseaResult(pgx, contrast=1, filter="GO_")
+obj <- makeGseaResult(res, geneList=fc, geneSets=gmt)
+obj <- pgx.makeGseaResult(pgx, contrast=1, filter="GO_")
 head(obj@result)
 pgx.getContrasts(pgx)
 
-obj@result <- obj@result[order(obj@result$pvalue),]
 obj@result <- obj@result[order(-abs(obj@result$NES)),]
 head(obj@result)
 
+cex=1.4
+#cex=1
 #barplot(obj, showCategory=20) + ggtitle("barplot for GSEA")
-dotplot(obj, showCategory=40, x="NES", label_format=100, font.size=12) +
+dotplot(obj, showCategory=40, x="NES", label_format=100, font.size=12*cex) +
   ggtitle("dotplot for GSEA")
-dotplot(obj, showCategory=40, x="GeneRatio", label_format=100, font.size=12) +
+dotplot(obj, showCategory=40, x="GeneRatio", label_format=100, font.size=12*cex) +
   ggtitle("dotplot for GSEA")
 
 ## enrichment running score plot
-gseaplot2(obj, geneSetID = 1, base_size=20)
-gseaplot2(obj, geneSetID = 1:5, base_size=20)
+cex=1.2
+#cex=0.9
+gseaplot2(obj, geneSetID = 1, base_size=20*cex)
+gseaplot2(obj, geneSetID = 1:5, base_size=20*cex)
 
-## enrichmap 
+## enrichmap
 bp <- pairwise_termsim(obj, showCategory=200)
-emapplot(bp)
-emapplot(bp,
-  showCategory=40,
-  color = "NES",
-  group_category = TRUE,
-  group_legend = FALSE,
-  cex_label_group = 1,
-  nWords = 4,
-  label_format = 20
-)
+gsname <- gsub(".*:|\\(.*|GO","",bp@result$Description)
+gsname <- gsub("[-_]"," ",gsname)
+gsname <- gsub(".*:|\\(.*","",gsname)
+names(gsname) <- bp@result$Description
+
+rownames(bp@termsim) <- colnames(bp@termsim) <- gsname[colnames(bp@termsim)]
+bp@result$Description <- gsname[bp@result$Description]
+names(bp@geneSets) <- gsname[names(bp@geneSets)]
+emapplot(bp, showCategory=40, color="NES", nWords=4,
+  group=TRUE, group_style="ggforce", label_group_style="ggforce",
+  label_format = 10)
+
+
+devtools::load_all("~/src/enrichplot")
 
 ## Bipartite graph
-cnetplot(obj, foldChange=fc)
+par(mar=c(8,8,8,8))
+cnetplot(obj, foldChange=fc, fc_threshold=0, size_item=1.5) +
+  theme(plot.margin = unit(c(1,1,1,1), "cm"))
+x11()
+cnetplot(obj, foldChange=fc, fc_threshold=1.3, size_item=1.5) +
+  theme(plot.margin = unit(c(1,1,1,1), "cm"))
+
 
 ## Upset plot (hate this...)
 upsetplot(obj, n=20) + theme_dose(font.size=22)
@@ -137,23 +157,26 @@ upsetplot(obj, n=20) + theme_dose(font.size=22)
 ridgeplot(obj, showCategory=40, label_format = 120) + theme_minimal(base_size=16)
 
 ## Heatplot
-p1 <- heatplot(obj, foldChange=fc, showCategory=20, label_format=120) +
-  theme_minimal(base_size=18)
-p2 <- heatplot(obj, showCategory=20, label_format=120) +
-  theme_minimal(base_size=18)
-plot_list(p1, p2, ncol=1, tag_levels = 'A')
+p1 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=NULL, label_format=120) + tt
+p2 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=80, label_format=120) + tt
+plot_list(p1, p2, ncol=1, tag_levels='A', tag_size = 24*cex)
+
 
 ## Cluster tree
 obj2 <- pairwise_termsim(obj)
 gsname <- gsub(".*:|\\(.*","",colnames(obj2@termsim))
 gsname <- gsub(".*:|\\(.*","",gsname)
 rownames(obj2@termsim) <- colnames(obj2@termsim) <- toupper(gsname)
-gg <- treeplot(obj2,
-  cluster.params = list(method = "ward.D", n=3, color=NULL, label_words_n=4,
-    label_format=100),
-  showCategory = 40, fontsize = 4,
-  label_format=20, size=6, color="NES")
+
+devtools::load_all("~/src/enrichplot")
+gg <- treeplot(obj2,  
+  showCategory = 40, fontsize_tiplab = 5*cex,
+  label_format = 20, fontsize_cladelab=8*cex,
+  cladelab_offset = 20, tiplab_offset=1,
+  color = "NES", size_var="setSize"
+)
 gg
-##gg + ggtree::geom_tiplab(size=7)
+
+
 
 

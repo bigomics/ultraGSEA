@@ -4,7 +4,7 @@
 #' from enrichplot.
 #'
 #' @export
-new.gseaResult <- function(res, geneList, geneSets) 
+makeGseaResult <- function(res, geneList, geneSets) 
 {
   req.cols <- c("pathway","NES","pval","leadingEdge")
   if(!all(req.cols %in% colnames(res))) stop("missing columns in result table")
