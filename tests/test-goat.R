@@ -1,4 +1,4 @@
-install.packages("goat")
+##install.packages("goat")
 library(goat)
 
 #source("~/Playground/playbase/dev/include.R",chdir=TRUE)
@@ -6,6 +6,7 @@ source("../R/ultragsea.R")
 source("../R/gsetcor.R")
 source("../R/gmt-utils.R")
 source("../R/utils.R")
+source("../R/goat.R")
 
 # TODO: change the output directory to some folder on your computer
 # e.g. "~/data/goat" on unix systems, "C:/data/goat" on Windows,
@@ -56,44 +57,36 @@ save_genesets(result, genelist, filename = paste0(output_dir, "/goat.xlsx"))
 
 G <- Matrix::t(playdata::GSETxGENE)
 fc <- Matrix::rowMeans(G!=0)
-fc <- head(fc,8000)
+fc <- head(fc,20000)
 gg <- intersect(names(fc),rownames(G))
 fc <- fc[gg]
 G <- G[gg,]
 dim(G)
 gmt <- mat2gmt(G)
+range(sapply(gmt,length))
 gmt <- gmt[sapply(gmt,length) >= 10]
 
-goat_test <- function(fc, gmt) {
-  genesets  <- data.table::data.table(
-    source = "GSET", source_version = "local",
-    id = paste0("gset",1:length(gmt)),
-    name = names(gmt),
-    genes = gmt,
-    ngenes = sapply(gmt,length),
-    ngenes_signif = 0L
-  )
-  genesets <- as_tibble(genesets)
-  
-  genelist <- tibble(
-    gene = names(fc),
-    test = FALSE,
-    signif = FALSE,  
-    effectsize = fc
-  )
-  
-  result <- test_genesets(
-    genesets, genelist,
-    method = "goat", score_type = "effectsize",
-    padj_method = "bonferroni", padj_cutoff = 0.05)
+res <- goat(gmt, fc, minSize=10, maxSize=1500, filter=TRUE)
 
-  df <- data.frame(
-    pathway = result$name,
-    pval = result$pvalue,
-    padj = result$pvalue_adjust,
-    score = result$zscore,  
-    size = result$ngenes
-  )
-  df
-}
+method="goat_fitfunction"
+method="goat_bootstrap"
+pathways=gmt
+stats=fc
+length(fc)
+range(sapply(gmt,length))
+
+source("../R/goat.R")
+res1 <- goat(gmt, fc, filter=FALSE, method="goat")
+#res1 <- goat(gmt, fc, filter=TRUE, method="goat")
+res2 <- goat(gmt, fc, filter=TRUE, method="goat_fitfunction")
+res3 <- goat(gmt, fc, filter=TRUE, method="goat_bootstrap")
+
+res2 <- res2[match(res2$pathway, res1$pathway),]
+res3 <- res3[match(res3$pathway, res1$pathway),]
+
+S <- cbind( res1$score, res2$score, res3$score)
+pairs(S)
+
+P <- cbind( res1$pval, res2$pval, res3$pval)
+pairs(-log10(P), pch='.', cex=3)
 
