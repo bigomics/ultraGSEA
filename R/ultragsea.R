@@ -11,12 +11,15 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
                       method=c("ztest","ttest","cor","rankcor")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
-  gg <- intersect(names(fc), rownames(G))
-  fc <- fc[gg]
-  G <- G[gg,]
+  if(!method %in% c("cor","rankcor")) {
+    gg <- intersect(names(fc), rownames(G))
+    fc <- fc[gg]
+    G <- G[gg,]
+  }
 
   addLE <- (format=="as.gsea")
   p_value <- NULL
+  q_value <- NULL
   stat_value <- NULL
   zmat <- NULL
   if(method == "ztest") {
@@ -26,12 +29,13 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
     zmat <- zres$zmat
   } else if(method == "ttest") {
     res <- matrix_onesample_ttest(cbind(fc), G)
-    p_value <- res$p[,1]
+    p_value <- res$p[,1]    
     stat_value <- res$t[,1]    
   } else if(method %in% c("cor","rankcor")) {
     use.rank <- (method == "rankcor")
     res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank) 
     p_value <- res$p.value[,1]
+    q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
   } else {
     stop("unknown method: ", method)
@@ -54,7 +58,9 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
   }
   
   size <- Matrix::colSums(G!=0)
-  q_value <- p.adjust(p_value, method="fdr")
+  if(is.null(q_value)) {
+    q_value <- p.adjust(p_value, method="fdr")
+  }
 
   if(format %in% c("as.gsea","as.gsea2")) {
     if(format == "as.gsea") {
