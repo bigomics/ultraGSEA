@@ -80,10 +80,9 @@ times faster than fGSEA.</p>
 <div class="section level3">
 <h3 id="preparing-gensets">Preparing gensets<a class="anchor" aria-label="anchor" href="#preparing-gensets"></a>
 </h3>
-<p>For this vignette, our package includes a small subset of the the
-pmbc3k single-cell dataset of just 50 cells. Please install the Seurat
-and SeuratData packages if you want to run this vignette against the
-full dataset.</p>
+<p>For this vignette, we retrieve the Hallmark gene sets using the
+<code>msigdbr</code> package. Of course you can use your own gene sets
+or download from somewhere else.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bigomics/ultragsea" class="external-link">ultragsea</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igordot.github.io/msigdbr/" class="external-link">msigdbr</a></span><span class="op">)</span></span>
@@ -95,6 +94,9 @@ full dataset.</p>
 <div class="section level3">
 <h3 id="performing-the-statistical-test">Performing the statistical test<a class="anchor" aria-label="anchor" href="#performing-the-statistical-test"></a>
 </h3>
+<p>Just for this example we use some random values for <code>fc</code>
+but in general this is a fold change from some statistical comparison of
+your experiment.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gmt2mat.html">gmt2mat</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span>
 <span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">)</span></span>
@@ -118,7 +120,7 @@ full dataset.</p>
 <span><span class="co">#&gt; 4: -0.02843947   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...</span></span>
 <span><span class="co">#&gt; 5: -0.16189748   200     ACAA1,DLD,SDHC,ECHS1,GPI,GRPEL1,...</span></span>
 <span><span class="co">#&gt; 6:  1.14238929   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...</span></span></code></pre></div>
-<p>For the fastest speed, and especially when computing enrichment for
+<p>For the fastest speed, especially when computing enrichment for
 multiple foldchanges, it is better to call the low-level functions for
 geneset correlation or geneset z-test directly. They do not return the
 nicely formatted output tables as <code><a href="../reference/ultragsea.html">ultragsea()</a></code> but they are
@@ -132,7 +134,7 @@ much faster as they are optimized for matrix inputs <code>F</code>.</p>
 <h3 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h3>
 <p>You can proceed by plotting the gene set using e.g. the plotting
-function of the fgsea package.</p>
+functions of the fgsea package.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#library(fgsea)</span></span>
 <span><span class="co">#k &lt;- res$pathway[which.min(res$pval)]</span></span>

@@ -11,10 +11,9 @@ faster than fGSEA.
 
 ### Preparing gensets
 
-For this vignette, our package includes a small subset of the the pmbc3k
-single-cell dataset of just 50 cells. Please install the Seurat and
-SeuratData packages if you want to run this vignette against the full
-dataset.
+For this vignette, we retrieve the Hallmark gene sets using the
+`msigdbr` package. Of course you can use your own gene sets or download
+from somewhere else.
 
 ``` r
 library(ultragsea)
@@ -26,6 +25,10 @@ length(gmt)
 ```
 
 ### Performing the statistical test
+
+Just for this example we use some random values for `fc` but in general
+this is a fold change from some statistical comparison of your
+experiment.
 
 ``` r
 G <- gmt2mat(gmt)
@@ -52,10 +55,10 @@ head(res)
 #> 6:  1.14238929   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...
 ```
 
-For the fastest speed, and especially when computing enrichment for
-multiple foldchanges, it is better to call the low-level functions for
-geneset correlation or geneset z-test directly. They do not return the
-nicely formatted output tables as
+For the fastest speed, especially when computing enrichment for multiple
+foldchanges, it is better to call the low-level functions for geneset
+correlation or geneset z-test directly. They do not return the nicely
+formatted output tables as
 [`ultragsea()`](https://bigomics.github.io/ultragsea/reference/ultragsea.md)
 but they are much faster as they are optimized for matrix inputs `F`.
 
@@ -68,7 +71,7 @@ res2 <- fc_ztest(F, G)
 ### Plotting
 
 You can proceed by plotting the gene set using e.g. the plotting
-function of the fgsea package.
+functions of the fgsea package.
 
 ``` r
 #library(fgsea)
