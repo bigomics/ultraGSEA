@@ -5,12 +5,9 @@
 (Warning: ***work in progress***! do not use for production purposes)
 
 [ultragsea](https://bigomics.github.io/ultragsea) is an ultrafast
-method to compute gene set enrichment on a preranked list of genes
-like GSEA and fGSEA. Although ultragsea uses a different statistical
-test (namely z-test and correlation), its scores are highly correlated
-and its p-values are highly similar to those from GSEA's weighted
-Kolmogorov-Smirnov test. ultragsea computes its scores using fast
-sparse computation and parametric p-values and typically is
+method to compute gene set enrichment on a preranked list of genes not unlike fGSEA. ultragsea van be used as replacement of fGSEA. Although ultragsea uses a different statistical
+test (namely z-test or correlation), its scores are highly correlated and its p-values are closely similar to those from GSEA's weighted
+Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse computation and parametric p-values and typically is
 10-100x faster than fGSEA.
 
 

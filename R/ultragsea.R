@@ -8,7 +8,7 @@
 #'
 #' @export
 ultragsea <- function(fc, G, alpha=0.5, minLE=1,
-                      method=c("ztest","ttest","cor","rankcor")[1],
+                      method=c("cor","ztest","ttest","rankcor")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
   gg <- intersect(names(fc), rownames(G))
