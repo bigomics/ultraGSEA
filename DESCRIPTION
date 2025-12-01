@@ -1,6 +1,6 @@
 Package: ultragsea
 Title: Ultrafast preranked gene set enrichment analysis
-Version: 0.99.12
+Version: 0.1.12
 Authors@R: c(
     person("Ivo", "Kwee", , "ivo.kwee@bigomics.ch", role = "aut",
         comment = c(ORCID = "0000-0002-2751-4218")),

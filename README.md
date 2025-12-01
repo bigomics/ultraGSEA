@@ -26,8 +26,8 @@ remotes::install_github("bigomics/ultragsea")
 
 For detailed usage examples and tutorials, please see our vignettes:
 
-- [Getting Started with ultragsea](https://bigomics.github.io/ultragsea/articles/01_getting_started.html)
-- [Comparing ultragsea with fGSEA](https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html)
+- [Getting Started with ultragsea](https://bigomics.github.io/ultragsea/articles/ultragsea.html)
+- [Comparing ultragsea with fGSEA](https://bigomics.github.io/ultragsea/articles/compare-methods.html)
 
 ultragsea is the main gene set scoring algorithm in OmicsPlayground,
 our Bioinformatics platform at BigOmics Analytics. In OmicsPlayground,

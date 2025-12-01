@@ -1,5 +1,11 @@
+
+#' Wrapper around GOAT
+#'
+#' @export
 goat <- function(pathways, stats, minSize = 10L, maxSize = 1500L,
                  filter = TRUE, method=c("goat","gsea")[1]) {
+  require(goat)
+  
   method <- method[1]
 
   if(method %in% c("fisherexact","fisherexact_ease","hypergeometric")) {

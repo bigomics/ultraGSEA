@@ -48,24 +48,34 @@ length(gmt)
 G <- gmt2mat(gmt)
 fc <- rnorm(nrow(G))
 names(fc) <- rownames(G)
+res <- ultragsea(fc, G, format='as.gsea', method='cor')
 res <- ultragsea(fc, G, format='as.gsea', method='ztest')
 head(res)
 ```
 
+For the fastest speed, and especially when computing enrichment for
+multiple foldchanges, it is better to call the low-level functions for
+geneset correlation or geneset z-test directly. They do not return the
+nicely formatted output tables as `ultragsea()` but they are much faster
+as they are optimized for matrix inputs `F`.
+
+```{r}
+F <- cbind(fc,fc,fc,fc,fc)
+res1 <- gset.cor(F, G, compute.p=TRUE)
+res2 <- fc_ztest(F, G)
+```
+
 ## Plotting
+
+You can proceed by plotting the gene set using e.g. the plotting
+function of the fgsea package.
 
 ```{r}
 #library(fgsea)
-#fgsea::plotEnrichment(gmt[[1]],fc,ticksSize = 0.2)
+#k <- res$pathway[which.min(res$pval)]
+#fgsea::plotEnrichment(gmt[[k]],fc,ticksSize = 0.2)
 ```
 
-
-# Benchmarking
-
-```{r}
-
-
-```
 
 
 # Session info

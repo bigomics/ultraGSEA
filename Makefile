@@ -1,8 +1,10 @@
-build: doc
+build: doc vignettes
 	R -e "devtools::build()"
 
-doc: vignettes/*.Rmd R/*.R
+doc:R/*.R
 	R -e "devtools::document()"
+
+vignettes: vignettes/*.Rmd
 	R -e "devtools::build_vignettes()"
 
 install: 

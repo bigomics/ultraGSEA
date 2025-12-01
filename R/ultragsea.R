@@ -113,7 +113,8 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
 #'  \item p_value - Vector of p-values
 #'  \item zmat - Z-score matrix (if zmat = TRUE)
 #' }
-#' @keywords internal
+#' 
+#' @export
 fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
   if(NCOL(F)==1) F <- cbind(F)
   gg <- intersect(rownames(G),rownames(F))
@@ -127,8 +128,10 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
     sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
   })
   alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- t(sqrt( t(alpha*sample_var) + (1-alpha)*population_var))
-  z_statistic <- t(t(sample_mean) - population_mean) / (estim_sd / sqrt(sample_size))
+  estim_sd <- Matrix::t(sqrt( Matrix::t(alpha*sample_var) +
+                                (1-alpha)*population_var))
+  z_statistic <- Matrix::t(Matrix::t(sample_mean) - population_mean) /
+    (estim_sd / sqrt(sample_size))
   z_statistic <- as.matrix(z_statistic)
   p_value <- 2 * pnorm(abs(z_statistic), lower.tail = FALSE)  
   if(zmat) {
@@ -151,7 +154,6 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
     zmat = zmat
   )
 }
-
 
 #' Compute z-score matrix for gene sets
 #'
