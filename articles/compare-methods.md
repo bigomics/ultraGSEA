@@ -1,13 +1,14 @@
 # Comparing with other methods
 
-## Other pre-ranked enrichment methods
+## Fast pre-ranked enrichment methods
 
 For comparisons, we selected some of the currently fastest pre-ranked
 gene set enrichment algorithms:
 
 - fGSEA (fast GSEA). fGSEA is currently perhaps the most widely used
   algorithm for pre-ranked enrichment testing. See:
-  [github](https://github.com/alserglab/fgsea).
+  [github](https://github.com/alserglab/fgsea)
+  [bioRxiv](https://www.biorxiv.org/content/10.1101/060012v3)
 
 - cameraPR (pre-ranked Camera from the limma package). A version of the
   Camera method for pre-ranked lists. See:
@@ -95,12 +96,12 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.326 |                4.1 |              43.9 |
-| cameraPR      |            0.323 |                0.8 |              42.6 |
-| ultragsea.z   |            0.114 |                1.9 |              21.3 |
-| ultragsea.c   |            0.042 |                0.9 |               8.9 |
-| cor           |            0.005 |                0.0 |               2.8 |
-| ztest         |            0.009 |                0.0 |               6.5 |
+| fgsea         |            4.229 |                4.1 |              43.9 |
+| cameraPR      |            0.317 |                0.8 |              42.6 |
+| ultragsea.z   |            0.109 |                1.9 |              21.3 |
+| ultragsea.c   |            0.038 |                0.9 |               8.9 |
+| cor           |            0.004 |                0.0 |               2.8 |
+| ztest         |            0.008 |                0.0 |               6.5 |
 | goat          |            0.243 |                4.5 |              23.7 |
 
 ``` r
