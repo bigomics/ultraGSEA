@@ -17,6 +17,7 @@ RoxygenNote: 7.3.3
 Suggests:
     BiocStyle,
     fgsea,
+    goat,
     knitr,
     msigdbr,
     rmarkdown,
