@@ -4,14 +4,17 @@
 
 - [`cor_sparse_matrix()`](https://bigomics.github.io/ultragsea/reference/cor_sparse_matrix.md)
   : Calculate sparse correlation matrix handling missing values
+- [`fc_ztest()`](https://bigomics.github.io/ultragsea/reference/fc_ztest.md)
+  : Fast one sample z-test for matrix object F (e.g. foldchanges) and
+  grouping matrix G (e.g. gene sets).
 - [`gmt2mat()`](https://bigomics.github.io/ultragsea/reference/gmt2mat.md)
   : Convert GMT to Binary Matrix
 - [`gset.cor()`](https://bigomics.github.io/ultragsea/reference/gset.cor.md)
   : Calculate gene set correlation
-- [`gset.fisher()`](https://bigomics.github.io/ultragsea/reference/gset.fisher.md)
-  : Perform Fisher's exact test on gene sets
-- [`gset.fisher2()`](https://bigomics.github.io/ultragsea/reference/gset.fisher2.md)
-  : Perform Fisher's exact test on gene sets
+- [`makeGseaResult()`](https://bigomics.github.io/ultragsea/reference/makeGseaResult.md)
+  : Utility to convert fgsea/ultragsea style results to 'gseaResult'
+  object compatible with clusterProfiler and enrichplot functions. Using
+  this function you can use all plotting functions from enrichplot.
 - [`mat2gmt()`](https://bigomics.github.io/ultragsea/reference/mat2gmt.md)
   : Convert Binary Matrix to GMT
 - [`read.gmt()`](https://bigomics.github.io/ultragsea/reference/read.gmt.md)

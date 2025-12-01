@@ -13,11 +13,6 @@ Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse
 computation and parametric p-values and typically is 10-100x faster than
 fGSEA.
 
-#### Warning
-
-ultragsea is fast. Ludicrously fast. Please fasten your seatbelts before
-usage.
-
 ## Installation
 
 You can install ultragsea from from GitHub:
@@ -31,9 +26,9 @@ remotes::install_github("bigomics/ultragsea")
 For detailed usage examples and tutorials, please see our vignettes:
 
 - [Getting Started with
-  ultragsea](https://bigomics.github.io/ultragsea/articles/01_getting_started.html)
+  ultragsea](https://bigomics.github.io/ultragsea/articles/ultragsea.html)
 - [Comparing ultragsea with
-  fGSEA](https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html)
+  fGSEA](https://bigomics.github.io/ultragsea/articles/compare-methods.html)
 
 ultragsea is the main gene set scoring algorithm in OmicsPlayground, our
 Bioinformatics platform at BigOmics Analytics. In OmicsPlayground, you
@@ -41,7 +36,7 @@ can perform ultragsea without coding needs.
 
 ## Example
 
-`{r} library("ultragsea") gs <- msigdbr::msigdbr(collection = "H") gmt <- tapply(gs$gene_symbol,gs$gs_name,list) G <- gmt2mat(gmt) fc <- rnorm(nrow(G)) names(fc) <- rownames(G) res <- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)`
+`{r} library(ultragsea) gs <- msigdbr::msigdbr(collection = "H") gmt <- tapply(gs$gene_symbol,gs$gs_name,list) G <- gmt2mat(gmt) fc <- rnorm(nrow(G)) names(fc) <- rownames(G) res <- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)`
 
 ## References
 

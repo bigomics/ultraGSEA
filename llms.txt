@@ -13,11 +13,6 @@ Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse
 computation and parametric p-values and typically is 10-100x faster than
 fGSEA.
 
-#### Warning
-
-ultragsea is fast. Ludicrously fast. Please fasten your seatbelts before
-usage.
-
 ## Installation
 
 You can install ultragsea from from GitHub:
@@ -31,9 +26,9 @@ remotes::install_github("bigomics/ultragsea")
 For detailed usage examples and tutorials, please see our vignettes:
 
 - [Getting Started with
-  ultragsea](https://bigomics.github.io/ultragsea/articles/01_getting_started.html)
+  ultragsea](https://bigomics.github.io/ultragsea/articles/ultragsea.html)
 - [Comparing ultragsea with
-  fGSEA](https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html)
+  fGSEA](https://bigomics.github.io/ultragsea/articles/compare-methods.html)
 
 ultragsea is the main gene set scoring algorithm in OmicsPlayground, our
 Bioinformatics platform at BigOmics Analytics. In OmicsPlayground, you
@@ -41,7 +36,7 @@ can perform ultragsea without coding needs.
 
 ## Example
 
-`{r} library("ultragsea") gs <- msigdbr::msigdbr(collection = "H") gmt <- tapply(gs$gene_symbol,gs$gs_name,list) G <- gmt2mat(gmt) fc <- rnorm(nrow(G)) names(fc) <- rownames(G) res <- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)`
+`{r} library(ultragsea) gs <- msigdbr::msigdbr(collection = "H") gmt <- tapply(gs$gene_symbol,gs$gs_name,list) G <- gmt2mat(gmt) fc <- rnorm(nrow(G)) names(fc) <- rownames(G) res <- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)`
 
 ## References
 
@@ -69,14 +64,17 @@ your social media.
 
 - [`cor_sparse_matrix()`](https://bigomics.github.io/ultragsea/reference/cor_sparse_matrix.md)
   : Calculate sparse correlation matrix handling missing values
+- [`fc_ztest()`](https://bigomics.github.io/ultragsea/reference/fc_ztest.md)
+  : Fast one sample z-test for matrix object F (e.g. foldchanges) and
+  grouping matrix G (e.g. gene sets).
 - [`gmt2mat()`](https://bigomics.github.io/ultragsea/reference/gmt2mat.md)
   : Convert GMT to Binary Matrix
 - [`gset.cor()`](https://bigomics.github.io/ultragsea/reference/gset.cor.md)
   : Calculate gene set correlation
-- [`gset.fisher()`](https://bigomics.github.io/ultragsea/reference/gset.fisher.md)
-  : Perform Fisher's exact test on gene sets
-- [`gset.fisher2()`](https://bigomics.github.io/ultragsea/reference/gset.fisher2.md)
-  : Perform Fisher's exact test on gene sets
+- [`makeGseaResult()`](https://bigomics.github.io/ultragsea/reference/makeGseaResult.md)
+  : Utility to convert fgsea/ultragsea style results to 'gseaResult'
+  object compatible with clusterProfiler and enrichplot functions. Using
+  this function you can use all plotting functions from enrichplot.
 - [`mat2gmt()`](https://bigomics.github.io/ultragsea/reference/mat2gmt.md)
   : Convert Binary Matrix to GMT
 - [`read.gmt()`](https://bigomics.github.io/ultragsea/reference/read.gmt.md)
@@ -91,7 +89,7 @@ your social media.
 
 ### All vignettes
 
-- [Getting Started with
-  ultragsea](https://bigomics.github.io/ultragsea/articles/01_getting_started.md):
 - [Comparing ultragsea with
-  fGSEA](https://bigomics.github.io/ultragsea/articles/02_compare-vignette.md):
+  fGSEA](https://bigomics.github.io/ultragsea/articles/compare-methods.md):
+- [Getting Started with
+  ultragsea](https://bigomics.github.io/ultragsea/articles/ultragsea.md):

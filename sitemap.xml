@@ -1,9 +1,9 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://bigomics.github.io/ultragsea/404.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/LICENSE-text.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/articles/01_getting_started.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/articles/compare-methods.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/articles/index.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/articles/ultragsea.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/authors.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/index.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/cor_sparse_matrix.html</loc></url>
@@ -11,9 +11,8 @@
 <url><loc>https://bigomics.github.io/ultragsea/reference/fc_ztest.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gmt2mat.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gset.cor.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/reference/gset.fisher.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/reference/gset.fisher2.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/index.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/makeGseaResult.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/mat2gmt.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/matrix_onesample_ttest.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/read.gmt.html</loc></url>

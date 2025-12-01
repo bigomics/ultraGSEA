@@ -6,14 +6,10 @@ grouping matrix G (e.g. gene sets).
 ## Usage
 
 ``` r
-fc_ztest(fc, G, zmat = FALSE, alpha = 0.5)
+fc_ztest(F, G, zmat = FALSE, alpha = 0.5)
 ```
 
 ## Arguments
-
-- fc:
-
-  Numeric vector of (log)foldchanges, with genes as names
 
 - G:
 
@@ -26,6 +22,10 @@ fc_ztest(fc, G, zmat = FALSE, alpha = 0.5)
 - alpha:
 
   Numeric value between 0 and 1 for Bayesian shrinkage
+
+- fc:
+
+  Numeric vector of (log)foldchanges, with genes as names
 
 ## Value
 

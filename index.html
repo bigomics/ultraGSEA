@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ultragsea</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="articles/ultragsea.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/01_getting_started.html">Getting Started with ultragsea</a></li>
-    <li><a class="dropdown-item" href="articles/02_compare-vignette.html">Comparing ultragsea with fGSEA</a></li>
+<li><a class="dropdown-item" href="articles/compare-methods.html">Comparing ultragsea with fGSEA</a></li>
   </ul>
 </li>
       </ul>
@@ -61,11 +61,6 @@
 <p><a href="https://codecov.io/github/bigomics/ultragsea" class="external-link"><img src="https://codecov.io/github/bigomics/ultragsea/graph/badge.svg?token=66J6W41C0G" alt="codecov"></a></p>
 <p>(Warning: <strong><em>work in progress</em></strong>! do not use for production purposes)</p>
 <p><a href="https://bigomics.github.io/ultragsea">ultragsea</a> is an ultrafast method to compute gene set enrichment on a preranked list of genes like GSEA and fGSEA. Although ultragsea uses a different statistical test (namely z-test and correlation), its scores are highly correlated and its p-values are highly similar to those from GSEA’s weighted Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse computation and parametric p-values and typically is 10-100x faster than fGSEA.</p>
-<div class="section level4">
-<h4 id="warning">Warning<a class="anchor" aria-label="anchor" href="#warning"></a>
-</h4>
-<p>ultragsea is fast. Ludicrously fast. Please fasten your seatbelts before usage.</p>
-</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -78,15 +73,15 @@
 </h2>
 <p>For detailed usage examples and tutorials, please see our vignettes:</p>
 <ul>
-<li><a href="https://bigomics.github.io/ultragsea/articles/01_getting_started.html">Getting Started with ultragsea</a></li>
-<li><a href="https://bigomics.github.io/ultragsea/articles/02_compare-vignette.html">Comparing ultragsea with fGSEA</a></li>
+<li><a href="https://bigomics.github.io/ultragsea/articles/ultragsea.html">Getting Started with ultragsea</a></li>
+<li><a href="https://bigomics.github.io/ultragsea/articles/compare-methods.html">Comparing ultragsea with fGSEA</a></li>
 </ul>
 <p>ultragsea is the main gene set scoring algorithm in OmicsPlayground, our Bioinformatics platform at BigOmics Analytics. In OmicsPlayground, you can perform ultragsea without coding needs.</p>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p><code>{r} library("ultragsea") gs &lt;- msigdbr::msigdbr(collection = "H") gmt &lt;- tapply(gs$gene_symbol,gs$gs_name,list) G &lt;- gmt2mat(gmt) fc &lt;- rnorm(nrow(G)) names(fc) &lt;- rownames(G) res &lt;- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)</code></p>
+<p><code>{r} library(ultragsea) gs &lt;- msigdbr::msigdbr(collection = "H") gmt &lt;- tapply(gs$gene_symbol,gs$gs_name,list) G &lt;- gmt2mat(gmt) fc &lt;- rnorm(nrow(G)) names(fc) &lt;- rownames(G) res &lt;- ultragsea(fc, G, format='as.gsea', method='ztest') head(res)</code></p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
