@@ -22,56 +22,27 @@ gmt <- gmt[sapply(gmt,length)>10]
 G <- gmt2mat(gmt)
 
 f0 <- fgsea::fgsea(gmt, fc)
-f0 <- fgsea::fgsea(gmt, fc, eps=0)
-f1 <- fgsea::fgseaSimple(gmt, fc, nperm=10000)
-f1 <- fgsea::fgseaSimple(gmt, fc, nperm=20)
-f2 <- fgsea::fgseaMultilevel(gmt, fc, nPermSimple=100, eps=1)
 
-f0 <- data.frame(f0, row.names=f0$pathway)
-head(f0)
-head(f1)
-head(f2)
-S <- cbind(f0$NES, f1$NES, f2$NES)
-pairs(S)
+u1 <- ultragsea(fc, G, format='simple')
+u2 <- ultragsea(fc, G, format='as.gsea')
+u3 <- ultragsea(fc, G, format='as.gsea2')
 
-z1 <- ultragsea(fc, G, format='simple')
-z2 <- ultragsea(fc, G, format='as.gsea')
-z3 <- ultragsea(fc, G, format='as.gsea2')
-head(z1)
-S <- cbind(z1$score, z2$NES, z3$NES)
-pairs(S)
+z1 <- fc_ztest(fc, G, zmat=TRUE)
+z2 <- fc_ztest( cbind(fc,fc), G, zmat=TRUE)
+plot( z1$z_statistic, z2$z_statistic[,1])
+plot( z1$p_value, z2$p_value[,1])
 
-range(z1$ES)
-sd(z1$NES)
+F <- cbind(fc,fc,fc,fc,fc)
+F <- do.call(cbind, rep(list(fc),1000))
+dim(F)
+system.time(z1 <- apply(F, 2, function(f) fc_ztest(f, G)))
+system.time(z2 <- fc_ztest(F, G))
+
+
 
 source("../R/goat.R")
 g1 <- goat(gmt, fc, method="goat", filter=FALSE)
-g2 <- goat(gmt, fc, method="goat_bootstrap", filter=FALSE)
-g3 <- goat(gmt, fc, method="gsea", filter=FALSE)
-rownames(g1) <- g1$pathway
-rownames(g2) <- g2$pathway
 head(g1)
-g2 <- g2[match(g1$pathway,g2$pathway),]
-g3 <- g3[match(g1$pathway,g3$pathway),]
-
-ss <- g1$pathway
-S <- cbind(
-  fgsea = f0[ss,]$NES,
-  ultragsea = z1[ss,]$score,
-  goat = g1$score,
-  goat.bs = g2$score,
-  goat.gsea = g3$score
-)
-pairs(S)
-
-P <- cbind(
-  fgsea = f0[ss,]$pval,
-  ultragsea = z1[ss,]$pval,
-  goat = g1$pval,
-  goat.bs = g2$pval,
-  goat.gsea = g3$pval
-)
-pairs(-log10(P))
 
 
 ##--------------------------------------------------------

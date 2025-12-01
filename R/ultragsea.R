@@ -11,11 +11,9 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
                       method=c("ztest","ttest","cor","rankcor")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
-  if(!method %in% c("cor","rankcor")) {
-    gg <- intersect(names(fc), rownames(G))
-    fc <- fc[gg]
-    G <- G[gg,]
-  }
+  gg <- intersect(names(fc), rownames(G))
+  fc <- fc[gg]
+  G <- G[gg,]
 
   addLE <- (format=="as.gsea")
   p_value <- NULL
@@ -116,26 +114,39 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
 #'  \item zmat - Z-score matrix (if zmat = TRUE)
 #' }
 #' @keywords internal
-fc_ztest <- function(fc, G, zmat=FALSE, alpha=0.5) {
-  gg <- intersect(rownames(G),names(fc))
+fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
+  if(NCOL(F)==1) F <- cbind(F)
+  gg <- intersect(rownames(G),rownames(F))
   sample_size <- Matrix::colSums(G[gg,]!=0)
   sample_size <- pmax(sample_size, 1) ## avoid div-by-zero
-  sample_mean <- (Matrix::t(G[gg,]!=0) %*% fc[gg]) / sample_size
-  population_mean <- mean(fc, na.rm=TRUE)
-  population_var <- var(fc, na.rm=TRUE)
-  gfc <- (G[gg,]!=0) * fc[gg]
-  sample_var <- sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
+  sample_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / sample_size
+  population_mean <- Matrix::colMeans(F, na.rm=TRUE)
+  population_var <- matrixStats::colVars(F, na.rm=TRUE)
+  sample_var <- apply(F, 2, function(fc) {
+    gfc <- (G[gg,]!=0) * fc[gg]
+    sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
+  })
   alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- sqrt( alpha*sample_var + (1-alpha)*population_var )
-  z_statistic <- (sample_mean - population_mean) / (estim_sd / sqrt(sample_size))
-  p_value <- 2 * pnorm(abs(z_statistic[,1]), lower.tail = FALSE)  
+  estim_sd <- t(sqrt( t(alpha*sample_var) + (1-alpha)*population_var))
+  z_statistic <- t(t(sample_mean) - population_mean) / (estim_sd / sqrt(sample_size))
+  z_statistic <- as.matrix(z_statistic)
+  p_value <- 2 * pnorm(abs(z_statistic), lower.tail = FALSE)  
   if(zmat) {
-    zmat <- (Matrix::t(gfc) / estim_sd)
+    zmat <- lapply(1:ncol(F), function(i) {
+      gfc <- (G[gg,]!=0) * F[gg,i]
+      (Matrix::t(gfc) / estim_sd[,i])
+    })
   } else {
     zmat = NULL
   }
+  if(NCOL(F)==1) {
+    ## collapse
+    z_statistic <- z_statistic[,1]
+    p_value <- p_value[,1]
+    zmat <- zmat[[1]]
+  }
   list(
-    z_statistic = z_statistic[,1],
+    z_statistic = z_statistic,
     p_value = p_value,
     zmat = zmat
   )

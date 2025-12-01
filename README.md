@@ -14,11 +14,6 @@ sparse computation and parametric p-values and typically is
 10-100x faster than fGSEA.
 
 
-#### Warning
-
-ultragsea is fast. Ludicrously fast. Please fasten your seatbelts
-before usage.
-
 ## Installation
 
 You can install ultragsea from from GitHub:
@@ -41,7 +36,7 @@ you can perform ultragsea without coding needs.
 ## Example
 
 ```{r}
-library("ultragsea")
+library(ultragsea)
 gs <- msigdbr::msigdbr(collection = "H")
 gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
 G <- gmt2mat(gmt)

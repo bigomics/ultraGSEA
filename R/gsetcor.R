@@ -51,6 +51,7 @@ gset.cor <- function(FC, gset, compute.p = FALSE, use.rank = FALSE) {
   n2 <- sum(rownames(FC) %in% rownames(gset), na.rm = TRUE)
   if (n1 > n2) gset <- Matrix::t(gset)
 
+  # align matrices
   gg <- intersect(rownames(gset), rownames(FC))
   FC1 <- FC[gg, , drop = FALSE]
   gset <- gset[gg, , drop = FALSE]
