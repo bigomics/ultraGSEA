@@ -21,21 +21,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Other pre-ranked enrichment methods
+# Fast pre-ranked enrichment methods
 
 For comparisons, we selected some of the currently fastest pre-ranked
 gene set enrichment algorithms:
 
 - fGSEA (fast GSEA). fGSEA is currently perhaps the most widely used
-algorithm for pre-ranked enrichment testing. See: [github](https://github.com/alserglab/fgsea).
+algorithm for pre-ranked enrichment testing. See: [github](https://github.com/alserglab/fgsea) [bioRxiv](https://www.biorxiv.org/content/10.1101/060012v3)
 
 - cameraPR (pre-ranked Camera from the limma package). A version of the Camera method for pre-ranked lists. See: [paper](https://academic.oup.com/nar/article/40/17/e133/2411151)
 
 - GOAT (Gene set Ordinal Association Test). A very fast method using precomputed null distributions. See: [paper](https://www.nature.com/articles/s42003-024-06454-5) 
 [github](https://github.com/ftwkoopmans/goat). 
 
-In particular we are interested as how we compare to these algorithms
-in terms of runtime, score and p-value.
+In particular we are interested as how we compare to these algorithms in terms of runtime, score and p-value.
 
 
 # Preparing the sparse gene set matrix
