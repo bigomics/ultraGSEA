@@ -31,7 +31,8 @@ algorithm for pre-ranked enrichment testing. See: [github](https://github.com/al
 
 - cameraPR (pre-ranked Camera from the limma package). A version of the Camera method for pre-ranked lists. See: [paper](https://academic.oup.com/nar/article/40/17/e133/2411151)
 
-- GOAT (Gene set Ordinal Association Test). A very fast method using precomputed permutation tables. See: [github](https://github.com/ftwkoopmans/goat). 
+- GOAT (Gene set Ordinal Association Test). A very fast method using precomputed null distributions. See: [paper](https://www.nature.com/articles/s42003-024-06454-5) 
+[github](https://github.com/ftwkoopmans/goat). 
 
 In particular we are interested as how we compare to these algorithms
 in terms of runtime, score and p-value.
