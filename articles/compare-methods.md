@@ -14,7 +14,8 @@ gene set enrichment algorithms:
   [paper](https://academic.oup.com/nar/article/40/17/e133/2411151)
 
 - GOAT (Gene set Ordinal Association Test). A very fast method using
-  precomputed permutation tables. See:
+  precomputed null distributions. See:
+  [paper](https://www.nature.com/articles/s42003-024-06454-5)
   [github](https://github.com/ftwkoopmans/goat).
 
 In particular we are interested as how we compare to these algorithms in
@@ -94,13 +95,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.317 |                4.1 |              43.9 |
-| cameraPR      |            0.315 |                0.8 |              42.6 |
-| ultragsea.z   |            0.111 |                1.9 |              21.3 |
-| ultragsea.c   |            0.038 |                0.9 |               8.9 |
+| fgsea         |            4.326 |                4.1 |              43.9 |
+| cameraPR      |            0.323 |                0.8 |              42.6 |
+| ultragsea.z   |            0.114 |                1.9 |              21.3 |
+| ultragsea.c   |            0.042 |                0.9 |               8.9 |
 | cor           |            0.005 |                0.0 |               2.8 |
-| ztest         |            0.008 |                0.0 |               6.5 |
-| goat          |            0.242 |                4.5 |              23.7 |
+| ztest         |            0.009 |                0.0 |               6.5 |
+| goat          |            0.243 |                4.5 |              23.7 |
 
 ``` r
 rt <- tt[,2]

@@ -77,7 +77,7 @@ used algorithm for pre-ranked enrichment testing. See: <a href="https://github.c
 <li><p>cameraPR (pre-ranked Camera from the limma package). A version of
 the Camera method for pre-ranked lists. See: <a href="https://academic.oup.com/nar/article/40/17/e133/2411151" class="external-link">paper</a></p></li>
 <li><p>GOAT (Gene set Ordinal Association Test). A very fast method
-using precomputed permutation tables. See: <a href="https://github.com/ftwkoopmans/goat" class="external-link">github</a>.</p></li>
+using precomputed null distributions. See: <a href="https://www.nature.com/articles/s42003-024-06454-5" class="external-link">paper</a> <a href="https://github.com/ftwkoopmans/goat" class="external-link">github</a>.</p></li>
 </ul>
 <p>In particular we are interested as how we compare to these algorithms
 in terms of runtime, score and p-value.</p>
@@ -165,25 +165,25 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.317</td>
+<td align="right">4.326</td>
 <td align="right">4.1</td>
 <td align="right">43.9</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.315</td>
+<td align="right">0.323</td>
 <td align="right">0.8</td>
 <td align="right">42.6</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.111</td>
+<td align="right">0.114</td>
 <td align="right">1.9</td>
 <td align="right">21.3</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.038</td>
+<td align="right">0.042</td>
 <td align="right">0.9</td>
 <td align="right">8.9</td>
 </tr>
@@ -195,13 +195,13 @@ of each method.</p>
 </tr>
 <tr class="even">
 <td align="left">ztest</td>
-<td align="right">0.008</td>
+<td align="right">0.009</td>
 <td align="right">0.0</td>
 <td align="right">6.5</td>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.242</td>
+<td align="right">0.243</td>
 <td align="right">4.5</td>
 <td align="right">23.7</td>
 </tr>
