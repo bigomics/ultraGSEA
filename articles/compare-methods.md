@@ -96,9 +96,9 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.229 |                4.1 |              43.9 |
-| cameraPR      |            0.317 |                0.8 |              42.6 |
-| ultragsea.z   |            0.109 |                1.9 |              21.3 |
+| fgsea         |            4.255 |                4.1 |              43.9 |
+| cameraPR      |            0.316 |                0.8 |              42.6 |
+| ultragsea.z   |            0.110 |                1.9 |              21.3 |
 | ultragsea.c   |            0.038 |                0.9 |               8.9 |
 | cor           |            0.004 |                0.0 |               2.8 |
 | ztest         |            0.008 |                0.0 |               6.5 |

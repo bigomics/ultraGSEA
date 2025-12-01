@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   compare-methods: compare-methods.html
   ultragsea: ultragsea.html
-last_built: 2025-12-01T04:20Z
+last_built: 2025-12-01T04:27Z
 urls:
   reference: https://bigomics.github.io/ultragsea/reference
   article: https://bigomics.github.io/ultragsea/articles
