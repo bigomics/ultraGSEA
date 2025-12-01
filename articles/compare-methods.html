@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Comparing ultragsea with fGSEA • ultragsea</title>
+<title>Comparing with other methods • ultragsea</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Comparing ultragsea with fGSEA">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Comparing with other methods">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,7 +34,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/compare-methods.html">Comparing ultragsea with fGSEA</a></li>
+<li><a class="dropdown-item" href="../articles/compare-methods.html">Comparing with other methods</a></li>
   </ul>
 </li>
       </ul>
@@ -55,7 +55,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Comparing ultragsea with fGSEA</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Comparing with other methods</h1>
                         <h4 data-toc-skip class="author">BigOmics
 Analytics</h4>
             
@@ -67,16 +67,30 @@ Analytics</h4>
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="other-pre-ranked-enrichment-methods">Other pre-ranked enrichment methods<a class="anchor" aria-label="anchor" href="#other-pre-ranked-enrichment-methods"></a>
 </h2>
-<p>ultragsea is a novel, ultrafast and memory optimized gene set
-enrichment scoring algorithm much like fGSEA. ultragsea typically is
-10-100x faster than fGSEA but demonstrates highly correlated enrichment
-scores and highly similar p-values.</p>
+<p>For comparisons, we selected some of the currently fastest pre-ranked
+gene set enrichment algorithms:</p>
+<ul>
+<li><p>fGSEA (fast GSEA). fGSEA is currently perhaps the most widely
+used algorithm for pre-ranked enrichment testing. See: <a href="https://github.com/alserglab/fgsea" class="external-link">github</a>.</p></li>
+<li><p>cameraPR (pre-ranked Camera from the limma package). A version of
+the Camera method for pre-ranked lists. See: <a href="https://academic.oup.com/nar/article/40/17/e133/2411151" class="external-link">paper</a></p></li>
+<li><p>GOAT (Gene set Ordinal Association Test). A very fast method
+using precomputed permutation tables. See: <a href="https://github.com/ftwkoopmans/goat" class="external-link">github</a>.</p></li>
+</ul>
+<p>In particular we are interested as how we compare to these algorithms
+in terms of runtime, score and p-value.</p>
 </div>
 <div class="section level2">
 <h2 id="preparing-the-sparse-gene-set-matrix">Preparing the sparse gene set matrix<a class="anchor" aria-label="anchor" href="#preparing-the-sparse-gene-set-matrix"></a>
 </h2>
+<p>For this benchmark we use the example dataset from the
+<code>fgsea</code> package which includes some examples gene sets
+<code>examplePathways</code> (1457 sets) and an example ranked list
+<code>exampleRanks</code> (12000 genes). We filter out gene sets with
+less than 10 genes, partly because GOAT cannot handle these. After
+filtering, we retain 761 gene sets.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ctlab/fgsea/" class="external-link">fgsea</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ftwkoopmans/goat/" class="external-link">goat</a></span><span class="op">)</span></span>
@@ -93,49 +107,46 @@ scores and highly similar p-values.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplePathways</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleRanks</span><span class="op">)</span></span>
 <span><span class="va">fc</span> <span class="op">=</span> <span class="va">exampleRanks</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 12000</span></span>
 <span><span class="va">gmt</span> <span class="op">=</span> <span class="va">examplePathways</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">gmt</span>,<span class="va">length</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]    1 2366</span></span>
 <span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="kw">function</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">s</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="va">gmt</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">gmt</span>,<span class="va">length</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">10</span><span class="op">]</span></span>
-<span><span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gmt2mat.html">gmt2mat</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="va">gmt</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">gmt</span>,<span class="va">length</span><span class="op">)</span><span class="op">&gt;=</span><span class="fl">10</span><span class="op">]</span></span>
+<span><span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gmt2mat.html">gmt2mat</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12000</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 761</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-the-methods">Running the methods<a class="anchor" aria-label="anchor" href="#running-the-methods"></a>
 </h2>
-<p>For benchmarking we run some of the currently fastest gene set
-enrichment algorithms: fGSEA (fast GSEA), cameraPR (pre-ranked Camera
-from the limma package), goat (Gene set Ordinal Association Test). In
-particular we are interested as how these compare to fGSEA in runtime,
-score and p-value, as fGSEA is perhaps currently the most widely used
-algorithm for pre-ranked enrichment testing.</p>
+<p>Run the code below if you want to increase the number of gene sets
+for testing.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co">## run this if you want to augment the number of gene sets.</span></span>
-<span>  <span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">gmt</span>,<span class="fl">150</span><span class="op">)</span></span>
+<span>  <span class="co">## run this to increase the number of gene sets.</span></span>
+<span>  <span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">gmt</span>,<span class="fl">40</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/make.unique.html" class="external-link">make.unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span>,<span class="fl">150</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span>,<span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/make.unique.html" class="external-link">make.unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p>For benchmarking, we use peakRAM to measure runtime and memory usage
+of each method.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/tpq/peakRAM" class="external-link">peakRAM</a></span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span>
 <span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="fu">peakRAM</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/peakRAM/man/peakRAM.html" class="external-link">peakRAM</a></span><span class="op">(</span></span>
 <span>  <span class="va">res.fgsea</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, eps<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
-<span>  <span class="va">res.camera</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/camera.html" class="external-link">cameraPR</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">gmt</span>, use.ranks<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
+<span>  <span class="va">res.cameraPR</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/camera.html" class="external-link">cameraPR</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">gmt</span>, use.ranks<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
 <span>  <span class="va">res.ultragsea.z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, method<span class="op">=</span><span class="st">'ztest'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
 <span>  <span class="va">res.ultragsea.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, method<span class="op">=</span><span class="st">'cor'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
 <span>  <span class="va">res.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.cor.html">gset.cor</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, compute.p<span class="op">=</span><span class="cn">TRUE</span>, use.rank<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>  <span class="va">res.ztest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fc_ztest.html">fc_ztest</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span><span class="op">)</span>,</span>
-<span>  <span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="fu">goat</span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span></span>
+<span>  <span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="fu">goat</span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, filter<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; filtering genesets...</span></span>
-<span><span class="va">res.fgsea</span> <span class="op">&lt;-</span> <span class="va">res.fgsea</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">gs</span>,<span class="va">res.fgsea</span><span class="op">$</span><span class="va">pathway</span><span class="op">)</span>,<span class="op">]</span></span>
-<span><span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="va">res.goat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">gs</span>,<span class="va">res.goat</span><span class="op">$</span><span class="va">pathway</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="va">tt</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"res[.]|&lt;-.*"</span>,<span class="st">""</span>,<span class="va">tt</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tt</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -154,25 +165,25 @@ algorithm for pre-ranked enrichment testing.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.320</td>
-<td align="right">4.0</td>
+<td align="right">4.345</td>
+<td align="right">4.1</td>
 <td align="right">43.9</td>
 </tr>
 <tr class="even">
-<td align="left">camera</td>
-<td align="right">0.320</td>
+<td align="left">cameraPR</td>
+<td align="right">0.314</td>
 <td align="right">0.8</td>
 <td align="right">42.6</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.111</td>
+<td align="right">0.113</td>
 <td align="right">1.9</td>
-<td align="right">21.2</td>
+<td align="right">21.3</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.040</td>
+<td align="right">0.039</td>
 <td align="right">0.9</td>
 <td align="right">8.9</td>
 </tr>
@@ -180,19 +191,19 @@ algorithm for pre-ranked enrichment testing.</p>
 <td align="left">cor</td>
 <td align="right">0.005</td>
 <td align="right">0.0</td>
-<td align="right">2.7</td>
+<td align="right">2.8</td>
 </tr>
 <tr class="even">
 <td align="left">ztest</td>
-<td align="right">0.009</td>
+<td align="right">0.008</td>
 <td align="right">0.0</td>
 <td align="right">6.5</td>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.318</td>
-<td align="right">5.0</td>
-<td align="right">35.5</td>
+<td align="right">0.243</td>
+<td align="right">4.5</td>
+<td align="right">23.7</td>
 </tr>
 </tbody>
 </table>
@@ -200,7 +211,7 @@ algorithm for pre-ranked enrichment testing.</p>
 <code class="sourceCode R"><span><span class="va">rt</span> <span class="op">&lt;-</span> <span class="va">tt</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">rt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tt</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">8</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">rt</span>,decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, horiz<span class="op">=</span><span class="cn">TRUE</span>, las<span class="op">=</span><span class="fl">1</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">rt</span>,decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, horiz<span class="op">=</span><span class="cn">TRUE</span>, las<span class="op">=</span><span class="fl">1</span>, log<span class="op">=</span><span class="st">"x"</span>,</span>
 <span>  xlab<span class="op">=</span><span class="st">"runtime (sec)"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="compare-methods_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
 </div>
@@ -210,12 +221,16 @@ algorithm for pre-ranked enrichment testing.</p>
 <p>We can compare the scores between the methods. We see that all scores
 are very correlated to each other. CameraPR does not return a score
 value, so for the score we computed <code>-log(p)*sign</code> as its
-score.</p>
+score. Before plotting we need to make sure all results tables are
+aligned.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res.camera</span><span class="op">$</span><span class="va">score</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">res.camera</span><span class="op">$</span><span class="va">PValue</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">+</span><span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">res.camera</span><span class="op">$</span><span class="va">Direction</span><span class="op">==</span><span class="st">"Up"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">res.fgsea</span> <span class="op">&lt;-</span> <span class="va">res.fgsea</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">gs</span>,<span class="va">res.fgsea</span><span class="op">$</span><span class="va">pathway</span><span class="op">)</span>,<span class="op">]</span></span>
+<span><span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="va">res.goat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">gs</span>,<span class="va">res.goat</span><span class="op">$</span><span class="va">pathway</span><span class="op">)</span>,<span class="op">]</span></span>
+<span><span class="va">res.cameraPR</span><span class="op">$</span><span class="va">score</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">res.cameraPR</span><span class="op">$</span><span class="va">PValue</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">+</span><span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">res.cameraPR</span><span class="op">$</span><span class="va">Direction</span><span class="op">==</span><span class="st">"Up"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>  fgsea <span class="op">=</span> <span class="va">res.fgsea</span><span class="op">$</span><span class="va">NES</span>,</span>
-<span>  cameraPR <span class="op">=</span> <span class="va">res.camera</span><span class="op">$</span><span class="va">score</span>,</span>
+<span>  cameraPR <span class="op">=</span> <span class="va">res.cameraPR</span><span class="op">$</span><span class="va">score</span>,</span>
 <span>  ultragsea.ztest <span class="op">=</span> <span class="va">res.ultragsea.z</span><span class="op">$</span><span class="va">score</span>,</span>
 <span>  ultragsea.c <span class="op">=</span> <span class="va">res.ultragsea.c</span><span class="op">$</span><span class="va">score</span>,</span>
 <span>  goat <span class="op">=</span> <span class="va">res.goat</span><span class="op">$</span><span class="va">score</span></span>
@@ -237,7 +252,7 @@ see that all p-values are highly correlated to each other.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">P</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>  fgsea <span class="op">=</span> <span class="va">res.fgsea</span><span class="op">$</span><span class="va">pval</span>,</span>
-<span>  cameraPR <span class="op">=</span> <span class="va">res.camera</span><span class="op">$</span><span class="va">PValue</span>,</span>
+<span>  cameraPR <span class="op">=</span> <span class="va">res.cameraPR</span><span class="op">$</span><span class="va">PValue</span>,</span>
 <span>  ultragsea.ztest <span class="op">=</span> <span class="va">res.ultragsea.z</span><span class="op">$</span><span class="va">pval</span>,</span>
 <span>  ultragsea.c <span class="op">=</span> <span class="va">res.ultragsea.c</span><span class="op">$</span><span class="va">pval</span>,</span>
 <span>  goat <span class="op">=</span> <span class="va">res.goat</span><span class="op">$</span><span class="va">pval</span></span>
