@@ -18,11 +18,14 @@ Suggests:
     BiocStyle,
     fgsea,
     goat,
-    peakRAM,
+    kableExtra,
     knitr,
+    limma,
     msigdbr,
+    peakRAM,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tibble
 Config/testthat/edition: 3
 biocViews: GeneSetEnrichment, GeneExpression, Proteomics
 Depends: R (>= 4.1.0)
