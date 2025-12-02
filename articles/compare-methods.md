@@ -96,13 +96,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.286 |                4.1 |              43.9 |
-| cameraPR      |            0.317 |                0.8 |              42.6 |
-| ultragsea.z   |            0.110 |                1.9 |              21.3 |
-| ultragsea.c   |            0.038 |                0.9 |               8.9 |
-| cor           |            0.004 |                0.0 |               2.8 |
+| fgsea         |            4.179 |                4.1 |              43.9 |
+| cameraPR      |            0.310 |                0.8 |              42.6 |
+| ultragsea.z   |            0.109 |                1.9 |              21.9 |
+| ultragsea.c   |            0.037 |                0.9 |               9.6 |
+| cor           |            0.005 |                0.0 |               2.8 |
 | ztest         |            0.008 |                0.0 |               6.5 |
-| goat          |            0.243 |                4.5 |              23.7 |
+| goat          |            0.236 |                4.5 |              23.7 |
 
 ``` r
 rt <- tt[,2]
