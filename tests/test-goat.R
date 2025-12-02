@@ -80,6 +80,7 @@ res1 <- goat(gmt, fc, filter=FALSE, method="goat")
 #res1 <- goat(gmt, fc, filter=TRUE, method="goat")
 res2 <- goat(gmt, fc, filter=TRUE, method="goat_fitfunction")
 res3 <- goat(gmt, fc, filter=TRUE, method="goat_bootstrap")
+res3 <- goat(gmt, fc, filter=TRUE, method="gsea")
 
 res2 <- res2[match(res2$pathway, res1$pathway),]
 res3 <- res3[match(res3$pathway, res1$pathway),]

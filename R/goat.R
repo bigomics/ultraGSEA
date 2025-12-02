@@ -11,7 +11,7 @@ goat <- function(pathways, stats, minSize = 10L, maxSize = 1500L,
   }
   
   ## goat does not like length(stats) larger than 20000
-  if(length(stats) > 20000 && method == "goat") {
+  if(length(stats) > 20000 && method %in% c("goat","goat_precomputed")) {
     message("truncating stats vector")
     sel <- head(order(-abs(stats)),20000)
     stats <- stats[sel]
