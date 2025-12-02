@@ -42,10 +42,12 @@ for(i in 1:1) {
       g1 <- goat(gmtx[1:n], fc, filter=FALSE),
       f1 <- ultragsea(fc, Gx[,1:n], method="cor"),
       c1 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE),
+      c2 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE, zbias=10),
       z1 <- fc_ztest(fc, Gx[,1:n], zmat=FALSE),
       m1 <- limma::cameraPR(fc, gmt, use.ranks=FALSE)
     )
-    t0[,1] <- paste0(c("fgsea","goat","ultragsea","gsetcor","ztest","cameraPR"),".n",n)
+    t0[,1] <- paste0(c("fgsea","goat","ultragsea","gsetcor","gsetcorB",
+      "ztest","cameraPR"),".n",n)
     tt <- c(tt, list(t0))
   }
 }
@@ -54,8 +56,10 @@ ttx
 
 tmean <- tapply(ttx[,2], ttx[,1], median)
 tmean
+
 ii <- grep("fgsea",names(tmean))
-acc = round(rep(tmean[ii], 5) / tmean, 2)
+nm <- length(tmean) / length(ii)
+acc = round(rep(tmean[ii], nm) / tmean, 2)
 acc = matrix(acc, nrow=nt)
 colnames(acc) <- unique(sub("[.]n.*","",names(tmean)))
 

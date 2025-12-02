@@ -7,7 +7,7 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(fc, G, alpha=0.5, minLE=1,
+ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
                       method=c("cor","ztest","ttest","rankcor")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
@@ -31,7 +31,8 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
     stat_value <- res$t[,1]    
   } else if(method %in% c("cor","rankcor")) {
     use.rank <- (method == "rankcor")
-    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank) 
+    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank,
+      cor0 = cor0) 
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
@@ -119,7 +120,7 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
   if(NCOL(F)==1) F <- cbind(F)
   gg <- intersect(rownames(G),rownames(F))
   sample_size <- Matrix::colSums(G[gg,]!=0)
-  sample_size <- pmax(sample_size, 1) ## avoid div-by-zero
+  sample_size <-sample_size + 1e-20 ## avoid div-by-zero
   sample_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / sample_size
   population_mean <- Matrix::colMeans(F, na.rm=TRUE)
   population_var <- matrixStats::colVars(F, na.rm=TRUE)
@@ -130,8 +131,9 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
   alpha <- pmin(pmax(alpha,0), 0.999) ## limit
   estim_sd <- Matrix::t(sqrt( Matrix::t(alpha*sample_var) +
                                 (1-alpha)*population_var))
-  z_statistic <- Matrix::t(Matrix::t(sample_mean) - population_mean) /
-    (estim_sd / sqrt(sample_size))
+  estim_sd <- estim_sd / sqrt(sample_size)
+  delta_mean <- Matrix::t(Matrix::t(sample_mean) -  population_mean)
+  z_statistic <- delta_mean / estim_sd
   z_statistic <- as.matrix(z_statistic)
   p_value <- 2 * pnorm(abs(z_statistic), lower.tail = FALSE)  
   if(zmat) {
