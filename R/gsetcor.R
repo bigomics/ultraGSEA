@@ -33,7 +33,7 @@
 #' }
 #' @export
 gset.cor <- function(FC, gset, compute.p = FALSE, use.rank = FALSE,
-                     cor0 = 0) {
+                     cshrink = 0) {
   if (ncol(gset) == 0 || NCOL(FC) == 0) {
     if (ncol(gset) == 0) stop("gset has zero columns")
     if (NCOL(FC) == 0) stop("FC has zero columns")
@@ -77,10 +77,10 @@ gset.cor <- function(FC, gset, compute.p = FALSE, use.rank = FALSE,
   colnames(rho1) <- colnames(FC1)
   rho1[is.nan(rho1)] <- NA ## ??
 
-  if(cor0 > 0) {
+  if(cshrink > 0) {
     ## Shrinkage to penalize small gene sets.
     gsize <- Matrix::colSums(gset!=0)
-    rho1 <- rho1 / (1 + (cor0 / gsize)) 
+    rho1 <- rho1 / (1 + (cshrink / gsize)) 
   }
   
   ## compute p-value

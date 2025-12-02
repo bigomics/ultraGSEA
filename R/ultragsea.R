@@ -7,35 +7,48 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
-                      method=c("cor","ztest","ttest","rankcor")[1],
+ultragsea <- function(fc, G, alpha=0.5, minLE=1, cshrink=3,
+                      minsize = 1L, maxsize = 9999L,
+                      method=c("cor","ztest","ttest","goat")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
   gg <- intersect(names(fc), rownames(G))
   fc <- fc[gg]
   G <- G[gg,]
-
+  size <- Matrix::colSums(G!=0)
+  if(method == "goat") minsize <- max(minsize,10L)
+  sel <- which(size >= minsize & size <= maxsize)
+  G <- G[, sel, drop=FALSE]
+  size <- size[sel]
+  
   addLE <- (format=="as.gsea")
   p_value <- NULL
   q_value <- NULL
   stat_value <- NULL
   zmat <- NULL
+  gmt <- NULL
   if(method == "ztest") {
     zres <- fc_ztest(fc, G, zmat=addLE, alpha=alpha)
-    p_value <- zres$p_value
-    stat_value <- zres$z_statistic    
+    p_value <- zres$p
+    stat_value <- zres$z
     zmat <- zres$zmat
   } else if(method == "ttest") {
     res <- matrix_onesample_ttest(cbind(fc), G)
     p_value <- res$p[,1]    
     stat_value <- res$t[,1]    
-  } else if(method %in% c("cor","rankcor")) {
-    use.rank <- (method == "rankcor")
-    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank,
-      cor0 = cor0) 
+  } else if(method == "cor") {
+    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE,
+      cshrink = cshrink) 
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
+  } else if(method=="goat" && require("goat")) {
+    gmt <- mat2gmt(G)
+    res <- goat(pathways=gmt, stats=fc, filter=FALSE, method="goat") 
+    res <- res[match(colnames(G),res$pathway),]
+    p_value <- res$pval
+    q_value <- res$padj
+    stat_value <- res$score
   } else {
     stop("unknown method: ", method)
   }
@@ -56,7 +69,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
     leading_edge <- leading_edge[match(rownames(zmat),names(leading_edge))]
   }
   
-  size <- Matrix::colSums(G!=0)
+  #size <- Matrix::colSums(G!=0)
   if(is.null(q_value)) {
     q_value <- p.adjust(p_value, method="fdr")
   }
@@ -69,7 +82,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
     }
     if(format == "as.gsea2") {
       # run fgseaSimple only for few iterations only for NES
-      gmt <- mat2gmt(G)  
+      if(is.null(gmt)) gmt <- mat2gmt(G)  
       suppressWarnings(res <- fgsea::fgseaSimple(gmt, fc, nperm=10))
       res <- res[match(colnames(G),res$pathway),]  
       stat_value0 <-  res$ES
@@ -77,7 +90,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
       leading_edge <- res$leadingEdge                
     }
     df <- data.table::data.table(
-      pathway = names(p_value),
+      pathway = colnames(G),
       pval = p_value,
       padj = q_value,
       log2err = as.numeric(NA),
@@ -89,7 +102,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
   } else {
     ## simple format
     df <- data.frame(
-      pathway = names(p_value),
+      pathway = colnames(G),
       pval = p_value,
       padj = q_value,
       score = stat_value,
@@ -129,9 +142,8 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
     sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
   })
   alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- Matrix::t(sqrt( Matrix::t(alpha*sample_var) +
-                                (1-alpha)*population_var))
-  estim_sd <- estim_sd / sqrt(sample_size)
+  estim_sd <- Matrix::t(alpha*sample_var) + (1-alpha)*population_var
+  estim_sd <- Matrix::t(sqrt(estim_sd)) / sqrt(sample_size)
   delta_mean <- Matrix::t(Matrix::t(sample_mean) -  population_mean)
   z_statistic <- delta_mean / estim_sd
   z_statistic <- as.matrix(z_statistic)
@@ -151,8 +163,8 @@ fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
     zmat <- zmat[[1]]
   }
   list(
-    z_statistic = z_statistic,
-    p_value = p_value,
+    z = z_statistic,
+    p = p_value,
     zmat = zmat
   )
 }
@@ -196,10 +208,34 @@ matrix_onesample_ttest <- function(F, G) {
   sum_sq <- Matrix::crossprod(G != 0, F^2)
   meanx <- Matrix::crossprod(G != 0, F) / (1e-8 + sumG)
   sdx <- sqrt((sum_sq - meanx^2 * sumG) / (sumG - 1))
-  f_stats <- meanx
   t_stats <- meanx / (1e-8 + sdx) * sqrt(sumG)
   p_stats <- apply(abs(t_stats), 2, function(tv) {
     2 * pt(tv, df = pmax(sumG - 1, 1), lower.tail = FALSE)
   })
-  list(mean = as.matrix(f_stats), t = as.matrix(t_stats), p = p_stats)
+  list(mean = as.matrix(meanx), t = as.matrix(t_stats), p = p_stats)
+}
+
+#' Fast one sample z-test for matrix object F (e.g. foldchanges) and
+#' grouping matrix G (e.g. gene sets).
+#'
+#' @param F Numeric vector or matrix of (log)foldchanges
+#' @param G Numeric matrix of gene sets, with genes as row names
+#'
+#' @return List with components:
+#' \itemize{
+#'  \item mean - Mean values
+#'  \item z - z-test statistics
+#'  \item p - p-values from z-test
+#' }
+#' @keywords internal
+matrix_onesample_ztest <- function(F, G) {
+  sumG <- Matrix::colSums(G != 0)
+  sum_sq <- Matrix::crossprod(G != 0, F^2)
+  meanx <- Matrix::crossprod(G != 0, F) / (1e-8 + sumG)
+  sdx <- sqrt((sum_sq - meanx^2 * sumG) / sumG)
+  z_stats <- meanx / (1e-8 + sdx) * sqrt(sumG)
+  p_stats <- apply(abs(z_stats), 2, function(zv) {
+    2 * pnorm(zv, lower.tail = FALSE)
+  })
+  list(mean = as.matrix(meanx), z = as.matrix(z_stats), p = p_stats)
 }
