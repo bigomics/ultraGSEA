@@ -1,6 +1,6 @@
 Package: ultragsea
 Title: Ultrafast preranked gene set enrichment analysis
-Version: 0.99.12
+Version: 0.1.12
 Authors@R: c(
     person("Ivo", "Kwee", , "ivo.kwee@bigomics.ch", role = "aut",
         comment = c(ORCID = "0000-0002-2751-4218")),
@@ -17,10 +17,15 @@ RoxygenNote: 7.3.3
 Suggests:
     BiocStyle,
     fgsea,
+    goat,
+    kableExtra,
     knitr,
+    limma,
     msigdbr,
+    peakRAM,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tibble
 Config/testthat/edition: 3
 biocViews: GeneSetEnrichment, GeneExpression, Proteomics
 Depends: R (>= 4.1.0)

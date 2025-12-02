@@ -1,0 +1,76 @@
+---
+title: "Getting Started with ultragsea"
+author: "BigOmics Analytics"
+package: ultragsea
+output:
+    BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Getting Started with ultragsea}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+# Introduction
+
+ultragsea is a novel, ultrafast and memory optimized gene set enrichment scoring algorithm not unlike fGSEA. ultragsea demonstrates highly correlated gene set scores and p-values and typically is 100 times faster than fGSEA.
+
+# Example
+
+## Preparing gensets
+
+For this vignette, we retrieve the Hallmark gene sets using the `msigdbr` package. Of course you can use your own gene sets or download from somewhere else.
+
+```{r}
+library(ultragsea)
+library(msigdbr)
+gs <- msigdbr::msigdbr(collection = "H")
+gmt <- tapply(gs$gene_symbol,gs$gs_name,list)
+length(gmt)
+```
+
+## Performing the statistical test
+
+Just for this example we use some random values for `fc` but in general this is a fold change from some statistical comparison of your experiment. 
+
+```{r}
+G <- gmt2mat(gmt)
+fc <- rnorm(nrow(G))
+names(fc) <- rownames(G)
+res <- ultragsea(fc, G, format='as.gsea', method='cor')
+res <- ultragsea(fc, G, format='as.gsea', method='ztest')
+head(res)
+```
+
+For the fastest speed, especially when computing enrichment for multiple foldchanges, it is better to call the low-level functions for geneset correlation or geneset z-test directly. They do not return the nicely formatted output tables as `ultragsea()` but they are much faster as they are optimized for matrix inputs `F`.
+
+```{r}
+F <- cbind(fc,fc,fc,fc,fc)
+res1 <- gset.cor(F, G, compute.p=TRUE)
+res2 <- fc_ztest(F, G)
+```
+
+## Plotting
+
+You can proceed by plotting the gene set using e.g. the plotting functions of the fgsea package.
+
+```{r}
+#library(fgsea)
+#k <- res$pathway[which.min(res$pval)]
+#fgsea::plotEnrichment(gmt[[k]],fc,ticksSize = 0.2)
+```
+
+
+
+# Session info
+
+```{r}
+sessionInfo()
+```

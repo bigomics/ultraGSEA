@@ -7,8 +7,8 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(fc, G, alpha=0.5, minLE=1,
-                      method=c("ztest","ttest","cor","rankcor")[1],
+ultragsea <- function(fc, G, alpha=0.5, minLE=1, cor0=0,
+                      method=c("cor","ztest","ttest","rankcor")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
   gg <- intersect(names(fc), rownames(G))
@@ -17,6 +17,7 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
 
   addLE <- (format=="as.gsea")
   p_value <- NULL
+  q_value <- NULL
   stat_value <- NULL
   zmat <- NULL
   if(method == "ztest") {
@@ -26,12 +27,14 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
     zmat <- zres$zmat
   } else if(method == "ttest") {
     res <- matrix_onesample_ttest(cbind(fc), G)
-    p_value <- res$p[,1]
+    p_value <- res$p[,1]    
     stat_value <- res$t[,1]    
   } else if(method %in% c("cor","rankcor")) {
     use.rank <- (method == "rankcor")
-    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank) 
+    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=use.rank,
+      cor0 = cor0) 
     p_value <- res$p.value[,1]
+    q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
   } else {
     stop("unknown method: ", method)
@@ -54,7 +57,9 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
   }
   
   size <- Matrix::colSums(G!=0)
-  q_value <- p.adjust(p_value, method="fdr")
+  if(is.null(q_value)) {
+    q_value <- p.adjust(p_value, method="fdr")
+  }
 
   if(format %in% c("as.gsea","as.gsea2")) {
     if(format == "as.gsea") {
@@ -109,32 +114,48 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1,
 #'  \item p_value - Vector of p-values
 #'  \item zmat - Z-score matrix (if zmat = TRUE)
 #' }
-#' @keywords internal
-fc_ztest <- function(fc, G, zmat=FALSE, alpha=0.5) {
-  gg <- intersect(rownames(G),names(fc))
+#' 
+#' @export
+fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
+  if(NCOL(F)==1) F <- cbind(F)
+  gg <- intersect(rownames(G),rownames(F))
   sample_size <- Matrix::colSums(G[gg,]!=0)
-  sample_size <- pmax(sample_size, 1) ## avoid div-by-zero
-  sample_mean <- (Matrix::t(G[gg,]!=0) %*% fc[gg]) / sample_size
-  population_mean <- mean(fc, na.rm=TRUE)
-  population_var <- var(fc, na.rm=TRUE)
-  gfc <- (G[gg,]!=0) * fc[gg]
-  sample_var <- sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
+  sample_size <-sample_size + 1e-20 ## avoid div-by-zero
+  sample_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / sample_size
+  population_mean <- Matrix::colMeans(F, na.rm=TRUE)
+  population_var <- matrixStats::colVars(F, na.rm=TRUE)
+  sample_var <- apply(F, 2, function(fc) {
+    gfc <- (G[gg,]!=0) * fc[gg]
+    sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
+  })
   alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- sqrt( alpha*sample_var + (1-alpha)*population_var )
-  z_statistic <- (sample_mean - population_mean) / (estim_sd / sqrt(sample_size))
-  p_value <- 2 * pnorm(abs(z_statistic[,1]), lower.tail = FALSE)  
+  estim_sd <- Matrix::t(sqrt( Matrix::t(alpha*sample_var) +
+                                (1-alpha)*population_var))
+  estim_sd <- estim_sd / sqrt(sample_size)
+  delta_mean <- Matrix::t(Matrix::t(sample_mean) -  population_mean)
+  z_statistic <- delta_mean / estim_sd
+  z_statistic <- as.matrix(z_statistic)
+  p_value <- 2 * pnorm(abs(z_statistic), lower.tail = FALSE)  
   if(zmat) {
-    zmat <- (Matrix::t(gfc) / estim_sd)
+    zmat <- lapply(1:ncol(F), function(i) {
+      gfc <- (G[gg,]!=0) * F[gg,i]
+      (Matrix::t(gfc) / estim_sd[,i])
+    })
   } else {
     zmat = NULL
   }
+  if(NCOL(F)==1) {
+    ## collapse
+    z_statistic <- z_statistic[,1]
+    p_value <- p_value[,1]
+    zmat <- zmat[[1]]
+  }
   list(
-    z_statistic = z_statistic[,1],
+    z_statistic = z_statistic,
     p_value = p_value,
     zmat = zmat
   )
 }
-
 
 #' Compute z-score matrix for gene sets
 #'
