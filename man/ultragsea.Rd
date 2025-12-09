@@ -10,7 +10,11 @@ ultragsea(
   G,
   alpha = 0.5,
   minLE = 1,
-  method = c("ztest", "ttest", "cor", "rankcor")[1],
+  corshrink = 3,
+  minsize = 1L,
+  maxsize = 9999L,
+  center = TRUE,
+  method = c("cor", "ztest", "ttest", "goat")[1],
   format = c("simple", "as.gsea", "as.gsea2")[1]
 )
 }

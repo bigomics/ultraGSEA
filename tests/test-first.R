@@ -24,37 +24,62 @@ G <- gmt2mat(gmt)
 gg <- intersect(rownames(G),names(fc))
 G <- G[gg,]
 fc <- fc[gg]
+F <- cbind(fc)
 
 length(fc)
 length(gmt)
+range(fc)
 range(sapply(gmt,length))
 
 plot(sort(fc))
-fc1 = fc
-fc1 = fc - mean(fc)
+fc1 <- scale(fc)[,1]
+fc1 <- fc1 + 1
+
+plot(sort(fc1));abline(h=0)
+summary(fc1)
+table(sign(fc1))
+
 res1 <- fgsea::fgsea(gmt, fc1, eps=0)
 res1 <- res1[match(colnames(G),res1$pathway),]
 res2 <- ultragsea(fc1, G, method='cor')
-res3 <- ultragsea(fc1, G, method='ztest')
-res4 <- ultragsea(fc1, G, method='ttest')
+res3a <- ultragsea(fc1, G, method='ztest', alpha=0)
+res3b <- ultragsea(fc1, G, method='ztest', alpha=1)
+res3c <- ultragsea(fc1, G, method='ztest', alpha=0, center=FALSE)
+res3d <- ultragsea(fc1, G, method='ztest', alpha=1, center=FALSE)
+res4a <- ultragsea(fc1, G, method='ttest', alpha=0)
+res4b <- ultragsea(fc1, G, method='ttest', alpha=1)
 res5 <- ultragsea(fc1, G, method='goat')
 res5 <- res5[match(colnames(G),res5$pathway),]
+res6 <- limma::cameraPR(fc1, gmt)
+res6$score <- -log10(res6$PValue)*(-1 + 2*(res6$Direction=="Up")) 
+res6 <- res6[match(colnames(G),rownames(res6)),]
 
-S <- cbind( res1$NES, res2$score, res3$score, res4$score, res5$score)
-colnames(S) <- c("fgsea","cor","ztest","ttest","goat")
-pairs(S)
+table(sign(res1$NES))
+table(sign(res2$score))
+table(sign(res3a$score))
+table(sign(res3b$score))
+table(sign(res3c$score))
+table(sign(res3d$score))
+table(sign(res4a$score))
+table(sign(res4b$score))
+table(sign(res5$score))
 
-P <- cbind( res1$pval, res2$pval, res3$pval, res4$pval, res5$pval)
-colnames(P) <- c("fgsea","cor","ztest","ttest","goat")
-pairs(-log10(P))
+S <- cbind( res1$NES, res2$score,
+  res3a$score, res3b$score, res3c$score, res3d$score,
+  res4a$score, res4b$score, res5$score, res6$score)
+colnames(S) <- c("fgsea","cor",
+  "ztest.a0","ztest.a1", "ztestZ.a0","ztestZ.a1",
+  "ttest.a0","ttest.a1","goat","cameraPR")
+pairs(S, panel=function(x,y) {
+  abline(h=0,v=0,lty=2,lwd=0.7)
+  points(x,y,cex=0.4,pch=19)
+})
 
-r1 <- gset.cor(fc1, G, compute.p=TRUE)
-r2 <- fc_ztest(fc1, G)
-r3 <- matrix_onesample_ttest(cbind(fc1), G)
-r4 <- matrix_onesample_ztest(cbind(fc1), G)
+P <- cbind( res1$pval, res2$pval,
+  res3a$pval, res3b$pval,res3c$pval, res3d$pval,
+  res4a$pval, res4b$pval, res5$pval,res6$PValue)
+colnames(P) <- c("fgsea","cor",
+  "ztest.a0","ztest.a1", "ztestZ.a0","ztestZ.a1",
+  "ttest.a0","ttest.a1","goat","cameraPR")
+pairs(-log10(P), cex=0.6)
 
-S <- cbind( cor=r1$rho[,1], fcz=r2$z, tt=r3$t[,1], zt=r4$z[,1])
-pairs(S)
-
-P <- cbind( cor=r1$p.value[,1], fcz=r2$p, tt=r3$p[,1], zt=r4$p[,1])
-pairs(-log10(P))

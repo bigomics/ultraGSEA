@@ -4,7 +4,7 @@
 \alias{gset.cor}
 \title{Calculate gene set correlation}
 \usage{
-gset.cor(FC, gset, compute.p = FALSE, use.rank = FALSE)
+gset.cor(FC, gset, compute.p = FALSE, use.rank = FALSE, corshrink = 0)
 }
 \arguments{
 \item{FC}{Numeric vector or matrix of (log)foldchanges, with genes as row names}

@@ -7,8 +7,8 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(fc, G, alpha=0.5, minLE=1, cshrink=3,
-                      minsize = 1L, maxsize = 9999L,
+ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
+                      minsize = 1L, maxsize = 9999L, center=TRUE,
                       method=c("cor","ztest","ttest","goat")[1],
                       format=c("simple","as.gsea","as.gsea2")[1]) {
 
@@ -25,20 +25,18 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cshrink=3,
   p_value <- NULL
   q_value <- NULL
   stat_value <- NULL
-  zmat <- NULL
   gmt <- NULL
   if(method == "ztest") {
-    zres <- fc_ztest(fc, G, zmat=addLE, alpha=alpha)
+    zres <- gset.ztest(fc, G, alpha=alpha, center=center)
     p_value <- zres$p
-    stat_value <- zres$z
-    zmat <- zres$zmat
+    stat_value <- zres$stat
   } else if(method == "ttest") {
-    res <- matrix_onesample_ttest(cbind(fc), G)
-    p_value <- res$p[,1]    
-    stat_value <- res$t[,1]    
+    zres <- gset.ztest(fc, G, alpha=alpha, pdist="norm", center=center)
+    p_value <- zres$p
+    stat_value <- zres$stat
   } else if(method == "cor") {
     res <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE,
-      cshrink = cshrink) 
+      corshrink = corshrink) 
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
@@ -58,15 +56,15 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cshrink=3,
   ## z>minLE (default minLE=1).
   leading_edge <- NULL
   if(addLE) {
-    if(is.null(zmat)) zmat <- fc_zmat(fc, G, alpha=alpha)
-    zsign <- sign(stat_value)
-    leading_idx <- Matrix::which( abs(zmat) >= minLE, arr.ind=TRUE)  
-    ii <- which(sign(zmat[leading_idx]) == zsign[leading_idx[,1]])
-    leading_idx <- leading_idx[ii,]
-    leading_edge <- tapply( leading_idx[,2], leading_idx[,1], list)
-    leading_edge <- lapply( leading_edge, function(i) colnames(zmat)[i])
-    names(leading_edge) <- rownames(zmat)[as.integer(names(leading_edge))]
-    leading_edge <- leading_edge[match(rownames(zmat),names(leading_edge))]
+    zsign <- sign(stat_value) 
+    zmat <- sweep((G!=0), 2, zsign, FUN='*')
+    zmat <- (zmat * fc > minLE) ## signed            
+    leading_idx <- Matrix::which(zmat == 1, arr.ind=TRUE)  
+    leading_edge <- tapply( leading_idx[,1], leading_idx[,2], list)
+    leading_edge <- lapply( leading_edge, function(i) rownames(zmat)[i])
+    names(leading_edge) <- colnames(zmat)[as.integer(names(leading_edge))]
+    leading_edge <- leading_edge[match(colnames(zmat),names(leading_edge))]
+    names(leading_edge) <- colnames(zmat)
   }
   
   #size <- Matrix::colSums(G!=0)
@@ -118,124 +116,55 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, cshrink=3,
 #'
 #' @param fc Numeric vector of (log)foldchanges, with genes as names
 #' @param G Numeric matrix of gene sets, with genes as row names
-#' @param zmat Logical indicating whether to compute z-score matrix
 #' @param alpha Numeric value between 0 and 1 for Bayesian shrinkage
 #'
 #' @return List with components:
 #' \itemize{
 #'  \item z_statistic - Vector of z-test statistics
 #'  \item p_value - Vector of p-values
-#'  \item zmat - Z-score matrix (if zmat = TRUE)
 #' }
 #' 
 #' @export
-fc_ztest <- function(F, G, zmat=FALSE, alpha=0.5) {
+gset.ztest <- function(F, G, alpha=0.5, center=TRUE, pdist="norm") {
   if(NCOL(F)==1) F <- cbind(F)
   gg <- intersect(rownames(G),rownames(F))
-  sample_size <- Matrix::colSums(G[gg,]!=0)
-  sample_size <-sample_size + 1e-20 ## avoid div-by-zero
-  sample_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / sample_size
-  population_mean <- Matrix::colMeans(F, na.rm=TRUE)
-  population_var <- matrixStats::colVars(F, na.rm=TRUE)
-  sample_var <- apply(F, 2, function(fc) {
-    gfc <- (G[gg,]!=0) * fc[gg]
-    sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
-  })
-  alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- Matrix::t(alpha*sample_var) + (1-alpha)*population_var
-  estim_sd <- Matrix::t(sqrt(estim_sd)) / sqrt(sample_size)
-  delta_mean <- Matrix::t(Matrix::t(sample_mean) -  population_mean)
-  z_statistic <- delta_mean / estim_sd
-  z_statistic <- as.matrix(z_statistic)
-  p_value <- 2 * pnorm(abs(z_statistic), lower.tail = FALSE)  
-  if(zmat) {
-    zmat <- lapply(1:ncol(F), function(i) {
-      gfc <- (G[gg,]!=0) * F[gg,i]
-      (Matrix::t(gfc) / estim_sd[,i])
-    })
+  gset_size <- Matrix::colSums(G[gg,]!=0)
+  gset_size <-gset_size + 1e-20 ## avoid div-by-zero
+  gset_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / gset_size
+  if(center) {
+    population_mean <- Matrix::colMeans(F, na.rm=TRUE)
+    population_var <- matrixStats::colVars(F, na.rm=TRUE)
   } else {
-    zmat = NULL
+    population_mean <- rep(0, ncol(F))    
+    population_var <- matrixStats::colVars(F, center=rep(0,ncol(F)), na.rm=TRUE)
   }
+  if(alpha == 0) {
+    ##estim_var <- population_var
+    estim_var <- matrix(population_var, ncol=ncol(F), nrow=ncol(G), byrow=TRUE)
+  } else {
+    alpha <- pmin(pmax(alpha,0), 0.999) ## limit
+    gset_sumsq <- Matrix::t(G!=0) %*% F**2 / gset_size
+    gset_var <- (gset_sumsq - gset_mean**2) * ( gset_size / (gset_size - 1))
+    estim_var <- sweep( alpha*gset_var, 2, (1-alpha)*population_var, '+')
+  }
+  estim_sd <- sqrt(estim_var) / sqrt(gset_size)
+  delta_mean <- sweep(gset_mean, 2, population_mean, FUN='-')
+  statistic <- as.matrix( delta_mean / estim_sd )
+  if(pdist=="t") {
+    df <- gset_size - 1
+    p_value <- 2 * pt(abs(statistic), df=df, lower.tail = FALSE)
+  } else {
+    p_value <- 2 * pnorm(abs(statistic), lower.tail = FALSE)
+  } 
   if(NCOL(F)==1) {
     ## collapse
-    z_statistic <- z_statistic[,1]
+    statistic <- statistic[,1]
     p_value <- p_value[,1]
-    zmat <- zmat[[1]]
   }
   list(
-    z = z_statistic,
-    p = p_value,
-    zmat = zmat
+    stat = statistic,
+    p = p_value
   )
 }
 
-#' Compute z-score matrix for gene sets
-#'
-#' @param fc Numeric vector of (log)foldchanges, with genes as names
-#' @param G Numeric matrix of gene sets, with genes as row names
-#' @param alpha Numeric value between 0 and 1 for Bayesian shrinkage
-#'
-#' @return Z-score matrix
-#' @keywords internal
-fc_zmat <- function(fc, G, alpha=0.5) {
-  gg <- intersect(rownames(G),names(fc))
-  sample_size <- Matrix::colSums(G[gg,]!=0)
-  sample_size <- pmax(sample_size, 1) ## avoid div-by-zero
-  population_var <- var(fc, na.rm=TRUE)
-  gfc <- (G[gg,]!=0) * fc[gg]
-  sample_var <- sparseMatrixStats::colVars(gfc) * nrow(G) / sample_size
-  alpha <- pmin(pmax(alpha,0), 0.999) ## limit
-  estim_sd <- sqrt( alpha*sample_var + (1-alpha)*population_var )
-  zmat <- (Matrix::t(gfc) / estim_sd)
-  zmat
-}
 
-#' Fast one sample t-test for matrix object F (e.g. foldchanges) and
-#' grouping matrix G (e.g. gene sets).
-#'
-#' @param F Numeric vector or matrix of (log)foldchanges
-#' @param G Numeric matrix of gene sets, with genes as row names
-#'
-#' @return List with components:
-#' \itemize{
-#'  \item mean - Mean values
-#'  \item t - t-test statistics
-#'  \item p - p-values from t-test
-#' }
-#' @keywords internal
-matrix_onesample_ttest <- function(F, G) {
-  sumG <- Matrix::colSums(G != 0)
-  sum_sq <- Matrix::crossprod(G != 0, F^2)
-  meanx <- Matrix::crossprod(G != 0, F) / (1e-8 + sumG)
-  sdx <- sqrt((sum_sq - meanx^2 * sumG) / (sumG - 1))
-  t_stats <- meanx / (1e-8 + sdx) * sqrt(sumG)
-  p_stats <- apply(abs(t_stats), 2, function(tv) {
-    2 * pt(tv, df = pmax(sumG - 1, 1), lower.tail = FALSE)
-  })
-  list(mean = as.matrix(meanx), t = as.matrix(t_stats), p = p_stats)
-}
-
-#' Fast one sample z-test for matrix object F (e.g. foldchanges) and
-#' grouping matrix G (e.g. gene sets).
-#'
-#' @param F Numeric vector or matrix of (log)foldchanges
-#' @param G Numeric matrix of gene sets, with genes as row names
-#'
-#' @return List with components:
-#' \itemize{
-#'  \item mean - Mean values
-#'  \item z - z-test statistics
-#'  \item p - p-values from z-test
-#' }
-#' @keywords internal
-matrix_onesample_ztest <- function(F, G) {
-  sumG <- Matrix::colSums(G != 0)
-  sum_sq <- Matrix::crossprod(G != 0, F^2)
-  meanx <- Matrix::crossprod(G != 0, F) / (1e-8 + sumG)
-  sdx <- sqrt((sum_sq - meanx^2 * sumG) / sumG)
-  z_stats <- meanx / (1e-8 + sdx) * sqrt(sumG)
-  p_stats <- apply(abs(z_stats), 2, function(zv) {
-    2 * pnorm(zv, lower.tail = FALSE)
-  })
-  list(mean = as.matrix(meanx), z = as.matrix(z_stats), p = p_stats)
-}

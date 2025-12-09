@@ -43,7 +43,7 @@ for(i in 1:1) {
       f1 <- ultragsea(fc, Gx[,1:n], method="cor"),
       c1 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE),
       c2 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE, zbias=10),
-      z1 <- fc_ztest(fc, Gx[,1:n], zmat=FALSE),
+      z1 <- gset.ztest(fc, Gx[,1:n], zmat=FALSE),
       m1 <- limma::cameraPR(fc, gmt, use.ranks=FALSE)
     )
     t0[,1] <- paste0(c("fgsea","goat","ultragsea","gsetcor","gsetcorB",
