@@ -44,8 +44,8 @@ Just for this example we use some random values for `fc` but in general this is 
 G <- gmt2mat(gmt)
 fc <- rnorm(nrow(G))
 names(fc) <- rownames(G)
-res <- ultragsea(fc, G, format='as.gsea', method='cor')
-res <- ultragsea(fc, G, format='as.gsea', method='ztest')
+res <- ultragsea(G, fc, format='as.gsea', method='cor')
+res <- ultragsea(G, fc, format='as.gsea', method='ztest')
 head(res)
 ```
 
@@ -53,8 +53,8 @@ For the fastest speed, especially when computing enrichment for multiple foldcha
 
 ```{r}
 F <- cbind(fc,fc,fc,fc,fc)
-res1 <- gset.cor(F, G, compute.p=TRUE)
-res2 <- fc_ztest(F, G)
+res1 <- gset.cor(G, F, compute.p=TRUE)
+res2 <- gset.ztest(G, F)
 ```
 
 ## Plotting

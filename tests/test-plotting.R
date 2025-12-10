@@ -29,8 +29,8 @@ object.size(gmt)/1e6
 object.size(G)/1e6
 
 res1 <- fgsea::fgsea(gmt, fc, eps=0)
-res2 <- ultragsea(fc, G, method='ztest', format='as.gsea')
-res3 <- ultragsea(fc, G, method='cor', format='as.gsea')
+res2 <- ultragsea(G, fc, method='ztest', format='as.gsea')
+res3 <- ultragsea(G, fc, method='cor', format='as.gsea')
 
 gs <- names(gmt)
 res1 <- res1[match(gs,res1$pathway),]

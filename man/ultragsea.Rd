@@ -6,16 +6,16 @@
 these methods highly correlate with GSEA/fGSEA but are much faster.}
 \usage{
 ultragsea(
-  fc,
   G,
+  fc,
   alpha = 0.5,
   minLE = 1,
   corshrink = 3,
   minsize = 1L,
   maxsize = 9999L,
   center = TRUE,
-  method = c("cor", "ztest", "ttest", "goat")[1],
-  format = c("simple", "as.gsea", "as.gsea2")[1]
+  method = c("cor", "ztest", "ttest", "goat", "camera")[1],
+  format = c("simple", "as.gsea")[1]
 )
 }
 \description{

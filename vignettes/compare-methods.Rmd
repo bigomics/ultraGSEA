@@ -87,10 +87,10 @@ gs <- names(gmt)
 tt <- peakRAM::peakRAM(
   res.fgsea <- fgsea::fgsea(gmt, fc, eps=0),
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
-  res.ultragsea.z <- ultragsea(fc, G, method='ztest')[gs,],
-  res.ultragsea.c <- ultragsea(fc, G, method='cor')[gs,],
-  res.cor <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE),
-  res.ztest <- fc_ztest(fc, G),
+  res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
+  res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
+  res.cor <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
 tt[,1] <- gsub("res[.]|<-.*","",tt[,1])

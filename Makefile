@@ -1,7 +1,7 @@
 build: doc vignettes
 	R -e "devtools::build()"
 
-doc:R/*.R
+doc: R/*.R
 	R -e "devtools::document()"
 
 vignettes: vignettes/*.Rmd
@@ -18,6 +18,9 @@ biocheck: clean
 
 test:
 	R -e "devtools::test()"
+
+site:
+	Rscript dev/make-site.R
 
 clean:
 	rm -f `find . -name '.\#*' -o -name '\#*' -o -name '*~' -printf '"%p" '`

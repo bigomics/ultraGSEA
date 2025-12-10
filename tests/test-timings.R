@@ -40,10 +40,10 @@ for(i in 1:1) {
     t0 <- peakRAM::peakRAM(
       f0 <- fgsea::fgsea(gmtx[1:n], fc),
       g1 <- goat(gmtx[1:n], fc, filter=FALSE),
-      f1 <- ultragsea(fc, Gx[,1:n], method="cor"),
-      c1 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE),
-      c2 <- gset.cor(fc, Gx[,1:n], compute.p=TRUE, zbias=10),
-      z1 <- gset.ztest(fc, Gx[,1:n], zmat=FALSE),
+      f1 <- ultragsea(Gx, fc[,1:n], method="cor"),
+      c1 <- gset.cor(Gx[,1:n], fc, compute.p=TRUE),
+      c2 <- gset.cor(Gx[,1:n], fc, compute.p=TRUE, zbias=10),
+      z1 <- gset.ztest(Gx[,1:n], fc, zmat=FALSE),
       m1 <- limma::cameraPR(fc, gmt, use.ranks=FALSE)
     )
     t0[,1] <- paste0(c("fgsea","goat","ultragsea","gsetcor","gsetcorB",

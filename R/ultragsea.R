@@ -1,4 +1,3 @@
-
 ##---------------------------------------------------------------
 ##-------------------- ultragsea --------------------------------
 ##---------------------------------------------------------------
@@ -7,10 +6,10 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
+ultragsea <- function(G, fc, alpha=0.5, minLE=1, corshrink=3,
                       minsize = 1L, maxsize = 9999L, center=TRUE,
-                      method=c("cor","ztest","ttest","goat")[1],
-                      format=c("simple","as.gsea","as.gsea2")[1]) {
+                      method=c("cor","ztest","ttest","goat","camera")[1],
+                      format=c("simple","as.gsea")[1]) {
 
   gg <- intersect(names(fc), rownames(G))
   fc <- fc[gg]
@@ -20,35 +19,44 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
   sel <- which(size >= minsize & size <= maxsize)
   G <- G[, sel, drop=FALSE]
   size <- size[sel]
+
+  gmt <- NULL
+  if(method %in% c("goat","camera") && is.null(gmt)) {
+    gmt <- mat2gmt(G)
+  }
   
   addLE <- (format=="as.gsea")
   p_value <- NULL
   q_value <- NULL
   stat_value <- NULL
-  gmt <- NULL
   if(method == "ztest") {
-    zres <- gset.ztest(fc, G, alpha=alpha, center=center)
+    zres <- gset.ztest(G, fc, alpha=alpha, center=center)
     p_value <- zres$p
     stat_value <- zres$stat
   } else if(method == "ttest") {
-    zres <- gset.ztest(fc, G, alpha=alpha, pdist="norm", center=center)
+    zres <- gset.ztest(G, fc, alpha=alpha, pdist="norm", center=center)
     p_value <- zres$p
     stat_value <- zres$stat
   } else if(method == "cor") {
-    res <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE,
+    res <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE,
       corshrink = corshrink) 
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
   } else if(method=="goat" && require("goat")) {
-    gmt <- mat2gmt(G)
     res <- goat(pathways=gmt, stats=fc, filter=FALSE, method="goat") 
     res <- res[match(colnames(G),res$pathway),]
     p_value <- res$pval
     q_value <- res$padj
     stat_value <- res$score
+  } else if(method=="camera" && require("limma")) {
+    res <- limma::cameraPR(fc, gmt)
+    res <- res[match(colnames(G),rownames(res)),]
+    p_value <- res$PValue
+    q_value <- res$FDR
+    stat_value <- -log10(res$PValue)*(1 - 2*(res$Direction=="Down"))
   } else {
-    stop("unknown method: ", method)
+    stop("unsupported method: ", method)
   }
 
   ## Add leading edge list. The leading edge list is computed as those
@@ -72,21 +80,10 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
     q_value <- p.adjust(p_value, method="fdr")
   }
 
-  if(format %in% c("as.gsea","as.gsea2")) {
-    if(format == "as.gsea") {
-      # normalize like GSEA
-      stat_value0 <-  stat_value / max(abs(stat_value),na.rm=TRUE) 
-      stat_value1 <-  stat_value / sd(stat_value,na.rm=TRUE)
-    }
-    if(format == "as.gsea2") {
-      # run fgseaSimple only for few iterations only for NES
-      if(is.null(gmt)) gmt <- mat2gmt(G)  
-      suppressWarnings(res <- fgsea::fgseaSimple(gmt, fc, nperm=10))
-      res <- res[match(colnames(G),res$pathway),]  
-      stat_value0 <-  res$ES
-      stat_value1 <-  res$NES
-      leading_edge <- res$leadingEdge                
-    }
+  if(format == "as.gsea") {
+    # normalize like GSEA
+    stat_value0 <-  stat_value / max(abs(stat_value),na.rm=TRUE) 
+    stat_value1 <-  stat_value / sd(stat_value,na.rm=TRUE)
     df <- data.table::data.table(
       pathway = colnames(G),
       pval = p_value,
@@ -111,12 +108,34 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
   df
 }
 
+#' Fast replacement of fgsea with p/q values computed with ultragsea.cor
+#' 
+#' @export
+fgsea <- function(pathways, stats, minSize = 1, maxSize = length(stats)-1,
+                  nperm=20) {
+  G <- gmt2mat(pathways)
+  gg <- intersect(names(stats),rownames(G))
+  G <- G[gg,match(names(pathways),colnames(G))]
+  stats <- stats[gg]
+  gsize <- Matrix::colSums(G)
+  G <- G[, gsize >= minSize & gsize <= maxSize]
+  res <- ultragsea(G, stats, method="ztest", alpha=0, format="as.gsea2")
+  # run fgseaSimple only for few iterations only for NES
+  suppressWarnings(fres <- fgsea::fgseaSimple(pathways, stats, nperm=nperm))
+  res <- res[match(res$pathway,fres$pathway),]  
+  fres$pval <-  fres$pval
+  fres$padj <-  fres$padj  
+  fres
+}
+
+
 #' Fast one sample z-test for matrix object F (e.g. foldchanges) and
 #' grouping matrix G (e.g. gene sets).
 #'
 #' @param fc Numeric vector of (log)foldchanges, with genes as names
 #' @param G Numeric matrix of gene sets, with genes as row names
 #' @param alpha Numeric value between 0 and 1 for Bayesian shrinkage
+#' @param center Logical value to center population mean or assume zero
 #'
 #' @return List with components:
 #' \itemize{
@@ -125,12 +144,14 @@ ultragsea <- function(fc, G, alpha=0.5, minLE=1, corshrink=3,
 #' }
 #' 
 #' @export
-gset.ztest <- function(F, G, alpha=0.5, center=TRUE, pdist="norm") {
+gset.ztest <- function(G, F, alpha=0.5, center=TRUE, pdist="norm") {
   if(NCOL(F)==1) F <- cbind(F)
   gg <- intersect(rownames(G),rownames(F))
-  gset_size <- Matrix::colSums(G[gg,]!=0)
+  G <- G[gg,,drop=FALSE]
+  F <- F[gg,,drop=FALSE]  
+  gset_size <- Matrix::colSums(G!=0)
   gset_size <-gset_size + 1e-20 ## avoid div-by-zero
-  gset_mean <- (Matrix::t(G[gg,]!=0) %*% F[gg,,drop=FALSE]) / gset_size
+  gset_mean <- (Matrix::t(G!=0) %*% F) / gset_size
   if(center) {
     population_mean <- Matrix::colMeans(F, na.rm=TRUE)
     population_var <- matrixStats::colVars(F, na.rm=TRUE)

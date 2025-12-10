@@ -23,24 +23,24 @@ G <- gmt2mat(gmt)
 
 f0 <- fgsea::fgsea(gmt, fc)
 
-u1 <- ultragsea(fc, G, format='simple')
-u2 <- ultragsea(fc, G, format='as.gsea')
-u3 <- ultragsea(fc, G, format='as.gsea2')
+u1 <- ultragsea(G, fc, format='simple')
+u2 <- ultragsea(G, fc, format='as.gsea')
+u3 <- ultragsea(G, fc, format='as.gsea2')
 
-z1 <- gset.ztest(fc, G, zmat=TRUE)
-z2 <- gset.ztest( cbind(fc,fc), G, zmat=TRUE)
+z1 <- gset.ztest(G, fc, zmat=TRUE)
+z2 <- gset.ztest(G, cbind(fc,fc), zmat=TRUE)
 plot( z1$z_statistic, z2$z_statistic[,1])
 plot( z1$p_value, z2$p_value[,1])
 
 F <- cbind(fc,fc,fc,fc,fc)
 F <- do.call(cbind, rep(list(fc),1000))
 dim(F)
-system.time(z1 <- apply(F, 2, function(f) gset.ztest(f, G)))
-system.time(z2 <- gset.ztest(F, G))
+system.time(z1 <- apply(F, 2, function(f) gset.ztest(G, f)))
+system.time(z2 <- gset.ztest(G, F))
 
 source("../R/gsetcor.R")
-z1 <- gset.cor(fc, G, compute.p=TRUE)
-z2 <- gset.cor(fc, G, compute.p=TRUE, cor0=10)
+z1 <- gset.cor(G, fc, compute.p=TRUE)
+z2 <- gset.cor(G, fc, compute.p=TRUE, cor0=10)
 
 gsize <- Matrix::colSums(G!=0)
 cex1 <- 0.2*log(gsize)
@@ -70,11 +70,11 @@ f1 <- fgsea::fgsea(gmt, fc, eps=0, gseaParam=1)
 f0 <- f0[match(gs,f0$pathway),]
 f1 <- f1[match(gs,f1$pathway),]
 
-z0 <- ultragsea(fc, G, method="ztest", format='as.gsea')
+z0 <- ultragsea(G, fc, method="ztest", format='as.gsea')
 z0 <- z0[match(gs,z0$pathway),]
-z1 <- ultragsea(fc, G, method="cor", format='as.gsea')
+z1 <- ultragsea(G, fc, method="cor", format='as.gsea')
 z1 <- z1[match(gs,z1$pathway),]
-z2 <- ultragsea(fc, G, method="cor", format='as.gsea', cor0=10)
+z2 <- ultragsea(G, fc, method="cor", format='as.gsea', cor0=10)
 z2 <- z2[match(gs,z2$pathway),]
 
 g1 <- goat(gmt, fc)
