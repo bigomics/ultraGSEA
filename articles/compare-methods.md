@@ -91,7 +91,7 @@ tt <- peakRAM::peakRAM(
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
   res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
   res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
-  res.cor <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.cortest <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
   res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
@@ -101,13 +101,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.334 |                4.1 |              43.9 |
+| fgsea         |            4.328 |                4.1 |              43.9 |
 | cameraPR      |            0.322 |                0.8 |              42.6 |
 | ultragsea.z   |            0.031 |                0.1 |               6.8 |
-| ultragsea.c   |            0.039 |                0.9 |               9.5 |
-| cor           |            0.004 |                0.1 |               2.8 |
+| ultragsea.c   |            0.038 |                0.9 |               9.5 |
+| cortest       |            0.004 |                0.1 |               2.8 |
 | ztest         |            0.007 |                0.0 |               3.7 |
-| goat          |            0.260 |                4.4 |              23.7 |
+| goat          |            0.243 |                4.4 |              23.7 |
 
 ``` r
 rt <- tt[,2]
@@ -134,7 +134,7 @@ res.cameraPR$score <- -log(res.cameraPR$PValue)*(-1+2*(res.cameraPR$Direction=="
 Z <- cbind(
   fgsea = res.fgsea$NES,
   cameraPR = res.cameraPR$score,
-  ultragsea.ztest = res.ultragsea.z$score,
+  ultragsea.z = res.ultragsea.z$score,
   ultragsea.c = res.ultragsea.c$score,
   goat = res.goat$score
 )
@@ -162,7 +162,7 @@ that all p-values are highly correlated to each other.
 P <- cbind(
   fgsea = res.fgsea$pval,
   cameraPR = res.cameraPR$PValue,
-  ultragsea.ztest = res.ultragsea.z$pval,
+  ultragsea.z = res.ultragsea.z$pval,
   ultragsea.c = res.ultragsea.c$pval,
   goat = res.goat$pval
 )
@@ -184,8 +184,8 @@ ultragsea::fgsea() that is 8-10x faster that the original fgsea::fgsea()
 ``` r
 system.time(res1 <- fgsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   5.544   0.075   3.594
+#>   2.987   0.048   3.605
 system.time(res2 <- ultragsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   0.224   0.112   0.271
+#>   0.230   0.111   0.274
 ```
