@@ -46,12 +46,16 @@ these methods highly correlate with GSEA/fGSEA but are much faster.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ultragsea</span><span class="op">(</span></span>
-<span>  <span class="va">fc</span>,</span>
 <span>  <span class="va">G</span>,</span>
+<span>  <span class="va">fc</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  minLE <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ztest"</span>, <span class="st">"ttest"</span>, <span class="st">"cor"</span>, <span class="st">"rankcor"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"as.gsea"</span>, <span class="st">"as.gsea2"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span>  corshrink <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  minsize <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  maxsize <span class="op">=</span> <span class="fl">9999L</span>,</span>
+<span>  center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cor"</span>, <span class="st">"ztest"</span>, <span class="st">"ttest"</span>, <span class="st">"goat"</span>, <span class="st">"camera"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simple"</span>, <span class="st">"as.gsea"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 

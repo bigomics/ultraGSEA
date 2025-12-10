@@ -34,25 +34,25 @@ experiment.
 G <- gmt2mat(gmt)
 fc <- rnorm(nrow(G))
 names(fc) <- rownames(G)
-res <- ultragsea(fc, G, format='as.gsea', method='cor')
-res <- ultragsea(fc, G, format='as.gsea', method='ztest')
+res <- ultragsea(G, fc, format='as.gsea', method='cor')
+res <- ultragsea(G, fc, format='as.gsea', method='ztest')
 head(res)
 #>                               pathway      pval      padj log2err          ES
 #>                                <char>     <num>     <num>   <num>       <num>
-#> 1:           HALLMARK_APICAL_JUNCTION 0.8340206 0.9703000      NA  0.08495955
-#> 2:           HALLMARK_HEME_METABOLISM 0.8732700 0.9703000      NA  0.06467059
-#> 3:     HALLMARK_INFLAMMATORY_RESPONSE 0.7109902 0.9703000      NA  0.15022712
-#> 4:         HALLMARK_KRAS_SIGNALING_UP 0.9758927 0.9758927      NA -0.01225189
-#> 5: HALLMARK_OXIDATIVE_PHOSPHORYLATION 0.8634175 0.9703000      NA -0.06974639
-#> 6:              HALLMARK_ADIPOGENESIS 0.2248032 0.7025100      NA  0.49214802
+#> 1:           HALLMARK_APICAL_JUNCTION 0.8342058 0.9704642      NA  0.08430629
+#> 2:           HALLMARK_HEME_METABOLISM 0.8734178 0.9704642      NA  0.06417051
+#> 3:     HALLMARK_INFLAMMATORY_RESPONSE 0.7112720 0.9704642      NA  0.14908865
+#> 4:         HALLMARK_KRAS_SIGNALING_UP 0.9759219 0.9759219      NA -0.01215674
+#> 5: HALLMARK_OXIDATIVE_PHOSPHORYLATION 0.8635639 0.9704642      NA -0.06921354
+#> 6:              HALLMARK_ADIPOGENESIS 0.2245049 0.7015779      NA  0.48923213
 #>            NES  size                             leadingEdge
 #>          <num> <int>                                  <list>
-#> 1:  0.19721074   200     EGFR,CRAT,THY1,HRAS,INSIG1,MMP2,...
-#> 2:  0.15011538   200       BTG2,CA2,GCLC,SLC2A1,BLVRB,PC,...
-#> 3:  0.34871186   200        IL6,BTG2,CSF1,IL1B,IL4R,CCL2,...
-#> 4: -0.02843947   200 PLAUR,BMP2,CCND2,CXCL10,LIF,TNFAIP3,...
-#> 5: -0.16189748   200     IDH1,RETSAT,ACAA1,DLD,IDH2,SDHC,...
-#> 6:  1.14238929   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...
+#> 1:  0.19554431   200 CRAT,HRAS,INSIG1,PIK3R3,ACTN2,ADAM9,...
+#> 2:  0.14884035   200    CA2,BNIP3L,CDC27,H1-0,BCAM,BLVRA,...
+#> 3:  0.34580382   200    IL4R,CCL2,HBEGF,INHBA,ITGB3,EREG,...
+#> 4: -0.02819697   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...
+#> 5: -0.16053742   200 ACAA1,SDHC,ECHS1,GPI,GRPEL1,ATP6V1F,...
+#> 6:  1.13474996   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...
 ```
 
 For the fastest speed, especially when computing enrichment for multiple
@@ -64,8 +64,8 @@ but they are much faster as they are optimized for matrix inputs `F`.
 
 ``` r
 F <- cbind(fc,fc,fc,fc,fc)
-res1 <- gset.cor(F, G, compute.p=TRUE)
-res2 <- fc_ztest(F, G)
+res1 <- gset.cor(G, F, compute.p=TRUE)
+res2 <- gset.ztest(G, F)
 ```
 
 ### Plotting
@@ -107,22 +107,21 @@ sessionInfo()
 #> [1] msigdbr_25.1.1   ultragsea_0.1.12 BiocStyle_2.38.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] Matrix_1.7-4             babelgene_22.9           jsonlite_2.0.0          
-#>  [4] dplyr_1.1.4              compiler_4.5.2           BiocManager_1.30.27     
-#>  [7] Rcpp_1.1.0               tidyselect_1.2.1         slam_0.1-55             
-#> [10] parallel_4.5.2           assertthat_0.2.1         jquerylib_0.1.4         
-#> [13] systemfonts_1.3.1        textshaping_1.0.4        yaml_2.3.11             
-#> [16] fastmap_1.2.0            lattice_0.22-7           R6_2.6.1                
-#> [19] generics_0.1.4           qlcMatrix_0.9.9          curl_7.0.0              
-#> [22] knitr_1.50               tibble_3.3.0             bookdown_0.45           
-#> [25] MatrixGenerics_1.22.0    desc_1.4.3               bslib_0.9.0             
-#> [28] pillar_1.11.1            rlang_1.1.6              cachem_1.1.0            
-#> [31] xfun_0.54                fs_1.6.6                 sass_0.4.10             
-#> [34] cli_3.6.5                pkgdown_2.2.0            withr_3.0.2             
-#> [37] magrittr_2.0.4           digest_0.6.39            grid_4.5.2              
-#> [40] sparseMatrixStats_1.22.0 docopt_0.7.2             lifecycle_1.0.4         
-#> [43] vctrs_0.6.5              sparsesvd_0.2-3          data.table_1.17.8       
-#> [46] evaluate_1.0.5           glue_1.8.0               ragg_1.5.0              
-#> [49] rmarkdown_2.30           matrixStats_1.5.0        tools_4.5.2             
-#> [52] pkgconfig_2.0.3          htmltools_0.5.8.1
+#>  [1] Matrix_1.7-4        babelgene_22.9      jsonlite_2.0.0     
+#>  [4] dplyr_1.1.4         compiler_4.5.2      BiocManager_1.30.27
+#>  [7] tidyselect_1.2.1    slam_0.1-55         parallel_4.5.2     
+#> [10] assertthat_0.2.1    jquerylib_0.1.4     systemfonts_1.3.1  
+#> [13] textshaping_1.0.4   yaml_2.3.11         fastmap_1.2.0      
+#> [16] lattice_0.22-7      R6_2.6.1            generics_0.1.4     
+#> [19] qlcMatrix_0.9.9     curl_7.0.0          knitr_1.50         
+#> [22] tibble_3.3.0        bookdown_0.46       desc_1.4.3         
+#> [25] bslib_0.9.0         pillar_1.11.1       rlang_1.1.6        
+#> [28] cachem_1.1.0        xfun_0.54           fs_1.6.6           
+#> [31] sass_0.4.10         cli_3.6.5           pkgdown_2.2.0      
+#> [34] withr_3.0.2         magrittr_2.0.4      digest_0.6.39      
+#> [37] grid_4.5.2          docopt_0.7.2        lifecycle_1.0.4    
+#> [40] vctrs_0.6.5         sparsesvd_0.2-3     data.table_1.17.8  
+#> [43] evaluate_1.0.5      glue_1.8.0          ragg_1.5.0         
+#> [46] rmarkdown_2.30      matrixStats_1.5.0   tools_4.5.2        
+#> [49] pkgconfig_2.0.3     htmltools_0.5.9
 ```

@@ -104,6 +104,11 @@ filtering, we retain 761 gene sets.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bigomics/ultragsea" class="external-link">ultragsea</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'ultragsea'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:fgsea':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     fgsea</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplePathways</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleRanks</span><span class="op">)</span></span>
 <span><span class="va">fc</span> <span class="op">=</span> <span class="va">exampleRanks</span></span>
@@ -141,11 +146,11 @@ of each method.</p>
 <span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="fu">peakRAM</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/peakRAM/man/peakRAM.html" class="external-link">peakRAM</a></span><span class="op">(</span></span>
 <span>  <span class="va">res.fgsea</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, eps<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="va">res.cameraPR</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/camera.html" class="external-link">cameraPR</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">gmt</span>, use.ranks<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
-<span>  <span class="va">res.ultragsea.z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, method<span class="op">=</span><span class="st">'ztest'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
-<span>  <span class="va">res.ultragsea.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, method<span class="op">=</span><span class="st">'cor'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
-<span>  <span class="va">res.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.cor.html">gset.cor</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span>, compute.p<span class="op">=</span><span class="cn">TRUE</span>, use.rank<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="va">res.ztest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fc_ztest.html">fc_ztest</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">G</span><span class="op">)</span>,</span>
-<span>  <span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="fu">goat</span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, filter<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">res.ultragsea.z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, method<span class="op">=</span><span class="st">'ztest'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
+<span>  <span class="va">res.ultragsea.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, method<span class="op">=</span><span class="st">'cor'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
+<span>  <span class="va">res.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.cor.html">gset.cor</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, compute.p<span class="op">=</span><span class="cn">TRUE</span>, use.rank<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="va">res.ztest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.ztest.html">gset.ztest</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span><span class="op">)</span>,</span>
+<span>  <span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/goat.html">goat</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, filter<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">tt</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"res[.]|&lt;-.*"</span>,<span class="st">""</span>,<span class="va">tt</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">tt</span><span class="op">)</span></span></code></pre></div>
@@ -165,44 +170,44 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.179</td>
+<td align="right">4.338</td>
 <td align="right">4.1</td>
 <td align="right">43.9</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.310</td>
+<td align="right">0.332</td>
 <td align="right">0.8</td>
 <td align="right">42.6</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.109</td>
-<td align="right">1.9</td>
-<td align="right">21.9</td>
+<td align="right">0.029</td>
+<td align="right">0.1</td>
+<td align="right">6.8</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.037</td>
+<td align="right">0.042</td>
 <td align="right">0.9</td>
-<td align="right">9.6</td>
+<td align="right">9.5</td>
 </tr>
 <tr class="odd">
 <td align="left">cor</td>
-<td align="right">0.005</td>
-<td align="right">0.0</td>
+<td align="right">0.004</td>
+<td align="right">0.1</td>
 <td align="right">2.8</td>
 </tr>
 <tr class="even">
 <td align="left">ztest</td>
-<td align="right">0.008</td>
+<td align="right">0.007</td>
 <td align="right">0.0</td>
-<td align="right">6.5</td>
+<td align="right">3.7</td>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.236</td>
-<td align="right">4.5</td>
+<td align="right">0.245</td>
+<td align="right">4.4</td>
 <td align="right">23.7</td>
 </tr>
 </tbody>

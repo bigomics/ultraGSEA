@@ -43,6 +43,11 @@ library(goat)
 #> 
 #>     intersect, setdiff, setequal, union
 library(ultragsea)
+#> 
+#> Attaching package: 'ultragsea'
+#> The following object is masked from 'package:fgsea':
+#> 
+#>     fgsea
 data(examplePathways)
 data(exampleRanks)
 fc = exampleRanks
@@ -84,10 +89,10 @@ gs <- names(gmt)
 tt <- peakRAM::peakRAM(
   res.fgsea <- fgsea::fgsea(gmt, fc, eps=0),
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
-  res.ultragsea.z <- ultragsea(fc, G, method='ztest')[gs,],
-  res.ultragsea.c <- ultragsea(fc, G, method='cor')[gs,],
-  res.cor <- gset.cor(fc, G, compute.p=TRUE, use.rank=FALSE),
-  res.ztest <- fc_ztest(fc, G),
+  res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
+  res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
+  res.cor <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
 tt[,1] <- gsub("res[.]|<-.*","",tt[,1])
@@ -96,13 +101,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.179 |                4.1 |              43.9 |
-| cameraPR      |            0.310 |                0.8 |              42.6 |
-| ultragsea.z   |            0.109 |                1.9 |              21.9 |
-| ultragsea.c   |            0.037 |                0.9 |               9.6 |
-| cor           |            0.005 |                0.0 |               2.8 |
-| ztest         |            0.008 |                0.0 |               6.5 |
-| goat          |            0.236 |                4.5 |              23.7 |
+| fgsea         |            4.338 |                4.1 |              43.9 |
+| cameraPR      |            0.332 |                0.8 |              42.6 |
+| ultragsea.z   |            0.029 |                0.1 |               6.8 |
+| ultragsea.c   |            0.042 |                0.9 |               9.5 |
+| cor           |            0.004 |                0.1 |               2.8 |
+| ztest         |            0.007 |                0.0 |               3.7 |
+| goat          |            0.245 |                4.4 |              23.7 |
 
 ``` r
 rt <- tt[,2]
