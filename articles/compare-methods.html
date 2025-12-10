@@ -170,13 +170,13 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.325</td>
+<td align="right">4.258</td>
 <td align="right">4.1</td>
 <td align="right">43.9</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.329</td>
+<td align="right">0.316</td>
 <td align="right">0.8</td>
 <td align="right">42.6</td>
 </tr>
@@ -206,7 +206,7 @@ of each method.</p>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.242</td>
+<td align="right">0.241</td>
 <td align="right">4.4</td>
 <td align="right">23.7</td>
 </tr>
@@ -270,18 +270,18 @@ see that all p-values are highly correlated to each other.</p>
 </h3>
 <p>Much of the slowness of fgsea can be attributed to the permutations
 for calculating the p-values. In the previous section, we have seen that
-the p-values from ultragsea with z-test follows quite well those of
-fgsea. To make fgsea::fgsea() faster, we can instead calculate the
-p-values using ultragsea. We created a replacement function for
-ultragsea::fgsea() that is 8-10x faster that the original
+the p-values from ultragsea (both cor and z-test) follow quite well
+those of fgsea. Therefore, to make fgsea::fgsea() faster, we can instead
+calculate the p-values using ultragsea. We created a replacement
+function for ultragsea::fgsea() that is 8-10x faster that the original
 fgsea::fgsea()</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   2.990   0.049   3.604</span></span>
+<span><span class="co">#&gt;   5.552   0.082   3.599</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">ultragsea</span><span class="fu">::</span><span class="fu"><a href="../reference/fgsea.html">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.221   0.121   0.274</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.222   0.109   0.267</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

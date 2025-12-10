@@ -101,13 +101,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.325 |                4.1 |              43.9 |
-| cameraPR      |            0.329 |                0.8 |              42.6 |
+| fgsea         |            4.258 |                4.1 |              43.9 |
+| cameraPR      |            0.316 |                0.8 |              42.6 |
 | ultragsea.z   |            0.030 |                0.1 |               6.8 |
 | ultragsea.c   |            0.037 |                0.9 |               9.5 |
 | cortest       |            0.005 |                0.1 |               2.8 |
 | ztest         |            0.007 |                0.0 |               3.7 |
-| goat          |            0.242 |                4.4 |              23.7 |
+| goat          |            0.241 |                4.4 |              23.7 |
 
 ``` r
 rt <- tt[,2]
@@ -176,16 +176,17 @@ pairs(mlp, pch='.',cex=4)
 
 Much of the slowness of fgsea can be attributed to the permutations for
 calculating the p-values. In the previous section, we have seen that the
-p-values from ultragsea with z-test follows quite well those of fgsea.
-To make fgsea::fgsea() faster, we can instead calculate the p-values
-using ultragsea. We created a replacement function for
-ultragsea::fgsea() that is 8-10x faster that the original fgsea::fgsea()
+p-values from ultragsea (both cor and z-test) follow quite well those of
+fgsea. Therefore, to make fgsea::fgsea() faster, we can instead
+calculate the p-values using ultragsea. We created a replacement
+function for ultragsea::fgsea() that is 8-10x faster that the original
+fgsea::fgsea()
 
 ``` r
 system.time(res1 <- fgsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   2.990   0.049   3.604
+#>   5.552   0.082   3.599
 system.time(res2 <- ultragsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   0.221   0.121   0.274
+#>   0.222   0.109   0.267
 ```
