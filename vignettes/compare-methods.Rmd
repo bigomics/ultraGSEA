@@ -89,7 +89,7 @@ tt <- peakRAM::peakRAM(
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
   res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
   res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
-  res.cor <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.cortest <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
   res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
@@ -117,7 +117,7 @@ res.cameraPR$score <- -log(res.cameraPR$PValue)*(-1+2*(res.cameraPR$Direction=="
 Z <- cbind(
   fgsea = res.fgsea$NES,
   cameraPR = res.cameraPR$score,
-  ultragsea.ztest = res.ultragsea.z$score,
+  ultragsea.z = res.ultragsea.z$score,
   ultragsea.c = res.ultragsea.c$score,
   goat = res.goat$score
 )
@@ -141,7 +141,7 @@ we see that all p-values are highly correlated to each other.
 P <- cbind(
   fgsea = res.fgsea$pval,
   cameraPR = res.cameraPR$PValue,
-  ultragsea.ztest = res.ultragsea.z$pval,
+  ultragsea.z = res.ultragsea.z$pval,
   ultragsea.c = res.ultragsea.c$pval,
   goat = res.goat$pval
 )
