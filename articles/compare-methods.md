@@ -101,13 +101,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.338 |                4.1 |              43.9 |
-| cameraPR      |            0.332 |                0.8 |              42.6 |
-| ultragsea.z   |            0.029 |                0.1 |               6.8 |
-| ultragsea.c   |            0.042 |                0.9 |               9.5 |
+| fgsea         |            4.334 |                4.1 |              43.9 |
+| cameraPR      |            0.322 |                0.8 |              42.6 |
+| ultragsea.z   |            0.031 |                0.1 |               6.8 |
+| ultragsea.c   |            0.039 |                0.9 |               9.5 |
 | cor           |            0.004 |                0.1 |               2.8 |
 | ztest         |            0.007 |                0.0 |               3.7 |
-| goat          |            0.245 |                4.4 |              23.7 |
+| goat          |            0.260 |                4.4 |              23.7 |
 
 ``` r
 rt <- tt[,2]
@@ -171,3 +171,21 @@ pairs(mlp, pch='.',cex=4)
 ```
 
 ![](compare-methods_files/figure-html/unnamed-chunk-8-1.png)
+
+### Replacing fgsea
+
+Much of the slowness of fgsea can be attributed to the permutations for
+calculating the p-values. In the previous section, we have seen that the
+p-values from ultragsea with z-test follows quite well those of fgsea.
+To make fgsea::fgsea() faster, we can instead calculate the p-values
+using ultragsea. We created a replacement function for
+ultragsea::fgsea() that is 8-10x faster that the original fgsea::fgsea()
+
+``` r
+system.time(res1 <- fgsea::fgsea(gmt, fc))
+#>    user  system elapsed 
+#>   5.544   0.075   3.594
+system.time(res2 <- ultragsea::fgsea(gmt, fc))
+#>    user  system elapsed 
+#>   0.224   0.112   0.271
+```
