@@ -148,3 +148,18 @@ P <- cbind(
 mlp <- -log10(P)
 pairs(mlp, pch='.',cex=4)
 ```
+
+## Replacing fgsea
+
+Much of the slowness of fgsea can be attributed to the permutations
+for calculating the p-values. In the previous section, we have seen
+that the p-values from ultragsea with z-test follows quite well those
+of fgsea. To make fgsea::fgsea() faster, we can instead calculate the
+p-values using ultragsea. We created a replacement function for
+ultragsea::fgsea() that is 8-10x faster that the original
+fgsea::fgsea()
+
+```{r}
+system.time(res1 <- fgsea::fgsea(gmt, fc))
+system.time(res2 <- ultragsea::fgsea(gmt, fc))
+```
