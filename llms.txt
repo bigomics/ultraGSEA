@@ -11,7 +11,7 @@ uses a different statistical test (namely z-test or correlation), its
 scores are highly correlated and its p-values are closely similar to
 those from GSEA’s weighted Kolmogorov-Smirnov test. ultragsea computes
 its scores using fast sparse computation and parametric p-values and
-typically is 10-100x faster than fGSEA.
+typically is 100-1000x faster than fGSEA.
 
 ## Installation
 
