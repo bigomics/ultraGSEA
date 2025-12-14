@@ -4,12 +4,12 @@
 \alias{gset.cor}
 \title{Calculate gene set correlation}
 \usage{
-gset.cor(FC, gset, compute.p = FALSE, use.rank = FALSE, corshrink = 0)
+gset.cor(gset, FC, compute.p = FALSE, use.rank = FALSE, corshrink = 0)
 }
 \arguments{
-\item{FC}{Numeric vector or matrix of (log)foldchanges, with genes as row names}
-
 \item{gset}{Numeric matrix of gene sets, with genes as row/column names}
+
+\item{FC}{Numeric vector or matrix of (log)foldchanges, with genes as row names}
 
 \item{compute.p}{Logical indicating whether to compute p-values}
 

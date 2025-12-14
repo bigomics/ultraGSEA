@@ -5,7 +5,7 @@
 \title{Fast one sample z-test for matrix object F (e.g. foldchanges) and
 grouping matrix G (e.g. gene sets).}
 \usage{
-gset.ztest(F, G, alpha = 0.5, center = TRUE, pdist = "norm")
+gset.ztest(G, F, alpha = 0.5, center = TRUE, pdist = "norm")
 }
 \arguments{
 \item{G}{Numeric matrix of gene sets, with genes as row names}

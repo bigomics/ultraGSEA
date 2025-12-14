@@ -84,9 +84,8 @@ gset.cor <- function(gset, FC, compute.p = FALSE, use.rank = FALSE,
   }
   
   ## compute p-value
-  .cor.pvalue <- function(x, n) 2 * stats::pnorm(-abs(x / ((1 - x**2) / (n - 2))**0.5))
   if (compute.p) {
-    pv <- apply(rho1, 2, function(x) .cor.pvalue(x, n = nrow(FC1)))
+    pv <- apply(rho1, 2, function(x) cor_pvalue(x, n = nrow(FC1)))
     pv[is.nan(pv)] <- NA ## ??
     qv <- apply(pv, 2, stats::p.adjust, method = "fdr")
     df <- list(rho = rho1, p.value = pv, q.value = qv)
@@ -95,6 +94,14 @@ gset.cor <- function(gset, FC, compute.p = FALSE, use.rank = FALSE,
   }
   df
 }
+
+#' Calculate p-value from correlation rho 
+#'
+#' @param x  correlation value
+#' @param n  degrees of freendom
+#' @return p valu
+#'
+cor_pvalue <- function(x, n) 2 * stats::pnorm(-abs(x / ((1 - x**2) / (n - 2))**0.5))
 
 #' Calculate sparse correlation matrix handling missing values
 #'
@@ -118,3 +125,4 @@ cor_sparse_matrix <- function(G, mat) {
   }
   return(cor_matrix)
 }
+
