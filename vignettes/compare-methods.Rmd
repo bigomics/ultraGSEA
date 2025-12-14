@@ -153,8 +153,8 @@ pairs(mlp, pch='.',cex=4)
 
 Much of the slowness of fgsea can be attributed to the permutations
 for calculating the p-values. In the previous section, we have seen
-that the p-values from ultragsea with z-test follows quite well those
-of fgsea. To make fgsea::fgsea() faster, we can instead calculate the
+that the p-values from ultragsea (both cor and z-test) follow quite well those
+of fgsea. Therefore, to make fgsea::fgsea() faster, we can instead calculate the
 p-values using ultragsea. We created a replacement function for
 ultragsea::fgsea() that is 8-10x faster that the original
 fgsea::fgsea()
