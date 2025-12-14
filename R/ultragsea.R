@@ -6,7 +6,7 @@
 #' these methods highly correlate with GSEA/fGSEA but are much faster.
 #'
 #' @export
-ultragsea <- function(G, fc, alpha=0.5, minLE=1, corshrink=3,
+ultragsea <- function(G, fc, alpha=0, minLE=1, corshrink=3,
                       minsize = 1L, maxsize = 9999L, center=TRUE,
                       method=c("cor","ztest","ttest","goat","camera")[1],
                       format=c("simple","as.gsea")[1]) {
@@ -144,7 +144,7 @@ fgsea <- function(pathways, stats, minSize = 1, maxSize = length(stats)-1,
 #' }
 #' 
 #' @export
-gset.ztest <- function(G, F, alpha=0.5, center=TRUE, pdist="norm") {
+gset.ztest <- function(G, F, alpha=0, center=TRUE, pdist="norm") {
   if(NCOL(F)==1) F <- cbind(F)
   gg <- intersect(rownames(G),rownames(F))
   G <- G[gg,,drop=FALSE]

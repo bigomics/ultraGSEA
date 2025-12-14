@@ -5,12 +5,27 @@
 #'
 #' @export
 gset.fastFET <- function(genes, G, bg, method=2) {
+  if(is.null(bg)) bg <- unique(c(genes,rownames(G)))
+  length.bg <- NULL
+  if(length(bg)==1 && is.integer(bg)) {
+    length.bg <- as.integer(bg)
+  } else if(length(bg)>1) {
+    genes <- intersect(genes, bg)
+    G <- G[intersect(bg,rownames(G)),,drop=FALSE]
+    length.bg <- length(bg)
+  }
+
+  if(is.null(length.bg)) stop("error: invalid background. bg:", head(bg))
+  if(length(genes)==0) stop("error: zero genes length")
+  if(nrow(G)==0) stop("error: empty gene set matrix G")
+  
+  genes <- intersect(genes, rownames(G))  
   gsize <- Matrix::colSums(G!=0)
   genes <- intersect(genes, rownames(G))
   a <- Matrix::colSums(G[genes,]!=0)
   b <- length(genes) - a
   c <- gsize - a
-  d <- length(bg) - (a+b+c) 
+  d <- length.bg - (a+b+c) 
   ##pv <- genesetr::fastFET(a,b,c,d)
   if(method==1) {
     pv <- fastFET(a,b,c,d)
