@@ -1,16 +1,22 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://bigomics.github.io/ultragsea/404.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/LICENSE-text.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/articles/benchmark.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/articles/compare-methods.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/articles/index.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/articles/ultragsea.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/authors.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/index.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/cor_pvalue.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/cor_sparse_matrix.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/corpora.fisher.pval.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/corporaFET.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/fastFET.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/fgsea.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gmt2mat.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/goat.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gset.cor.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/gset.fastFET.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gset.ztest.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/index.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/makeGseaResult.html</loc></url>

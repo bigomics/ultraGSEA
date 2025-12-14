@@ -5,18 +5,18 @@ Compute correlation between a foldchange vector/matrix and gene sets
 ## Usage
 
 ``` r
-gset.cor(FC, gset, compute.p = FALSE, use.rank = FALSE, corshrink = 0)
+gset.cor(gset, FC, compute.p = FALSE, use.rank = FALSE, corshrink = 0)
 ```
 
 ## Arguments
 
-- FC:
-
-  Numeric vector or matrix of (log)foldchanges, with genes as row names
-
 - gset:
 
   Numeric matrix of gene sets, with genes as row/column names
+
+- FC:
+
+  Numeric vector or matrix of (log)foldchanges, with genes as row names
 
 - compute.p:
 
