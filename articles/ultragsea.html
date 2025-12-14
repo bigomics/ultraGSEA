@@ -107,20 +107,20 @@ your experiment.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               pathway      pval      padj log2err          ES</span></span>
 <span><span class="co">#&gt;                                &lt;char&gt;     &lt;num&gt;     &lt;num&gt;   &lt;num&gt;       &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:           HALLMARK_APICAL_JUNCTION 0.8342058 0.9704642      NA  0.08430629</span></span>
-<span><span class="co">#&gt; 2:           HALLMARK_HEME_METABOLISM 0.8734178 0.9704642      NA  0.06417051</span></span>
-<span><span class="co">#&gt; 3:     HALLMARK_INFLAMMATORY_RESPONSE 0.7112720 0.9704642      NA  0.14908865</span></span>
-<span><span class="co">#&gt; 4:         HALLMARK_KRAS_SIGNALING_UP 0.9759219 0.9759219      NA -0.01215674</span></span>
-<span><span class="co">#&gt; 5: HALLMARK_OXIDATIVE_PHOSPHORYLATION 0.8635639 0.9704642      NA -0.06921354</span></span>
-<span><span class="co">#&gt; 6:              HALLMARK_ADIPOGENESIS 0.2245049 0.7015779      NA  0.48923213</span></span>
+<span><span class="co">#&gt; 1:           HALLMARK_APICAL_JUNCTION 0.8346855 0.9696221      NA  0.08236827</span></span>
+<span><span class="co">#&gt; 2:           HALLMARK_HEME_METABOLISM 0.8726599 0.9696221      NA  0.06325971</span></span>
+<span><span class="co">#&gt; 3:     HALLMARK_INFLAMMATORY_RESPONSE 0.7118918 0.9696221      NA  0.14576208</span></span>
+<span><span class="co">#&gt; 4:         HALLMARK_KRAS_SIGNALING_UP 0.9757536 0.9757536      NA -0.01199556</span></span>
+<span><span class="co">#&gt; 5: HALLMARK_OXIDATIVE_PHOSPHORYLATION 0.8677728 0.9696221      NA -0.06570964</span></span>
+<span><span class="co">#&gt; 6:              HALLMARK_ADIPOGENESIS 0.2364614 0.7389418      NA  0.46725361</span></span>
 <span><span class="co">#&gt;            NES  size                             leadingEdge</span></span>
 <span><span class="co">#&gt;          &lt;num&gt; &lt;int&gt;                                  &lt;list&gt;</span></span>
-<span><span class="co">#&gt; 1:  0.19554431   200 CRAT,HRAS,INSIG1,PIK3R3,ACTN2,ADAM9,...</span></span>
-<span><span class="co">#&gt; 2:  0.14884035   200    CA2,BNIP3L,CDC27,H1-0,BCAM,BLVRA,...</span></span>
-<span><span class="co">#&gt; 3:  0.34580382   200    IL4R,CCL2,HBEGF,INHBA,ITGB3,EREG,...</span></span>
-<span><span class="co">#&gt; 4: -0.02819697   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...</span></span>
-<span><span class="co">#&gt; 5: -0.16053742   200 ACAA1,SDHC,ECHS1,GPI,GRPEL1,ATP6V1F,...</span></span>
-<span><span class="co">#&gt; 6:  1.13474996   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:  0.19461526   200 CRAT,HRAS,INSIG1,PIK3R3,ACTN2,ADAM9,...</span></span>
+<span><span class="co">#&gt; 2:  0.14946660   200    CA2,BNIP3L,CDC27,H1-0,BCAM,BLVRA,...</span></span>
+<span><span class="co">#&gt; 3:  0.34439870   200    IL4R,CCL2,HBEGF,INHBA,ITGB3,EREG,...</span></span>
+<span><span class="co">#&gt; 4: -0.02834246   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...</span></span>
+<span><span class="co">#&gt; 5: -0.15525515   200 ACAA1,SDHC,ECHS1,GPI,GRPEL1,ATP6V1F,...</span></span>
+<span><span class="co">#&gt; 6:  1.10400136   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...</span></span></code></pre></div>
 <p>For the fastest speed, especially when computing enrichment for
 multiple foldchanges, it is better to call the low-level functions for
 geneset correlation or geneset z-test directly. They do not return the
