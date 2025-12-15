@@ -89,17 +89,13 @@ distribution (P-values biased toward 1) can lead to false negatives by
 reporting pathways as not significant when they are actually impacted.
 
 By plotting true positive rate (TPR) against FPR we can
-visually determine the method with highest TPR and lowest FPR (Figure
-5). We see that GOAT performs the best with similar low FPR but
+visually determine the method with highest TPR and lowest FPR (**Figure 5**). We see that GOAT performs the best with similar low FPR but
 slightly higher TPR than fGSEA, and the ultraGSEA methods. fastFET and
 the single-sample enrichment methods (PLAID and replaidGSVA) had
 similar TPR but higher FPR (although still very small, well below 2%).
 
-Finally, by comparing the runtimes of the methods we see that
-ultragsea, in this benchmark, is almost 100x faster than fGSEA and
-about 10x faster than cameraPR and the naively implemented ORA
-Fisher's exact test (Fisher). PLAID, a single-sample enrichment
-method, is still very fast. The ultragsea methods (ultraGSEA.cor and
+Finally, **Figure 6** shows the runtimes of the methods. The ultragsea methods are almost 100x faster than fGSEA and about 10x faster than cameraPR and the naively implemented ORA
+Fisher's exact test (Fisher). PLAID, our single-sample enrichment method, is still very fast. The ultragsea methods (ultraGSEA.cor and
 ultraGSEA.ztest) and fastFET (hypergeometric-base Fisher's Exact
 test) are the fastest.
 
