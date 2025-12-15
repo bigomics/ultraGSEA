@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.align = "center",
   fig.height = 4,
-  fig.width = 5,
+  fig.width = 6,
   fig.fullwidth = TRUE
 )
 ```
@@ -30,15 +30,9 @@ The GSEABenchmarkeR package
 extendable framework for reproducible evaluation of enrichment methods
 of gene expression data. It includes a comprehensive real data
 compendia (microarray and RNA-seq) of test datasets. Methods can then
-be assessed with respect to runtime, statistical significance, and
-relevance of the results for the phenotypes investigated.
+be assessed with respect to runtime, statistical significance, and relevance of the results for the phenotypes investigated.
 
-GSEABenchmarkeR measures the 'relevance' of an algorithm by comparing
-the significantly detected gene sets against a list of 'validated
-genesets' in a collection of reference datasets. Somehow this is a
-measure of the true positive rate (TPR). Benchmarking was conducted
-using the GSEABenchmarkeR package on 42 GEO data sets and a total of
-12498 gene sets (GO and KEGG collections). We ran the following
+GSEABenchmarkeR measures the 'relevance' of an algorithm by comparing the significantly detected gene sets against a list of 'validated genesets' in a collection of reference datasets. Somehow this is a measure of the true positive rate (TPR). Benchmarking was conducted on 42 GEO data sets and a total of 12498 gene sets (GO and KEGG collections). We ran the following
 methods through the benchmark:
 
 1. UltraC: ultragsea with correlation test.
