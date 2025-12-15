@@ -1,6 +1,13 @@
 ##install.packages("tidydr")
 
+##BiocManager::install(c("clusterProfiler","enrichplot"))
+library(fgsea)
+library(dplyr)
+library(ggplot2)
+library(clusterProfiler)
+library(enrichplot)
 library(playbase)
+
 source("~/Playground/playbase/dev/include.R",chdir=TRUE)
 
 source("../R/ultragsea.R")
@@ -31,27 +38,6 @@ object.size(G)/1e6
 res1 <- fgsea::fgsea(gmt, fc, eps=0)
 res2 <- ultragsea(G, fc, method='ztest', format='as.gsea')
 res3 <- ultragsea(G, fc, method='cor', format='as.gsea')
-
-gs <- names(gmt)
-res1 <- res1[match(gs,res1$pathway),]
-res2 <- res2[match(gs,res2$pathway),,]
-res3 <- res3[match(gs,res3$pathway),,]
-head(res1)
-head(res2)
-head(res3)
-
-Z <- cbind(res1$NES, res2$NES, res3$NES)
-pairs(Z, pch='.', cex=3)
-P <- cbind(res1$pval, res2$pval, res3$pval)
-pairs(P, pch='.', cex=3)
-pairs(-log10(P), pch='.', cex=3)
-
-##BiocManager::install(c("clusterProfiler","enrichplot"))
-library(fgsea)
-library(dplyr)
-library(ggplot2)
-library(clusterProfiler)
-library(enrichplot)
 
 contrast=1
 pgx.makeGseaResult <- function(pgx, contrast, sig=0.05, filter=NULL) {
@@ -111,7 +97,7 @@ obj@result <- obj@result[order(-abs(obj@result$NES)),]
 head(obj@result)
 
 cex=1.4
-#cex=1
+cex=1
 #barplot(obj, showCategory=20) + ggtitle("barplot for GSEA")
 dotplot(obj, showCategory=40, x="NES", label_format=100, font.size=12*cex) +
   ggtitle("dotplot for GSEA")
@@ -120,7 +106,7 @@ dotplot(obj, showCategory=40, x="GeneRatio", label_format=100, font.size=12*cex)
 
 ## enrichment running score plot
 cex=1.2
-#cex=0.9
+cex=0.7
 gseaplot2(obj, geneSetID = 1, base_size=20*cex)
 gseaplot2(obj, geneSetID = 1:5, base_size=20*cex)
 
@@ -149,16 +135,15 @@ x11()
 cnetplot(obj, foldChange=fc, fc_threshold=1.3, size_item=1.5) +
   theme(plot.margin = unit(c(1,1,1,1), "cm"))
 
-
 ## Upset plot (hate this...)
-upsetplot(obj, n=20) + theme_dose(font.size=22)
+upsetplot(obj, n=20) + DOSE::theme_dose(font.size=16*cex)
 
 ## Ridge plot
 ridgeplot(obj, showCategory=40, label_format = 120) + theme_minimal(base_size=16)
 
 ## Heatplot
-p1 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=NULL, label_format=120) + tt
-p2 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=80, label_format=120) + tt
+p1 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=NULL, label_format=120) 
+p2 <- heatplot(obj, foldChange=fc, showCategory=20, showTop=80, label_format=120) 
 plot_list(p1, p2, ncol=1, tag_levels='A', tag_size = 24*cex)
 
 
@@ -173,7 +158,7 @@ gg <- treeplot(obj2,
   showCategory = 40, fontsize_tiplab = 5*cex,
   label_format = 20, fontsize_cladelab=8*cex,
   cladelab_offset = 20, tiplab_offset=1,
-  color = "NES", size_var="setSize"
+  color = "NES" #, size_var="setSize"
 )
 gg
 
