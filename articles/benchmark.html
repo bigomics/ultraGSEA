@@ -72,31 +72,106 @@ Analytics</h4>
 </h2>
 <p>The GSEABenchmarkeR package (<a href="https://bioconductor.org/packages/release/bioc/html/GSEABenchmarkeR.html" class="external-link">BioC</a>,
 <a href="https://github.com/waldronlab/GSEABenchmarkeR" class="external-link">github</a>)
-implements an extendable framework for reproducible evaluation of set-
-and network-based methods for enrichment analysis of gene expression
-data. This includes support for the efficient execution of these methods
-on comprehensive real data compendia (microarray and RNA-seq) using
-parallel computation on standard workstations and institutional computer
-grids. Methods can then be assessed with respect to runtime, statistical
-significance, and relevance of the results for the phenotypes
-investigated.</p>
-<p><img src="benchmark-runtime.png" style="width:45.0%" alt="Run time of enrichment methods (-log10 seconds). Benchmarking was conducted using the GSEABenchmarkeR package (42 GEO data sets on 12498 gene sets)."><img src="benchmark-relevance-vs-runtime.png" style="width:45.0%" alt="Relevance vs. relative speed-up of enrichment methods. Benchmarking was conducted using the GSEABenchmarkeR package."></p>
-<p>For this benchmark we use the example dataset from the
-<code>fgsea</code> package which includes some examples gene sets
-<code>examplePathways</code> (1457 sets) and an example ranked list
-<code>exampleRanks</code> (12000 genes). We filter out gene sets with
-less than 10 genes, partly because GOAT cannot handlue these. After
-filtering, we retain 761 gene sets.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bigomics/ultragsea" class="external-link">ultragsea</a></span><span class="op">)</span></span></code></pre></div>
+implements an extendable framework for reproducible evaluation of
+enrichment methods of gene expression data. It includes a comprehensive
+real data compendia (microarray and RNA-seq) of test datasets. Methods
+can then be assessed with respect to runtime, statistical significance,
+and relevance of the results for the phenotypes investigated.</p>
+<p>GSEABenchmarkeR measures the ‘relevance’ of an algorithm by comparing
+the significantly detected gene sets against a list of ‘validated
+genesets’ in a collection of reference datasets. Somehow this is a
+measure of the true positive rate (TPR). Benchmarking was conducted
+using the GSEABenchmarkeR package on 42 GEO data sets and a total of
+12498 gene sets (GO and KEGG collections). We ran the following methods
+through the benchmark:</p>
+<ol style="list-style-type: decimal">
+<li>UltraC: ultragsea with correlation test.</li>
+<li>UltraZ: ultragsea with z-test.</li>
+<li>fastFET: a fast implementation of Fisher Exact test (from the
+corpora R package) based on the hypergeometric function
+<code>phyper</code>.</li>
+<li>GOAT: see corresponding R package.</li>
+<li>cameraPR: preranked camera from the limma R package.</li>
+<li>fGSEA: fast GSEA from the <code>fgsea</code> R package</li>
+</ol>
+<p>From <strong>Figure 1</strong> we see that ultragsea methods (ultraC
+and ultraZ) are the fastest. While in <strong>Figure 2</strong> we can
+see that ultraC achieves the highest relevance compared to the
+others.</p>
+<div class="float">
+<img src="fig/benchmark-runtime.png" alt="Figure 1. Run time of enrichment methods (-log10 seconds)."><div class="figcaption">
+<strong>Figure 1</strong>. Run time of
+enrichment methods (-log10 seconds).</div>
+</div>
+<div class="float">
+<img src="fig/benchmark-relevance-vs-runtime.png" alt="Figure 2. Relevance vs. relative speed-up of enrichment methods. Benchmarking was conducted using the GSEABenchmarkeR package."><div class="figcaption">
+<strong>Figure 2</strong>. Relevance
+vs. relative speed-up of enrichment methods. Benchmarking was conducted
+using the GSEABenchmarkeR package.</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="eabenchmark">EAbenchmark<a class="anchor" aria-label="anchor" href="#eabenchmark"></a>
 </h2>
-<p><a href="https://bitbucket.org/sonnhammergroup/eabenchmark/src/master/" class="external-link">EAbenchmark</a></p>
-<p><img src="ea-PvalueUnderTrueH0.png" style="width:45.0%" alt="PvalueUnderTrueH0"><img src="ea-RuntimeDataset.png" style="width:45.0%" alt="RuntimeDataset"></p>
+<p>The <a href="https://bitbucket.org/sonnhammergroup/eabenchmark/src/master/" class="external-link">EAbenchmark</a>
+R package, presents a generalized benchmark for evaluating enrichment
+analysis (EA) methods, utilizing a diverse set of 82 gene expression
+datasets across 26 diseases, with a balanced representation of
+non-cancer conditions. EAbenchmark introduces the Disease Pathway
+Network, which links related KEGG pathways for evaluation, enabling
+assessment of the TPR/FPR of EA methods.</p>
+<p>EAbenchmark evaluates the false positive rate (FPR) performance of
+the EA methods on randomized data (see <strong>Figure 3</strong>). An
+ideal method would not report any significantly enriched gene sets.</p>
+<p><strong>Figure 4</strong> plot the distribution of p-values of the
+methods under the null hypothesis. Enrichment analysis methods should
+produce P-values that are uniformly distributed but in practice they are
+either biased toward 0 or 1 or exhibit a bimodal distribution biased
+toward both extremes. Such a bias can affect the significance of the
+analysis, hence we examined the distribution of P-values for each method
+to see if it was right- or left-skewed. A right-skewed distribution
+(P-values biased toward 0) can potentially lead to false positives by
+reporting pathways as impacted when they are not. Conversely, a
+left-skewed distribution (P-values biased toward 1) can lead to false
+negatives by reporting pathways as not significant when they are
+actually impacted.</p>
+<p>By plotting true positive rate (TPR) against FPR we can visually
+determine the method with highest TPR and lowest FPR (Figure 5). We see
+that GOAT performs the best with similar low FPR but slightly higher TPR
+than fGSEA, and the ultraGSEA methods. fastFET and the single-sample
+enrichment methods (PLAID and replaidGSVA) had similar TPR but higher
+FPR (although still very small, well below 2%).</p>
+<p>Finally, by comparing the runtimes of the methods we see that
+ultragsea, in this benchmark, is almost 100x faster than fGSEA and about
+10x faster than cameraPR and the naively implemented ORA Fisher’s exact
+test (Fisher). PLAID, a single-sample enrichment method, is still very
+fast. The ultragsea methods (ultraGSEA.cor and ultraGSEA.ztest) and
+fastFET (hypergeometric-base Fisher’s Exact test) are the fastest.</p>
 <div class="float">
-<img src="ea-SkewenessHistogram.png" alt="SkewenessHistogram"><div class="figcaption">SkewenessHistogram</div>
+<img src="fig/PvalueUnderTrueH0.png" alt="Figure 3. False discovery rate of different enrichment methods under true H0."><div class="figcaption">
+<strong>Figure 3</strong>. False discovery rate
+of different enrichment methods under true H0.</div>
+</div>
+<div class="float">
+<img src="fig/SkewenessHistogram.png" alt="Figure 4. P-value distribution histograms. Under the null hypothesis, enrichment analysis methods should produce P-values that are uniformly distributed. The colors correspond to the different method classes preranked (blue), ORA based (green) and single-sample based (red)."><div class="figcaption">
+<strong>Figure 4</strong>. P-value distribution
+histograms. Under the null hypothesis, enrichment analysis methods
+should produce P-values that are uniformly distributed. The colors
+correspond to the different method classes preranked (blue), ORA based
+(green) and single-sample based (red).</div>
+</div>
+<div class="float">
+<img src="fig/TPRvsFPR.png" alt="Figure 5. True positive rate (TPR) vs. false positive rate (1-FPR) of the various enrichment methods. The best methods have high TPR and low FPR."><div class="figcaption">
+<strong>Figure 5</strong>. True positive rate
+(TPR) vs. false positive rate (1-FPR) of the various enrichment methods.
+The best methods have high TPR and low FPR.</div>
+</div>
+<div class="float">
+<img src="fig/RuntimeDataset.png" alt="Figure 6. Relative runtime of the enrichment methods. Time axis is in logscale. The colors correspond to the different method classes preranked (blue), ORA based (green) and single-sample based (red)."><div class="figcaption">
+<strong>Figure 6</strong>. Relative runtime of
+the enrichment methods. Time axis is in logscale. The colors correspond
+to the different method classes preranked (blue), ORA based (green) and
+single-sample based (red).</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
