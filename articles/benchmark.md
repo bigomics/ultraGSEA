@@ -14,10 +14,9 @@ results for the phenotypes investigated.
 GSEABenchmarkeR measures the ‘relevance’ of an algorithm by comparing
 the significantly detected gene sets against a list of ‘validated
 genesets’ in a collection of reference datasets. Somehow this is a
-measure of the true positive rate (TPR). Benchmarking was conducted
-using the GSEABenchmarkeR package on 42 GEO data sets and a total of
-12498 gene sets (GO and KEGG collections). We ran the following methods
-through the benchmark:
+measure of the true positive rate (TPR). Benchmarking was conducted on
+42 GEO data sets and a total of 12498 gene sets (GO and KEGG
+collections). We ran the following methods through the benchmark:
 
 1.  UltraC: ultragsea with correlation test.
 2.  UltraZ: ultragsea with z-test.
