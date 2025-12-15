@@ -8,7 +8,7 @@
 method to compute gene set enrichment on a preranked list of genes not unlike fGSEA. ultragsea can be used as replacement of fGSEA. Although ultragsea uses a different statistical
 test (namely z-test or correlation), its scores are highly correlated and its p-values are closely similar to those from GSEA's weighted
 Kolmogorov-Smirnov test. ultragsea computes its scores using fast sparse computation and parametric p-values and typically is
-100-1000x faster than fGSEA.
+100x faster than fGSEA.
 
 
 ## Installation
