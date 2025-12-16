@@ -1,5 +1,9 @@
 # Benchmarking Results
 
+We have evaluated the performance of our method ultragsea using two
+available benchmark tools for enrichment algorithms: 1. GSEABenchmarkeR
+and 2. EAbenchmark.
+
 ## GSEABenchmarkeR
 
 The GSEABenchmarkeR package
