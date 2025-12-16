@@ -26,11 +26,10 @@ gset.fastFET <- function(genes, G, bg, method=2) {
   b <- length(genes) - a
   c <- gsize - a
   d <- length.bg - (a+b+c) 
-  ##pv <- genesetr::fastFET(a,b,c,d)
   if(method==1) {
-    pv <- fastFET(a,b,c,d)
+    pv <- genesetr.fastFET(a,b,c,d)
   } else if(method==2) {
-    pv <- corporaFET(a,b,c,d)
+    pv <- corpora.fastFET(a,b,c,d)
   } else {
     stop("[gset.fastFET] unknown method")
   }
@@ -42,11 +41,12 @@ gset.fastFET <- function(genes, G, bg, method=2) {
   data.frame(p.value=pv, q.value=qv, odd.ratio=odd.ratio, overlap=overlap)
 }
 
-#' Fast version of Fisher Exact Test from 'genesetr' R package.
-#'
+#' Fast version of Fisher Exact Test from 'genesetr' R
+#' package. Quickly compute FET p-values for n 2x2 contingency tables
+#' T = \{t_{1},t_{2},...,t_{n-1},t_{n}\}
+#' 
 #' Original code from https://github.com/MaayanLab/genesetr
 #'
-#' Quickly compute FET p-values for n 2x2 contingency tables T = \{t_{1},t_{2},...,t_{n-1},t_{n}\}
 #'
 #' @param a A vector of values where a_{i} corresponds to t_{i}
 #' @param b A vector of values where b_{i} corresponds to t_{i}
@@ -72,7 +72,7 @@ gset.fastFET <- function(genes, G, bg, method=2) {
 #' d=c(500, 100, 1000)
 #' pvals = fastFET(a,b,c,d)
 #' 
-fastFET = function(a, b, c, d, alternative = "greater") {
+genesetr.fastFET = function(a, b, c, d, alternative = "greater") {
 
   checkContingTableVals = function(a,b,c,d){
     l_a = length(a)
@@ -147,11 +147,18 @@ for(j in 1:sides){
 }
 
 
-#' Wrapper around fast version of Fisher Exact Test from 'corpora' R
-#' package.
-#'
+#' Wrapper superfast version of Fisher Exact Test from 'corpora' R
+#' package. This is the fastest implementation currently
+#' available. Uses phyper inside.
 #' 
-corporaFET <- function(a, b, c, d) {
+#'            setAn ¬setA
+#'        setB  a     b | a+b
+#'       ¬setB  c     d | c+d
+#'          ------------|-----
+#'             a+c   b+d| a+b+c+d
+#' 
+corpora.fastFET <- function(a, b, c, d, alternative = c("two.sided", "less", 
+    "greater")[3], log.p = FALSE) {
   ## this is really-really-really fast...
   pv <- rep(NA, length(a))
   ii <- 1:length(a)
@@ -164,17 +171,6 @@ corporaFET <- function(a, b, c, d) {
   k2 <- b[ii]
   n2 <- (b + d1)[ii]
   
-  pv <-  corpora.fisher.pval(k1, n1, k2, n2,  alternative = "greater")
-  pv
-}
-
-#' Superfast version of Fisher Exact Test from 'corpora' R package.
-#'
-#' 
-corpora.fisher.pval <- function (k1, n1, k2, n2, alternative = c("two.sided", "less", 
-    "greater"), log.p = FALSE) 
-{
-
   .match.len <-  function (vars, len = NULL, adjust = FALSE, check.numeric = TRUE, 
                            envir = parent.frame()) {
     vecs <- setNames(lapply(vars, get, envir = envir), vars)
