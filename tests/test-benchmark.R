@@ -1,3 +1,9 @@
+##===========================================================
+##
+## Benchmarking using GSEABenchmarkeR
+##
+##===========================================================
+
 ##BiocManager::install("GSEABenchmarkeR")
 
 library(GSEABenchmarkeR)
@@ -32,6 +38,7 @@ se <- geo[[1]]
 table(se$GROUP)
 rd <- rowData(se, use.names=TRUE)
 head(rd)
+gs <- gmt
 
 run.fgsea <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
@@ -98,9 +105,20 @@ run.fastFET <- function(se,gs) {
   head(rd)
   sig <- rownames(rd)[ rd$PVAL < 0.05 ]
   if(length(sig)<20) sig <- head(rownames(rd)[order(rd$PVAL)],100)
-  #  res <- playbase::gset.fisher(sig, gs, background=rownames(rd),
-  #    fdr=1, nmin=1, min.genes=1, max.genes=999999)
   res <- gset.fastFET(sig, matG, bg=rownames(rd), method=2)
+  res <- res[match(names(gs),rownames(res)),]
+  pv <- res$p.value
+  names(pv) <- rownames(res)
+  pv
+}
+
+run.plaid <- function(se,gs) {
+  rd <- rowData(se, use.names=TRUE)
+  fc <- rd$FC
+  names(fc) <- rownames(rd)
+  y <- se$GROUP
+  X <- assay(se)
+  res <- plaid.ttest(X, matG, y, ref=0)
   res <- res[match(names(gs),rownames(res)),]
   pv <- res$p.value
   names(pv) <- rownames(res)
@@ -121,7 +139,8 @@ par.methods = list(
   GOAT = run.goat,
   #gsetcor = run.gsetcor,
   ultraZ = run.ultraZ,
-  ultraC = run.ultraC  
+  ultraC = run.ultraC,
+  plaid = run.plaid
 )
 methods <- names(par.methods)
 methods

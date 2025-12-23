@@ -43,13 +43,15 @@ ultragsea <- function(G, fc, alpha=0, minLE=1, corshrink=3,
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]
     stat_value <- res$rho[,1]
-  } else if(method=="goat" && require("goat")) {
+  } else if(method=="goat") {
+    if(!require("goat")) stop("please install goat")    
     res <- goat(pathways=gmt, stats=fc, filter=FALSE, method="goat") 
     res <- res[match(colnames(G),res$pathway),]
     p_value <- res$pval
     q_value <- res$padj
     stat_value <- res$score
-  } else if(method=="camera" && require("limma")) {
+  } else if(method=="camera") {
+    if(!require("limma")) stop("please install limma")
     res <- limma::cameraPR(fc, gmt)
     res <- res[match(colnames(G),rownames(res)),]
     p_value <- res$PValue
@@ -119,12 +121,14 @@ fgsea <- function(pathways, stats, minSize = 1, maxSize = length(stats)-1,
   stats <- stats[gg]
   gsize <- Matrix::colSums(G)
   G <- G[, gsize >= minSize & gsize <= maxSize]
-  res <- ultragsea(G, stats, method="ztest", alpha=0, format="as.gsea2")
   # run fgseaSimple only for few iterations only for NES
   suppressWarnings(fres <- fgsea::fgseaSimple(pathways, stats, nperm=nperm))
+  # use ultragsea for p-value
+  res <- ultragsea(G, stats, method="cor", alpha=0, format="simple")
   res <- res[match(res$pathway,fres$pathway),]  
-  fres$pval <-  fres$pval
-  fres$padj <-  fres$padj  
+  fres$nMoreExtreme <- NULL
+  fres$pval <-  res$pval
+  fres$padj <-  res$padj  
   fres
 }
 

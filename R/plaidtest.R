@@ -19,17 +19,6 @@ plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
   res
 }
 
-plaid.limma <- function(X, G, y, ref, nsmooth=3) {
-  if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
-  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
-  sel <- which(!is.na(y))
-  y1 <- y[sel]
-  X1 <- X[,sel,drop=FALSE]
-  gsetX <- plaid::plaid(X1, G, nsmooth=nsmooth)
-  res <- playbase::gx.limma(gsetX, y, fdr=1, lfc=0, ref=ref)
-  res
-}
-
 plaid.dualtest <- function(X, G, y, ref) {
   test1 <- plaid.ttest(X, G, y, ref)
   test2 <- gset.cor(G, FC, compute.p = FALSE,

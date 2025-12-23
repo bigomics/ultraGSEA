@@ -4,14 +4,21 @@
 #' @param G Sparse matrix containing gene sets
 #'
 #' @export
-gset.fastFET <- function(genes, G, bg, method=2) {
-  if(is.null(bg)) bg <- unique(c(genes,rownames(G)))
+gset.fastFET <- function(genes, G, bg, method=2, report.genes=TRUE) {
+  bgnull <- FALSE
+  if(is.null(bg)) {
+    message("[gset.fisher] note: it is recommended to specify background")
+    bg <- unique(c(genes,rownames(G)))
+    bgnull <- TRUE
+  }
+  if(length(bg)>1 && !bgnull) {
+    genes <- intersect(genes, bg)
+    G <- G[intersect(bg,rownames(G)),,drop=FALSE]
+  }  
   length.bg <- NULL
   if(length(bg)==1 && is.integer(bg)) {
     length.bg <- as.integer(bg)
   } else if(length(bg)>1) {
-    genes <- intersect(genes, bg)
-    G <- G[intersect(bg,rownames(G)),,drop=FALSE]
     length.bg <- length(bg)
   }
 
@@ -38,7 +45,16 @@ gset.fastFET <- function(genes, G, bg, method=2) {
   odd.ratio <- (a/b)/(c/d)
   qv <- p.adjust(pv, method="fdr")
   overlap <- paste0(a,"/",gsize)
-  data.frame(p.value=pv, q.value=qv, odd.ratio=odd.ratio, overlap=overlap)
+
+  gsgenes <- NULL
+  if(report.genes) {
+    gsgenes <- apply( G[genes,], 2, function(x) paste(sort(genes[which(x!=0)]),collapse="|") )
+  }
+  
+  df <- data.frame(p.value=pv, q.value=qv, odd.ratio=odd.ratio, overlap=overlap)
+
+  if(!is.null(gsgenes)) df <- cbind(df, genes=gsgenes)
+  return(df)
 }
 
 #' Fast version of Fisher Exact Test from 'genesetr' R

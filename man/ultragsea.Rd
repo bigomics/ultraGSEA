@@ -8,7 +8,7 @@ these methods highly correlate with GSEA/fGSEA but are much faster.}
 ultragsea(
   G,
   fc,
-  alpha = 0.5,
+  alpha = 0,
   minLE = 1,
   corshrink = 3,
   minsize = 1L,

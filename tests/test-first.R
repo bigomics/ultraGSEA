@@ -7,6 +7,7 @@ source("../R/gsetcor.R")
 source("../R/gmt-utils.R")
 source("../R/goat.R")
 source("../R/utils.R")
+source("../R/plaidtest.R")
 
 library(fgsea)
 library(goat)
@@ -50,9 +51,7 @@ res3d <- ultragsea(G, fc1, method='ztest', alpha=1, center=FALSE)
 res4a <- ultragsea(G, fc1, method='ttest', alpha=0)
 res4b <- ultragsea(G, fc1, method='ttest', alpha=1)
 res5 <- ultragsea(G, fc1, method='goat')
-res5 <- res5[match(colnames(G),res5$pathway),]
 res6 <- ultragsea(G, fc1, method='camera')
-res6 <- res6[match(colnames(G),res6$pathway),]
 
 
 table(sign(res1$NES))
@@ -86,18 +85,25 @@ colnames(P) <- c("fgsea","cor",
 pairs(-log10(P), cex=0.6)
 cor(-log10(P))
 
+res <- ultragsea(G, fc1, method="cor", alpha=0)
 
 source("../R/ultragsea.R")
 res1 <- fgsea::fgsea(gmt, fc1, eps=0)
-head(res1)
+colnames(res1)
+
 res2 <- fgsea(gmt, fc1, nperm=10)
 res3 <- fgsea(gmt, fc1, nperm=20)
 res4 <- fgsea(gmt, fc1, nperm=1000)
 N <- cbind(res1$NES, res2$NES, res3$NES, res4$NES)
 pairs(N)
 
+P <- cbind(res1$pval, res2$pval, res3$pval, res4$pval)
+pairs(-log(P))
 
-pathways=gmt
-stats=fc1
-minSize=1
-maxSize=999999
+head(res1)
+head(res3)
+colnames(res1)
+colnames(res3)
+
+
+G1 <- Matrix::Matrix(G, sparse=TRUE)

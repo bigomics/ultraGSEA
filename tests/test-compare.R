@@ -25,7 +25,6 @@ f0 <- fgsea::fgsea(gmt, fc)
 
 u1 <- ultragsea(G, fc, format='simple')
 u2 <- ultragsea(G, fc, format='as.gsea')
-u3 <- ultragsea(G, fc, format='as.gsea2')
 
 z1 <- gset.ztest(G, fc, zmat=TRUE)
 z2 <- gset.ztest(G, cbind(fc,fc), zmat=TRUE)
