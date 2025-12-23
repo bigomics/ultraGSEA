@@ -38,8 +38,8 @@ system.time(z1 <- apply(F, 2, function(f) gset.ztest(G, f)))
 system.time(z2 <- gset.ztest(G, F))
 
 source("../R/gsetcor.R")
-z1 <- gset.cor(G, fc, compute.p=TRUE)
-z2 <- gset.cor(G, fc, compute.p=TRUE, cor0=10)
+z1 <- gset.cortest(G, fc, compute.p=TRUE)
+z2 <- gset.cortest(G, fc, compute.p=TRUE, cor0=10)
 
 gsize <- Matrix::colSums(G!=0)
 cex1 <- 0.2*log(gsize)

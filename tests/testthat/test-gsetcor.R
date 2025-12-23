@@ -1,6 +1,6 @@
-# Unit tests for gset.cor and cor_sparse_matrix functions
+# Unit tests for gset.cortesttest and cor_sparse_matrix functions
 
-test_that("gset.cor basic functionality with vector input", {
+test_that("gset.cortest basic functionality with vector input", {
   set.seed(100)
   FC <- rnorm(50)
   names(FC) <- paste0("g", 1:50)
@@ -10,7 +10,7 @@ test_that("gset.cor basic functionality with vector input", {
   colnames(gset) <- paste0("gs", 1:5)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset)
+  result <- gset.cortest(FC, gset)
 
   expect_type(result, "list")
   expect_named(result, c("rho", "p.value", "q.value"))
@@ -18,7 +18,7 @@ test_that("gset.cor basic functionality with vector input", {
   expect_equal(ncol(result$rho), 1)
 })
 
-test_that("gset.cor with matrix input", {
+test_that("gset.cortest with matrix input", {
   set.seed(200)
   FC <- matrix(rnorm(50 * 3), nrow = 50, ncol = 3)
   rownames(FC) <- paste0("g", 1:50)
@@ -29,14 +29,14 @@ test_that("gset.cor with matrix input", {
   colnames(gset) <- paste0("gs", 1:5)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset)
+  result <- gset.cortest(FC, gset)
 
   expect_type(result, "list")
   expect_equal(nrow(result$rho), 5)
   expect_equal(ncol(result$rho), 3)
 })
 
-test_that("gset.cor with compute.p=TRUE", {
+test_that("gset.cortest with compute.p=TRUE", {
   set.seed(300)
   FC <- rnorm(40)
   names(FC) <- paste0("g", 1:40)
@@ -46,7 +46,7 @@ test_that("gset.cor with compute.p=TRUE", {
   colnames(gset) <- paste0("gs", 1:4)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset, compute.p = TRUE)
+  result <- gset.cortest(FC, gset, compute.p = TRUE)
 
   expect_true(is.matrix(result$p.value))
   expect_true(is.matrix(result$q.value))
@@ -54,7 +54,7 @@ test_that("gset.cor with compute.p=TRUE", {
   expect_true(all(result$p.value >= 0 & result$p.value <= 1, na.rm = TRUE))
 })
 
-test_that("gset.cor with compute.p=FALSE", {
+test_that("gset.cortest with compute.p=FALSE", {
   set.seed(400)
   FC <- rnorm(30)
   names(FC) <- paste0("g", 1:30)
@@ -64,14 +64,14 @@ test_that("gset.cor with compute.p=FALSE", {
   colnames(gset) <- paste0("gs", 1:3)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset, compute.p = FALSE)
+  result <- gset.cortest(FC, gset, compute.p = FALSE)
 
   expect_true(is.matrix(result$rho))
   expect_equal(result$p.value, NA)
   expect_equal(result$q.value, NA)
 })
 
-test_that("gset.cor with use.rank=TRUE", {
+test_that("gset.cortest with use.rank=TRUE", {
   set.seed(500)
   FC <- rnorm(45)
   names(FC) <- paste0("g", 1:45)
@@ -81,14 +81,14 @@ test_that("gset.cor with use.rank=TRUE", {
   colnames(gset) <- paste0("gs", 1:5)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result_cor <- gset.cor(FC, gset, use.rank = FALSE)
-  result_rankcor <- gset.cor(FC, gset, use.rank = TRUE)
+  result_cor <- gset.cortest(FC, gset, use.rank = FALSE)
+  result_rankcor <- gset.cortest(FC, gset, use.rank = TRUE)
 
   # Results should be different
   expect_false(isTRUE(all.equal(result_cor$rho, result_rankcor$rho)))
 })
 
-test_that("gset.cor with transposed gene set", {
+test_that("gset.cortest with transposed gene set", {
   set.seed(600)
   FC <- rnorm(50)
   names(FC) <- paste0("g", 1:50)
@@ -98,13 +98,13 @@ test_that("gset.cor with transposed gene set", {
   rownames(gset) <- paste0("gs", 1:5)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset)
+  result <- gset.cortest(FC, gset)
 
   # Should auto-transpose to correct orientation
   expect_equal(nrow(result$rho), 5)
 })
 
-test_that("gset.cor returns valid correlations", {
+test_that("gset.cortest returns valid correlations", {
   set.seed(700)
   FC <- rnorm(40)
   names(FC) <- paste0("g", 1:40)
@@ -114,23 +114,23 @@ test_that("gset.cor returns valid correlations", {
   colnames(gset) <- paste0("gs", 1:4)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset)
+  result <- gset.cortest(FC, gset)
 
   # Correlations should be between -1 and 1 (or NA)
   expect_true(all(result$rho >= -1 & result$rho <= 1, na.rm = TRUE))
 })
 
-test_that("gset.cor throws error for missing names", {
+test_that("gset.cortest throws error for missing names", {
   FC <- rnorm(30)
   gset <- matrix(rbinom(30 * 3, 1, 0.3), nrow = 30, ncol = 3)
   rownames(gset) <- paste0("g", 1:30)
   colnames(gset) <- paste0("gs", 1:3)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  expect_error(gset.cor(FC, gset), "must be named")
+  expect_error(gset.cortest(FC, gset), "must be named")
 })
 
-test_that("gset.cor throws error for zero columns", {
+test_that("gset.cortest throws error for zero columns", {
   set.seed(800)
   FC <- rnorm(30)
   names(FC) <- paste0("g", 1:30)
@@ -139,10 +139,10 @@ test_that("gset.cor throws error for zero columns", {
   rownames(gset) <- names(FC)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  expect_error(gset.cor(FC, gset), "zero columns")
+  expect_error(gset.cortest(FC, gset), "zero columns")
 })
 
-test_that("gset.cor with gene intersection", {
+test_that("gset.cortest with gene intersection", {
   set.seed(900)
   FC <- rnorm(100)
   names(FC) <- paste0("g", 1:100)
@@ -152,7 +152,7 @@ test_that("gset.cor with gene intersection", {
   colnames(gset) <- paste0("gs", 1:5)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset)
+  result <- gset.cortest(FC, gset)
 
   expect_equal(nrow(result$rho), 5)
 })
@@ -186,7 +186,7 @@ test_that("cor_sparse_matrix with missing values", {
   expect_equal(ncol(result), 2)
 })
 
-test_that("gset.cor FDR adjustment", {
+test_that("gset.cortest FDR adjustment", {
   set.seed(1200)
   FC <- rnorm(50)
   names(FC) <- paste0("g", 1:50)
@@ -196,7 +196,7 @@ test_that("gset.cor FDR adjustment", {
   colnames(gset) <- paste0("gs", 1:10)
   gset <- Matrix::Matrix(gset, sparse = TRUE)
 
-  result <- gset.cor(FC, gset, compute.p = TRUE)
+  result <- gset.cortest(FC, gset, compute.p = TRUE)
 
   # FDR adjustment should produce q-values >= p-values
   expect_true(all(result$q.value >= result$p.value - 1e-10, na.rm = TRUE))

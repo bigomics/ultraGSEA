@@ -32,8 +32,8 @@
 #' gset.rankcor(ranks, genesets, compute.p = TRUE)
 #' }
 #' @export
-gset.cor <- function(gset, FC, compute.p = FALSE, use.rank = FALSE,
-                     corshrink = 0) {
+gset.cortest <- function(gset, FC, compute.p = FALSE, use.rank = FALSE,
+                         corshrink = 0) {
   if (ncol(gset) == 0 || NCOL(FC) == 0) {
     if (ncol(gset) == 0) stop("gset has zero columns")
     if (NCOL(FC) == 0) stop("FC has zero columns")

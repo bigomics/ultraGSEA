@@ -14,33 +14,75 @@ plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
   y1 <- y[sel]
   X1 <- X[,sel,drop=FALSE]
   gsetX <- plaid::plaid(X1, G, nsmooth=nsmooth)
-  res <- matrixTests::row_t_welch(gsetX[,which(y1!=ref),drop=FALSE],
-    gsetX[,which(y1==ref),drop=FALSE] )
-  res
+  G1 <- gsetX[,which(y1!=ref),drop=FALSE]
+  G0 <- gsetX[,which(y1==ref),drop=FALSE]
+  res <- matrixTests::row_t_welch(G1, G0)
+  df <- data.frame(
+    pathway = rownames(res),
+    logFC = res[,"mean.diff"],
+    pval = res[,"pvalue"],
+    padj = p.adjust(res[,"pvalue"], method="BH")
+  )
+  rownames(df) <- rownames(res)
+  df
 }
 
-plaid.dualtest <- function(X, G, y, ref=0) {
+plaid.cortest <- function(X, G, y, ref, nsmooth=3) {
+  if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
+  sel <- which(!is.na(y))
+  y1 <- 1*(y[sel]!=ref)
+  X1 <- X[,sel,drop=FALSE]
+  gsetX <- plaid::plaid(X1, G, nsmooth=nsmooth)
+  rho <- cor(Matrix::t(gsetX), y1)[,1]
+  pv <- cor_pvalue(rho, ncol(gsetX))
+  df <- data.frame(
+    pathway = rownames(gsetX),
+    rho = rho,
+    pval = pv,
+    padj = p.adjust(pv, method="BH")
+  )
+  rownames(df) <- rownames(gsetX)  
+  df
+}
+
+plaid.dualtest <- function(X, G, y, ref=0, test1="ttest", pbalance=TRUE) {
   if(!ref %in% y) stop("need to specify ref")
-  t1 <- plaid.ttest(X=X, G=G, y=y, ref=ref)
-  fc <- rowMeans(X[,which(y==1)],na.rm=TRUE) -
-    rowMeans(X[,which(y==0)],na.rm=TRUE)
-  t2 <- gset.cor(gset=G, fc, compute.p = TRUE,
+  if(test1 == "ttest") {
+    t1 <- plaid.ttest(X=X, G=G, y=y, ref=ref)
+    t1 <- t1[colnames(G),]
+    stat1 <- t1$logFC    
+  } else if(test1 == "cortest") {
+    t1 <- plaid.cortest(X=X, G=G, y=y, ref=ref)
+    t1 <- t1[colnames(G),]
+    stat1 <- t1$rho
+  } else {
+    stop("Stop invalid method: test1 = ",test1)
+  }
+  fc <- rowMeans(X[,which(y!=ref)],na.rm=TRUE) -
+    rowMeans(X[,which(y==ref)],na.rm=TRUE)
+  t2 <- gset.cortest(gset=G, fc, compute.p = TRUE,
     use.rank = FALSE, corshrink = 3)
   t2 <- do.call(cbind, lapply(t2, function(x) x[,1]))
-  t1 <- t1[colnames(G),]
-  t2 <- t2[colnames(G),]    
-  metap <- matrix_metap(cbind(t1$pvalue, t2[,"p.value"]))
+  t2 <- t2[colnames(G),]
+  pp <- cbind(t1$pval, t2[,"p.value"])
+  if(pbalance) {
+    ## balance p-values by scaling
+    q99 <- apply(-log10(pp),2,quantile,probs=0.99,na.rm=TRUE)
+    q99 <- q99 / mean(q99,na.rm=TRUE)
+    pp <- 10^(-sweep(-log10(pp), 2, q99, '/'))
+  }
+  metap <- matrix_metap(pp)
   df <- data.frame(
     pathway = colnames(G),
     pval = metap,
     padj = p.adjust(metap),
-    pval.TT = t1$pvalue,
-    pval.COR = t2[,"p.value"],
-    rho = t2[,"rho"],
-    mean.x = t1$mean.x,
-    mean.y = t1$mean.y,
-    mean.diff = t1$mean.diff    
+    stat1 = stat1,
+    pval1 = t1$pval,
+    stat2 = t2[,"rho"],
+    pval2 = t2[,"p.value"]
   )
+  rownames(df) <- colnames(G)  
   return(df)
 }
 

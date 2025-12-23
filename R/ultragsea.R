@@ -38,7 +38,7 @@ ultragsea <- function(G, fc, alpha=0, minLE=1, corshrink=3,
     p_value <- zres$p
     stat_value <- zres$stat
   } else if(method == "cor") {
-    res <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE,
+    res <- gset.cortest(G, fc, compute.p=TRUE, use.rank=FALSE,
       corshrink = corshrink) 
     p_value <- res$p.value[,1]
     q_value <- res$q.value[,1]

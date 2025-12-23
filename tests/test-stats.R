@@ -41,7 +41,7 @@ F <- cbind(fc1, fc1+0.5)
 colMeans(F)
 
 source("../R/ultragsea.R")
-res1  <- gset.cor(G, F, compute.p=TRUE)
+res1  <- gset.cortest(G, F, compute.p=TRUE)
 res2a <- gset.ztest(G, F, alpha=0)
 res2b <- gset.ztest(G, F, alpha=1)
 res3a <- gset.ztest(G, F, pdist="t", alpha=0)

@@ -63,7 +63,7 @@ run.goat <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::goat(gs, fc, verbose=0)
+  res <- goat(gs, fc, verbose=0)
   pv <- res$pval
   names(pv) <- res$pathway
   pv
@@ -103,7 +103,7 @@ run.gsetcor <- function(se, gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::gset.cor(matG, fc,
+  res <- ultragsea::gset.cortest(matG, fc,
     compute.p=TRUE, corshrink=3)
   pv <- res$p.value[,1]
   pv
@@ -128,7 +128,7 @@ run.plaid <- function(se,gs) {
   X <- assay(se)
   res <- plaid.ttest(X, matG, y, ref=0)
   res <- res[match(names(gs),rownames(res)),]
-  pv <- res$pvalue
+  pv <- res$pval
   names(pv) <- rownames(res)
   pv
 }
@@ -136,12 +136,33 @@ run.plaid <- function(se,gs) {
 run.dual <- function(se,gs) {
   y <- se$GROUP
   X <- assay(se)
-  res <- plaid.dualtest(X, matG, y, ref=0)
+  res <- plaid.dualtest(X, matG, y, ref=0, test1="ttest")
   res <- res[match(names(gs),rownames(res)),]
   pv <- res$pval
   names(pv) <- rownames(res)
   pv
 }
+
+run.dual2 <- function(se,gs) {
+  y <- se$GROUP
+  X <- assay(se)
+  res <- plaid.dualtest(X, matG, y, ref=0, test1="cortest")
+  res <- res[match(names(gs),rownames(res)),]
+  pv <- res$pval
+  names(pv) <- rownames(res)
+  pv
+}
+
+run.dual3 <- function(se,gs) {
+  y <- se$GROUP
+  X <- assay(se)
+  res <- plaid.dualtest(X, matG, y, ref=0, pbalance=FALSE)
+  res <- res[match(names(gs),rownames(res)),]
+  pv <- res$pval
+  names(pv) <- rownames(res)
+  pv
+}
+
 
 ##-----------------------------------------------
 ## run methods
@@ -159,7 +180,9 @@ par.methods = list(
   ultraZ = run.ultraZ,
   ultraC = run.ultraC,
   plaid = run.plaid,
-  dual = run.dual
+  dual = run.dual,
+  dual2 = run.dual2,
+  dual3 = run.dual3
 )
 methods <- names(par.methods)
 methods
@@ -173,7 +196,6 @@ res <- runEA(
   save2file = TRUE,
   out.dir = res.dir
 )
-
 
 ## Run manually (better timing)
 length(geo)
@@ -191,7 +213,9 @@ for(k in names(geo)) {
     run.ultraZ(se,gs),
     run.ultraC(se,gs),
     run.plaid(se,gs),      
-    run.dual(se,gs)      
+    run.dual(se,gs),
+    run.dual2(se,gs),
+    run.dual3(se,gs)          
   )
   tt2 <- tt[,2]
   names(tt2) <- methods
