@@ -4,10 +4,13 @@ library(limma)
 source("~/Playground/playbase/dev/include.R",chdir=TRUE)
 source("../R/ultragsea.R")
 source("../R/gsetcor.R")
+source("../R/gsetztest.R")
 source("../R/gmt-utils.R")
 source("../R/goat.R")
 source("../R/utils.R")
 source("../R/plaidtest.R")
+
+load_all('..')
 
 library(fgsea)
 library(goat)

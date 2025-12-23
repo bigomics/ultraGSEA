@@ -20,6 +20,9 @@ go.gmt <- getGenesets(org="hsa", db="go")
 gmt <- kegg.gmt
 gmt <- c(kegg.gmt, go.gmt)
 length(gmt)
+range(sapply(gmt,length))
+gmt <- gmt[sapply(gmt,length)>=10 & sapply(gmt,length) < 500]
+length(gmt)
 matG <- ultragsea::gmt2mat(gmt)
 dim(matG)
 
@@ -32,13 +35,19 @@ source("../R/gmt-utils.R")
 source("../R/utils.R")
 source("../R/goat.R")
 source("../R/fastFET.R")
+source("../R/plaidtest.R")
 
 length(geo)
+head(names(geo))
 se <- geo[[1]]
 table(se$GROUP)
 rd <- rowData(se, use.names=TRUE)
 head(rd)
 gs <- gmt
+X <- assay(se)
+y <- se$GROUP
+ref=0
+G=matG
 
 run.fgsea <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
@@ -54,7 +63,7 @@ run.goat <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::goat(gs, fc)
+  res <- ultragsea::goat(gs, fc, verbose=0)
   pv <- res$pval
   names(pv) <- res$pathway
   pv
@@ -102,10 +111,9 @@ run.gsetcor <- function(se, gs) {
 
 run.fastFET <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
-  head(rd)
   sig <- rownames(rd)[ rd$PVAL < 0.05 ]
   if(length(sig)<20) sig <- head(rownames(rd)[order(rd$PVAL)],100)
-  res <- gset.fastFET(sig, matG, bg=rownames(rd), method=2)
+  res <- gset.fastFET(sig, matG, bg=rownames(rd))
   res <- res[match(names(gs),rownames(res)),]
   pv <- res$p.value
   names(pv) <- rownames(res)
@@ -120,7 +128,17 @@ run.plaid <- function(se,gs) {
   X <- assay(se)
   res <- plaid.ttest(X, matG, y, ref=0)
   res <- res[match(names(gs),rownames(res)),]
-  pv <- res$p.value
+  pv <- res$pvalue
+  names(pv) <- rownames(res)
+  pv
+}
+
+run.dual <- function(se,gs) {
+  y <- se$GROUP
+  X <- assay(se)
+  res <- plaid.dualtest(X, matG, y, ref=0)
+  res <- res[match(names(gs),rownames(res)),]
+  pv <- res$pval
   names(pv) <- rownames(res)
   pv
 }
@@ -140,11 +158,13 @@ par.methods = list(
   #gsetcor = run.gsetcor,
   ultraZ = run.ultraZ,
   ultraC = run.ultraC,
-  plaid = run.plaid
+  plaid = run.plaid,
+  dual = run.dual
 )
 methods <- names(par.methods)
 methods
 
+## RunEA 
 res.dir <- tempdir()
 res <- runEA(
   geo,
@@ -154,40 +174,54 @@ res <- runEA(
   out.dir = res.dir
 )
 
+
+## Run manually (better timing)
+length(geo)
+head(names(geo))
+rtimes <- list()
+k=names(geo)[1]
+for(k in names(geo)) {
+  cat("computing ",k,"...\n")
+  se <- geo[[k]]
+  tt <- peakRAM::peakRAM(
+    run.fgsea(se,gs),
+    run.cameraPR(se,gs),
+    run.fastFET(se,gs),
+    run.goat(se,gs),
+    run.ultraZ(se,gs),
+    run.ultraC(se,gs),
+    run.plaid(se,gs),      
+    run.dual(se,gs)      
+  )
+  tt2 <- tt[,2]
+  names(tt2) <- methods
+  rtimes[[k]] <- tt2
+}
+
+RT <- do.call(cbind, rtimes)
+ea.rtimes <- apply(RT, 1, function(x)
+  array(x,dimnames=list(colnames(RT))), simplify=FALSE)
+save(ea.rtimes, file="eartimes.rda")
+
+
 ##-----------------------------------------------
 ## gather results
 ##-----------------------------------------------
 
-png("figures/benchmark-runtime.png",w=650, h=450, pointsize=20)
-par(mar=c(5,4.5,2,1))
+png("figures/benchmark-runtime.png",w=700, h=550, pointsize=20)
+par(mar=c(5.8,4.5,2,1))
 ## plot runtime
-ea.rtimes <- readResults(
-  res.dir, names(geo), 
-  methods = methods,
-  type = "runtime")
-ea.rtimes
-bpPlot(ea.rtimes, what="runtime")
+## ea.rtimes <- readResults(
+##   res.dir, names(geo), 
+##   methods = methods,
+##   type = "runtime")
+load(file="eartimes.rda",verbose=1)
+#bpPlot(ea.rtimes, what="runtime")
+sel <- order(sapply(lapply(ea.rtimes,log),mean))
+boxplot(ea.rtimes[sel], log='y', col=2:10,
+  ylab="runtime (sec)", las=2, srt=45)
 title("Runtime",cex.main=1.3)
 dev.off()
-
-## Number of significant genesets
-ea.ranks <- readResults(
-  res.dir, names(geo), 
-  methods = methods,
-  type = "ranking"
-)
-i=j=1
-for(i in 1:length(ea.ranks)) {
-  for(j in 1:length(ea.ranks[[i]])) {
-    pv <- ea.ranks[[i]][[j]]$PVAL
-    ii <- which(is.na(pv))
-    if(length(ii)) ea.ranks[[i]][[j]]$PVAL[ii] <- 1
-  }
-}
-lengths(ea.ranks)
-sig.sets <- evalNrSigSets(ea.ranks, alpha=0.05, padj="fdr")
-sig.sets <- evalNrSigSets(ea.ranks, alpha=0.05, padj="none")
-bpPlot(sig.sets, what="sig.sets")
 
 ## MALA relevance ranking
 data.dir <- system.file("extdata", package="GSEABenchmarkeR")
@@ -206,9 +240,9 @@ avg.rt <- colMeans(rt)
 avg.rel <- colMeans(all.kegg.res)
 avg.rt <- 1/(10**avg.rt)
 
-png("figures/benchmark-relevance-vs-runtime.png",w=700, h=500, pointsize=20)
+png("figures/benchmark-relevance-vs-runtime.png",w=650, h=600, pointsize=20)
 par(mar=c(5,4.5,2,1))
-plot( avg.rt, avg.rel, pch=19,
+plot( avg.rt, avg.rel, pch=19, cex=1.2,
   xlab="relative speedup (larger is faster)",
   ylab="avg. relevance (larger is better)",
   las=1, log='x',
@@ -216,7 +250,7 @@ plot( avg.rt, avg.rel, pch=19,
   ylim = range(avg.rel) + c(-1.2,1)*2
 )
 abline(v=1,lty=3)
-text( avg.rt, avg.rel, labels=names(avg.rt), cex=1, pos=2)
+text( avg.rt, avg.rel, labels=names(avg.rt), cex=1.05, pos=3)
 title("relevance vs. runtime",cex.main=1.3)
 dev.off()
 

@@ -3,7 +3,7 @@
 #'
 #' @export
 goat <- function(pathways, stats, minSize = 10L, maxSize = 1500L,
-                 filter = TRUE, method=c("goat","gsea")[1]) {
+                 filter=TRUE, method=c("goat","gsea")[1], verbose=1) {
   require(goat)
   
   method <- method[1]
@@ -18,7 +18,7 @@ goat <- function(pathways, stats, minSize = 10L, maxSize = 1500L,
   
   ## goat does not like length(stats) larger than 20000
   if(length(stats) > 20000 && method %in% c("goat","goat_precomputed")) {
-    message("truncating stats vector")
+    if(verbose) message("truncating stats vector")
     sel <- head(order(-abs(stats)),20000)
     stats <- stats[sel]
     filter <- TRUE ## need filter
@@ -43,7 +43,7 @@ goat <- function(pathways, stats, minSize = 10L, maxSize = 1500L,
   )
 
   if(filter) {
-    message("filtering genesets...")
+    if(verbose) message("filtering genesets...")
     ## filter geneset sizes. For speed, disable if already filtered
     genesets <- goat::filter_genesets(
       genesets,

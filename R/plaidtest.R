@@ -19,10 +19,29 @@ plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
   res
 }
 
-plaid.dualtest <- function(X, G, y, ref) {
-  test1 <- plaid.ttest(X, G, y, ref)
-  test2 <- gset.cor(G, FC, compute.p = FALSE,
-    use.rank = FALSE, corshrink = 0)
+plaid.dualtest <- function(X, G, y, ref=0) {
+  if(!ref %in% y) stop("need to specify ref")
+  t1 <- plaid.ttest(X=X, G=G, y=y, ref=ref)
+  fc <- rowMeans(X[,which(y==1)],na.rm=TRUE) -
+    rowMeans(X[,which(y==0)],na.rm=TRUE)
+  t2 <- gset.cor(gset=G, fc, compute.p = TRUE,
+    use.rank = FALSE, corshrink = 3)
+  t2 <- do.call(cbind, lapply(t2, function(x) x[,1]))
+  t1 <- t1[colnames(G),]
+  t2 <- t2[colnames(G),]    
+  metap <- matrix_metap(cbind(t1$pvalue, t2[,"p.value"]))
+  df <- data.frame(
+    pathway = colnames(G),
+    pval = metap,
+    padj = p.adjust(metap),
+    pval.TT = t1$pvalue,
+    pval.COR = t2[,"p.value"],
+    rho = t2[,"rho"],
+    mean.x = t1$mean.x,
+    mean.y = t1$mean.y,
+    mean.diff = t1$mean.diff    
+  )
+  return(df)
 }
 
 #' Matrix version for combining p-values using fisher or stouffer

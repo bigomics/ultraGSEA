@@ -163,10 +163,7 @@ bg <- rownames(G)
 genes <- head(names(sort(Matrix::rowMeans(G),dec=TRUE)),200)
 dim(G)
 
-system.time(pv1 <- gset.fastFET(genes, G, bg=bg, method=1))
-system.time(pv2 <- gset.fastFET(genes, G, bg=bg, method=2))
-
-plot(pv1$p.value, pv2$p.value)
+system.time(pv1 <- gset.fastFET(genes, G, bg=bg))
 
 gsize <- Matrix::colSums(G!=0)
 genes <- intersect(genes, rownames(G))
