@@ -171,31 +171,31 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.319</td>
+<td align="right">4.292</td>
 <td align="right">4.0</td>
 <td align="right">43.8</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.317</td>
+<td align="right">0.302</td>
 <td align="right">0.8</td>
 <td align="right">42.5</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.027</td>
+<td align="right">0.026</td>
 <td align="right">0.1</td>
 <td align="right">5.8</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.039</td>
+<td align="right">0.038</td>
 <td align="right">0.9</td>
 <td align="right">9.5</td>
 </tr>
 <tr class="odd">
 <td align="left">cortest</td>
-<td align="right">0.005</td>
+<td align="right">0.004</td>
 <td align="right">0.1</td>
 <td align="right">2.8</td>
 </tr>
@@ -207,7 +207,7 @@ of each method.</p>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.243</td>
+<td align="right">0.248</td>
 <td align="right">4.4</td>
 <td align="right">23.7</td>
 </tr>
@@ -279,10 +279,10 @@ fgsea::fgsea()</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   5.606   0.093   3.633</span></span>
+<span><span class="co">#&gt;   2.991   0.048   3.592</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">ultragsea</span><span class="fu">::</span><span class="fu"><a href="../reference/fgsea.html">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.215   0.126   0.274</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.214   0.129   0.274</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
