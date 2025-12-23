@@ -95,11 +95,13 @@ corpora R package) based on the hypergeometric function
 <li>GOAT: see corresponding R package.</li>
 <li>cameraPR: preranked camera from the limma R package.</li>
 <li>fGSEA: fast GSEA from the <code>fgsea</code> R package</li>
+<li>Plaid: a single-sample enrichment followed by a t-test.</li>
+<li>dual: combination of Plaid and ultraC.</li>
 </ol>
 <p>From <strong>Figure 1</strong> we see that ultragsea methods (ultraC
-and ultraZ) are the fastest, about 100 faster than fGSEA. While in
-<strong>Figure 2</strong> we can see that ultraC also achieves the
-highest relevance compared to the others.</p>
+and ultraZ) are the fastest, about 100 faster than fGSEA. <strong>Figure
+2</strong> shows that ultraC also achieves the highest relevance
+compared to the others.</p>
 <div class="float">
 <img src="fig/benchmark-runtime.png" alt="Figure 1. Run time of enrichment methods."><div class="figcaption">
 <strong>Figure 1</strong>. Run time of
@@ -125,7 +127,7 @@ assessment of the TPR/FPR of EA methods.</p>
 <p>EAbenchmark evaluates the false positive rate (FPR) performance of
 the EA methods on randomized data (see <strong>Figure 3</strong>). An
 ideal method would not report any significantly enriched gene sets.</p>
-<p><strong>Figure 4</strong> plot the distribution of p-values of the
+<p><strong>Figure 4</strong> plots the distribution of p-values of the
 methods under the null hypothesis. Enrichment analysis methods should
 produce P-values that are uniformly distributed but in practice they are
 either biased toward 0 or 1 or exhibit a bimodal distribution biased
