@@ -5,7 +5,7 @@ Calculate fast Fisher exact test.
 ## Usage
 
 ``` r
-gset.fastFET(genes, G, bg, method = 2)
+gset.fastFET(genes, G, bg, method = 2, report.genes = TRUE)
 ```
 
 ## Arguments

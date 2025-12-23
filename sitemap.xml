@@ -9,10 +9,9 @@
 <url><loc>https://bigomics.github.io/ultragsea/index.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/cor_pvalue.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/cor_sparse_matrix.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/reference/corpora.fisher.pval.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/reference/corporaFET.html</loc></url>
-<url><loc>https://bigomics.github.io/ultragsea/reference/fastFET.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/corpora.fastFET.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/fgsea.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/genesetr.fastFET.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gmt2mat.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/goat.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/gset.cor.html</loc></url>
@@ -21,6 +20,7 @@
 <url><loc>https://bigomics.github.io/ultragsea/reference/index.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/makeGseaResult.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/mat2gmt.html</loc></url>
+<url><loc>https://bigomics.github.io/ultragsea/reference/matrix_metap.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/read.gmt.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/ultragsea.html</loc></url>
 <url><loc>https://bigomics.github.io/ultragsea/reference/write.gmt.html</loc></url>

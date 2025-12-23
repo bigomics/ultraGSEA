@@ -171,33 +171,33 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.422</td>
-<td align="right">4.1</td>
-<td align="right">43.9</td>
+<td align="right">4.319</td>
+<td align="right">4.0</td>
+<td align="right">43.8</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.354</td>
-<td align="right">0.7</td>
-<td align="right">42.4</td>
+<td align="right">0.317</td>
+<td align="right">0.8</td>
+<td align="right">42.5</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.026</td>
-<td align="right">0.2</td>
-<td align="right">5.9</td>
+<td align="right">0.027</td>
+<td align="right">0.1</td>
+<td align="right">5.8</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.038</td>
+<td align="right">0.039</td>
 <td align="right">0.9</td>
-<td align="right">9.4</td>
+<td align="right">9.5</td>
 </tr>
 <tr class="odd">
 <td align="left">cortest</td>
-<td align="right">0.004</td>
-<td align="right">0.0</td>
-<td align="right">2.7</td>
+<td align="right">0.005</td>
+<td align="right">0.1</td>
+<td align="right">2.8</td>
 </tr>
 <tr class="even">
 <td align="left">ztest</td>
@@ -207,8 +207,8 @@ of each method.</p>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.251</td>
-<td align="right">4.5</td>
+<td align="right">0.243</td>
+<td align="right">4.4</td>
 <td align="right">23.7</td>
 </tr>
 </tbody>
@@ -219,7 +219,7 @@ of each method.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">8</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">rt</span>,decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, horiz<span class="op">=</span><span class="cn">TRUE</span>, las<span class="op">=</span><span class="fl">1</span>, log<span class="op">=</span><span class="st">"x"</span>,</span>
 <span>  xlab<span class="op">=</span><span class="st">"runtime (sec)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="compare-methods_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
+<p><img src="compare-methods_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="comparing-the-scores">Comparing the scores<a class="anchor" aria-label="anchor" href="#comparing-the-scores"></a>
@@ -242,13 +242,13 @@ aligned.</p>
 <span>  goat <span class="op">=</span> <span class="va">res.goat</span><span class="op">$</span><span class="va">score</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">Z</span>, pch<span class="op">=</span><span class="st">'.'</span>,cex<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="compare-methods_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
+<p><img src="compare-methods_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
 <p>Notice the gap and the particular S-curve that fgsea shows. Also
 cameraPR shows some curve compared to the others. We can compare them
 better by comparing the ranks of the scores:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">Z</span>,<span class="fl">2</span>,<span class="va">rank</span><span class="op">)</span>, pch<span class="op">=</span><span class="st">'.'</span>,cex<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="compare-methods_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
+<p><img src="compare-methods_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="comparing-the-p-values">Comparing the p-values<a class="anchor" aria-label="anchor" href="#comparing-the-p-values"></a>
@@ -265,7 +265,7 @@ see that all p-values are highly correlated to each other.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">mlp</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">mlp</span>, pch<span class="op">=</span><span class="st">'.'</span>,cex<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="compare-methods_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
+<p><img src="compare-methods_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="replacing-fgsea">Replacing fgsea<a class="anchor" aria-label="anchor" href="#replacing-fgsea"></a>
 </h3>
@@ -279,10 +279,10 @@ fgsea::fgsea()</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   5.830   0.069   3.741</span></span>
+<span><span class="co">#&gt;   5.606   0.093   3.633</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">ultragsea</span><span class="fu">::</span><span class="fu"><a href="../reference/fgsea.html">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.210   0.107   0.253</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.215   0.126   0.274</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

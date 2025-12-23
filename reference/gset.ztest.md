@@ -6,7 +6,7 @@ grouping matrix G (e.g. gene sets).
 ## Usage
 
 ``` r
-gset.ztest(G, F, alpha = 0.5, center = TRUE, pdist = "norm")
+gset.ztest(G, F, alpha = 0, center = TRUE, pdist = "norm")
 ```
 
 ## Arguments
