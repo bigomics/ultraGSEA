@@ -31,13 +31,13 @@ collections). We ran the following methods through the benchmark:
 6.  fGSEA: fast GSEA from the `fgsea` R package
 
 From **Figure 1** we see that ultragsea methods (ultraC and ultraZ) are
-the fastest. While in **Figure 2** we can see that ultraC achieves the
-highest relevance compared to the others.
+the fastest, about 100 faster than fGSEA. While in **Figure 2** we can
+see that ultraC also achieves the highest relevance compared to the
+others.
 
-![Figure 1. Run time of enrichment methods (-log10
-seconds).](fig/benchmark-runtime.png)
+![Figure 1. Run time of enrichment methods.](fig/benchmark-runtime.png)
 
-**Figure 1**. Run time of enrichment methods (-log10 seconds).
+**Figure 1**. Run time of enrichment methods.
 
 ![Figure 2. Relevance vs. relative speed-up of enrichment methods.
 Benchmarking was conducted using the GSEABenchmarkeR
