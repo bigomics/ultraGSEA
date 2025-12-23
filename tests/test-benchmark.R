@@ -3,8 +3,18 @@
 ## Benchmarking using GSEABenchmarkeR
 ##
 ##===========================================================
+source("../R/ultragsea.R")
+source("../R/gsetcor.R")
+source("../R/gmt-utils.R")
+source("../R/utils.R")
+source("../R/goat.R")
+source("../R/fastFET.R")
+source("../R/plaidtest.R")
 
 ##BiocManager::install("GSEABenchmarkeR")
+##--------------------------------------------
+## Prep
+##--------------------------------------------
 
 library(GSEABenchmarkeR)
 geo <- loadEData("geo2kegg")
@@ -26,16 +36,6 @@ length(gmt)
 matG <- ultragsea::gmt2mat(gmt)
 dim(matG)
 
-##--------------------------------------------
-## Benchmarking
-##--------------------------------------------
-source("../R/ultragsea.R")
-source("../R/gsetcor.R")
-source("../R/gmt-utils.R")
-source("../R/utils.R")
-source("../R/goat.R")
-source("../R/fastFET.R")
-source("../R/plaidtest.R")
 
 length(geo)
 head(names(geo))
@@ -83,7 +83,7 @@ run.ultraC <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::ultragsea(matG, fc, method='cor', alpha=0)
+  res <- ultragsea(matG, fc, method='cor', alpha=0)
   pv <- res$pval
   names(pv) <- rownames(res)
   pv
@@ -93,7 +93,7 @@ run.ultraZ <- function(se,gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::ultragsea(matG, fc, method='ztest', alpha=0)
+  res <- ultragsea(matG, fc, method='ztest', alpha=0)
   pv <- res$pval
   names(pv) <- rownames(res)
   pv
@@ -103,7 +103,7 @@ run.gsetcor <- function(se, gs) {
   rd <- rowData(se, use.names=TRUE)
   fc <- rd$FC
   names(fc) <- rownames(rd)
-  res <- ultragsea::gset.cortest(matG, fc,
+  res <- gset.cortest(matG, fc,
     compute.p=TRUE, corshrink=3)
   pv <- res$p.value[,1]
   pv
@@ -143,27 +143,6 @@ run.dual <- function(se,gs) {
   pv
 }
 
-run.dual2 <- function(se,gs) {
-  y <- se$GROUP
-  X <- assay(se)
-  res <- plaid.dualtest(X, matG, y, ref=0, test1="cortest")
-  res <- res[match(names(gs),rownames(res)),]
-  pv <- res$pval
-  names(pv) <- rownames(res)
-  pv
-}
-
-run.dual3 <- function(se,gs) {
-  y <- se$GROUP
-  X <- assay(se)
-  res <- plaid.dualtest(X, matG, y, ref=0, pbalance=FALSE)
-  res <- res[match(names(gs),rownames(res)),]
-  pv <- res$pval
-  names(pv) <- rownames(res)
-  pv
-}
-
-
 ##-----------------------------------------------
 ## run methods
 ##-----------------------------------------------
@@ -180,9 +159,7 @@ par.methods = list(
   ultraZ = run.ultraZ,
   ultraC = run.ultraC,
   plaid = run.plaid,
-  dual = run.dual,
-  dual2 = run.dual2,
-  dual3 = run.dual3
+  dual = run.dual
 )
 methods <- names(par.methods)
 methods
@@ -213,9 +190,7 @@ for(k in names(geo)) {
     run.ultraZ(se,gs),
     run.ultraC(se,gs),
     run.plaid(se,gs),      
-    run.dual(se,gs),
-    run.dual2(se,gs),
-    run.dual3(se,gs)          
+    run.dual(se,gs)
   )
   tt2 <- tt[,2]
   names(tt2) <- methods
@@ -233,7 +208,7 @@ save(ea.rtimes, file="eartimes.rda")
 ##-----------------------------------------------
 
 png("figures/benchmark-runtime.png",w=700, h=550, pointsize=20)
-par(mar=c(5.8,4.5,2,1))
+par(mfrow=c(1,1),mar=c(5.8,4.5,2,1))
 ## plot runtime
 ## ea.rtimes <- readResults(
 ##   res.dir, names(geo), 
@@ -247,7 +222,9 @@ boxplot(ea.rtimes[sel], log='y', col=2:10,
 title("Runtime",cex.main=1.3)
 dev.off()
 
+
 ## MALA relevance ranking
+ea.ranks <- readResults(res.dir, names(geo),  methods=methods, type="ranking")
 data.dir <- system.file("extdata", package="GSEABenchmarkeR")
 mala.kegg.file <- file.path(data.dir, "malacards", "KEGG.rds")
 mala.kegg <- readRDS(mala.kegg.file)
