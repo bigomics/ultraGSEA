@@ -1,0 +1,11 @@
+
+
+
+1. Please first clone complete code from
+https://bitbucket.org/sonnhammergroup/eabenchmark
+
+2. Move downloaded folder to home folder as ~/eabenchmark
+
+3. Overwrite with files in this folder.
+
+4. Then run runBenchmark.R from the root folder

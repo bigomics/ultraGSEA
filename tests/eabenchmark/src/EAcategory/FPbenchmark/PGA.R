@@ -281,23 +281,26 @@ run_enrichment = function(d,iter,method_name){
                    GEO = paste0(x[['GEO']],'.',iter)) %>%
         select(GEO,pathway_id,t,Pvalue)
     } else {return()}
-  } else if (method_name == 'plaid'){
+  } else if (grepl("^plaid",method_name)){
     ##########################################
     #### GSVA
     source('src/EAmethods/plaid.R')
+    pars <- strsplit(method_name,split="[.]")[[1]]
+    method="ttest"
+    if(length(pars)>=2) method <- pars[2]
     tmp_enrichment_df = 
       tryCatch(
-        run_plaid(newSe, matG),
+        run_plaid(newSe, matG, method=method),
         error=function(cond) {
           return(NULL)})
     if (!is.null(tmp_enrichment_df)){
       p = rownames(tmp_enrichment_df)
       tmp_enrichment_df = tmp_enrichment_df %>%
-        dplyr::rename(Pvalue = P.Value) %>%
+        dplyr::rename(Pvalue = pval) %>%
         magrittr::set_rownames(NULL) %>%
         add_column(pathway_id = p,
                    GEO = paste0(x[['GEO']],'.',iter)) %>%
-        select(GEO,pathway_id,t,Pvalue)
+        select(GEO,pathway_id,Pvalue)
     } else {return()}
     
   } else if (method_name == 'padog'){

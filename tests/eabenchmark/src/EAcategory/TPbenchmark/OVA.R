@@ -51,7 +51,9 @@ outdir = paste0('results/TPbenchmark/')
 #################################################
 ## EXECUTE METHOD
 
+
 d=dataset_df$GEO[1]
+d="GSE10810"
 d
 
 run_enrichment = function(d){
@@ -82,8 +84,8 @@ run_enrichment = function(d){
     tmp_enrichment_df$GEO = x[['GEO']]
   } else if (method_name == 'fastFET'){
     source('src/EAmethods/fisher.R')
-    ptm = proc.time()
     gg <- which(rownames(matG) %in% bg)
+    ptm = proc.time()
     tmp_enrichment_df = run_fastFET(genes, matG[gg,], bg) %>%
       dplyr::rename(Pvalue = p.value) %>%
       magrittr::set_rownames(NULL) %>%
@@ -99,9 +101,9 @@ run_enrichment = function(d){
   
   ### FOR ALL METHODS
   runtime = proc.time() - ptm
-  tmp_enrichment_df$user=round(runtime[[1]],2)
-  tmp_enrichment_df$system=round(runtime[[2]],2)
-  tmp_enrichment_df$elapsed=round(runtime[[3]],2)
+  tmp_enrichment_df$user=round(runtime[[1]],5)
+  tmp_enrichment_df$system=round(runtime[[2]],5)
+  tmp_enrichment_df$elapsed=round(runtime[[3]],5)
   return(tmp_enrichment_df)
 }
 

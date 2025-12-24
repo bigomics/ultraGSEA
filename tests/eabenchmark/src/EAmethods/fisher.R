@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 run_fastFET = function(genes, matG, bg){                          
-  res <- ultragsea::gset.fastFET(genes, matG, bg, method=2) 
+  res <- ultragsea::gset.fastFET(genes, matG, bg, report.genes=FALSE) 
   return(res)
 }
 

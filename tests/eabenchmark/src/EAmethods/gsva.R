@@ -11,11 +11,10 @@ run_gsva = function(se, kegg_list, matG, seed_n, use.plaid=FALSE){
       kcdf=kcdf,
       parallel.sz=2)
   }
-  # set design matrix
-  group = factor(se$GROUP)
-  design = model.matrix(formula("~group"))  
   
   # fit the linear model to the GSVA enrichment scores
+  group = factor(se$GROUP)
+  design = model.matrix(formula("~group"))  
   fit = limma::lmFit(es, design)
   fit = limma::eBayes(fit)
   res = limma::topTable(fit, 

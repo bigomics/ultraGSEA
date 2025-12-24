@@ -1,10 +1,11 @@
 
 methods = c(
 #  'ultragsea.cor',
-  'ultragsea.cor',
-  'ultragsea.ztest', 
+  'ultragsea.cor', 'ultragsea.ztest', 
   'cameraPR','goat', 'fgsea','fisher', ##'gsva',
-  'fastFET', 'plaid', 'replaid.gsva')
+  'fastFET',
+  'plaid.ttest', 'plaid.limma', 'plaid.cortest', 'plaid.dual',
+  'replaid.gsva')
 
 methods = sort(methods)
 m="goat"
@@ -13,6 +14,7 @@ m="fisher"
 m="cameraPR"
 m="ultragsea.cor"
 m="ultragsea.ztest"
+m="plaid.limma"
 
 model_name=m
 

@@ -86,24 +86,24 @@ convert_name = function(m){
   if(m == 'cameraPR') return('cameraPR')
   if(m == 'gsva') return('GSVA')
   if(m == 'replaid.gsva') return('replaidGSVA')  
-  if(m == 'plaid') return('PLAID')
+  #if(m == 'plaid') return('PLAID')
   if(m == 'ultragsea.cor') return('ultraGSEA.cor')
   if(m == 'ultragsea.ztest') return('ultraGSEA.ztest')
   return(m)
 }
 
-tool_shape=c(
-  'fGSEA'=0,
-  'GOAT'=21,
-  'cameraPR'=22,
-  'GSVA'=23,
-  'PLAID'=24,
-  'replaidGSVA'=25,
-  'Fisher'=21,
-  'ultraGSEA.cor'=1,
-  'ultraGSEA.ztest'=2
-)
-tool_shape <- head(c(0:6,21:25,7:20),length(methods))
+## tool_shape=c(
+##   'fGSEA'=0,
+##   'GOAT'=21,
+##   'cameraPR'=22,
+##   'GSVA'=23,
+##   'PLAID'=24,
+##   'replaidGSVA'=25,
+##   'Fisher'=21,
+##   'ultraGSEA.cor'=1,
+##   'ultraGSEA.ztest'=2
+## )
+tool_shape <- head( rep(c(0:6,21:25,7:20),99),length(methods))
 names(tool_shape) <- sapply(methods,convert_name)
 tool_shape = tool_shape[!duplicated(names(tool_shape))]
 tool_shape = tool_shape[order(names(tool_shape))]
@@ -272,6 +272,8 @@ order_m = positive_benchmark_count %>% filter(type=='median') %>% arrange(-val) 
 order_m = as.character(sapply(order_m, function(x) convert_name(x)))
 positive_benchmark_count$Method=sapply(positive_benchmark_count$Method, function(x) convert_name(x))
 positive_benchmark_count$Method = factor(positive_benchmark_count$Method, levels = order_m)
+table(positive_benchmark_count$Method)
+head(positive_benchmark_count)
 
 pdf("plots/NrEnrichment.pdf",w=10,h=5)
 ggplot(positive_benchmark_count, aes(x=Method, y=val, fill = type)) +
@@ -476,32 +478,6 @@ tool_colour = tool_colour[unique(names(tool_colour))]
 tool_size = tool_size[unique(names(tool_size))]
 total_stats_df$Method = factor(total_stats_df$Method, levels=names(tool_shape))
 
-pdf("plots/RRvsGM_all.pdf", height=8, width=8)
-ggplot(total_stats_df, aes(x=GM, y=1-mRK, shape=Method, fill=Method, color=Method, size = Method, stroke=stroke)) + 
-  geom_point() +
-  scale_shape_manual(
-    values = tool_shape) +
-  scale_fill_manual(
-    values = tool_colour) +
-  scale_color_manual(
-    values=tool_frame_colour) +
-  scale_size_manual(values=tool_size) +
-  guides(color = guide_legend(override.aes = list(stroke = 2,
-                                                  size = 2.5))) + 
-  xlab('G-mean (TPR, 1-FPR)') + 
-  ylab('1 - Relative Rank') +
-  facet_wrap(~TOP, scales='free') + 
-  plain_gg_theme +
-  theme(panel.spacing = unit(2, "lines"),
-        axis.text.y=element_text(size=13,face='bold',colour="black"),
-        axis.text.x=element_text(size=13, face='bold',colour="black"),
-        legend.position = "top", 
-        legend.box = "horizontal",
-        legend.title = element_blank(),
-        legend.text = element_text(size=10, face='bold',colour="black"))
-dev.off()
-
-NULL
 
 head(stats_df)
 stats_dd <- data.frame(stats_df)
@@ -511,7 +487,7 @@ head(stats_dd)
 stats_dd$Method <- sapply(rownames(stats_dd), function(x) convert_name(x))
 stats_dd$Category <- sapply(rownames(stats_dd), function(x) assign_category(x))
 
-pdf("plots/TPRvsFPR.pdf", height=5.5, width=5.5)
+pdf("plots/TPRvsFPR.pdf", height=6, width=5.5)
 ggplot(stats_dd, aes(x=TPR, y=1-FPR, shape=Method, fill=Method, color=Method,
   size=Method, stroke=2 )) + 
   geom_point() +
@@ -522,52 +498,6 @@ ggplot(stats_dd, aes(x=TPR, y=1-FPR, shape=Method, fill=Method, color=Method,
   guides(color = guide_legend(override.aes = list(stroke = 2, size = 2.5))) + 
   xlab('TPR') + 
   ylab('1 - FPR') +
-  plain_gg_theme +
-  theme(axis.text.y=element_text(size=13,face='bold',colour="black"),
-        axis.text.x=element_text(size=13, face='bold',colour="black"),
-        legend.position = "top", 
-        legend.box = "horizontal",
-        legend.title = element_blank(),
-        legend.text = element_text(size=9, face='bold',colour="black"))
-dev.off()
-
-##==================================================================
-## Stats at top 20 of TPs in the Disease Pathway Network
-##==================================================================
-
-## To ensure a balanced representation of the benchmarked disease pathway
-## subnetworks, we limited them to the top 20 linked pathways for each
-## target disease pathway. We made this choice due to the relatively low
-## number of total associations observed in Parkinson's and Huntington's
-## diseases.
-
-total_stats_df_top20=total_stats_df %>%
-  filter(TOP == 'Top 20 links')
-
-sel.cols <- setdiff(colnames(total_stats_df_top20),
-  c("PPV","MCC","F1","Category","colour","size","stroke"))
-total_stats_df_top20 %>% 
-  #  select(-c(PPV,MCC,F1,Category,colour,size,stroke)) %>%
-  select(sel.cols) %>%   
-  mutate(mRK = 1-mRK) %>% 
-  write_tsv(file='notebooks/tables/stats_top20.tsv')
-
-total_stats_df_top20$Method = factor(total_stats_df_top20$Method, levels=names(tool_shape))
-
-pdf("plots/RRvsGM.pdf", height=5.5, width=5.5)
-ggplot(total_stats_df_top20, aes(x=GM, y=1-mRK, shape=Method, fill=Method, color=Method, size = Method, stroke=stroke)) + 
-  geom_point() +
-  scale_shape_manual(
-    values = tool_shape) +
-  scale_fill_manual(
-    values = tool_colour) +
-  scale_color_manual(
-    values=tool_frame_colour) +
-  scale_size_manual(values=tool_size) +
-  guides(color = guide_legend(override.aes = list(stroke = 2,
-                                                  size = 2.5))) + 
-  xlab('G-mean (TPR, 1-FPR)') + 
-  ylab('1 - Relative Rank') +
   plain_gg_theme +
   theme(axis.text.y=element_text(size=13,face='bold',colour="black"),
         axis.text.x=element_text(size=13, face='bold',colour="black"),
@@ -615,7 +545,7 @@ order_runtime_df = runtime_df %>%
 runtime_df$Method = factor(runtime_df$Method, levels = order_runtime_df$Method)
 sort(tapply(runtime_df$user, runtime_df$Method, mean, na.rm=TRUE))
 #runtime_df$user <- runtime_df$user + 1e-8
-runtime_df$user[runtime_df$user < 1e-3] <- NA
+#runtime_df$user[runtime_df$user < 1e-3] <- NA
 
 pdf("plots/RuntimeDataset.pdf", height=4, width=7)
 ggplot(runtime_df, aes(x=user, y=Method, fill=Category)) +
@@ -637,3 +567,28 @@ ggplot(runtime_df, aes(x=user, y=Method, fill=Category)) +
 dev.off()
 
 
+avg.runtime <- tapply(runtime_df$user, runtime_df$Method, mean, na.rm=TRUE)
+stats_dd$avg.runtime <- avg.runtime[stats_dd$Method]
+stats_dd$speedup <- mean(stats_dd$avg.runtime,na.rm=TRUE) / stats_dd$avg.runtime
+
+pdf("plots/TPRvsSpeed.pdf", height=6, width=5.5)
+ggplot(stats_dd,
+  aes(x=speedup, y=TPR, shape=Method, fill=Method, color=Method,
+  size=Method, stroke=2 )) + 
+  geom_point() +
+  scale_x_log10() +
+  scale_shape_manual(values = tool_shape) +
+  scale_fill_manual(values = tool_colour) +
+  scale_color_manual(values=tool_frame_colour) +
+  scale_size_manual(values=tool_size) +
+  guides(color = guide_legend(override.aes = list(stroke = 2, size = 2.5))) + 
+  xlab('relative speedup') + 
+  ylab('TPR') +
+  plain_gg_theme +
+  theme(axis.text.y=element_text(size=13,face='bold',colour="black"),
+        axis.text.x=element_text(size=13, face='bold',colour="black"),
+        legend.position = "top", 
+        legend.box = "horizontal",
+        legend.title = element_blank(),
+        legend.text = element_text(size=9, face='bold',colour="black"))
+dev.off()

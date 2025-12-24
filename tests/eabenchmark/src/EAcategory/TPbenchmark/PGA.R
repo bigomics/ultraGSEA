@@ -49,6 +49,7 @@ dataset_df = read_tsv(file='data/TPbenchmark/cc_deg-alpha10OR20-Min15Max500-beta
 head(dataset_df)
 
 outdir = paste0('results/TPbenchmark/')
+d=dataset_df$GEO[1]
 
 #################################################
 ## EXECUTE METHOD
@@ -239,24 +240,27 @@ run_enrichment = function(d){
         select(GEO,pathway_id,t,Pvalue)
     } else {return()}
 
-  } else if (method_name == 'plaid'){
+  } else if ( grepl("^plaid",method_name)) {
     ##########################################
     #### PLAID
     source('src/EAmethods/plaid.R')
+    pars <- strsplit(method_name,split="[.]")[[1]]
+    method="ttest"
+    if(length(pars)>=2) method <- pars[2]
     ptm = proc.time()
     tmp_enrichment_df = 
       tryCatch(
-        run_plaid(se, matG),
+        run_plaid(se, matG, method),
         error=function(cond) {
           return(NULL)})
     if (!is.null(tmp_enrichment_df)){
       p = rownames(tmp_enrichment_df)
       tmp_enrichment_df = tmp_enrichment_df %>%
-        dplyr::rename(Pvalue = P.Value) %>%
+        dplyr::rename(Pvalue = pval) %>%
         magrittr::set_rownames(NULL) %>%
         add_column(pathway_id = p,
                    GEO = x[['GEO']]) %>%
-        select(GEO,pathway_id,t,Pvalue)
+        select(GEO,pathway_id,Pvalue)
     } else {return()}
     
   } else if (method_name == 'padog'){
@@ -303,9 +307,9 @@ run_enrichment = function(d){
   }
   
   runtime = proc.time() - ptm
-  tmp_enrichment_df$user=round(runtime[[1]],2)
-  tmp_enrichment_df$system=round(runtime[[2]],2)
-  tmp_enrichment_df$elapsed=round(runtime[[3]],2)
+  tmp_enrichment_df$user=round(runtime[[1]],5)
+  tmp_enrichment_df$system=round(runtime[[2]],5)
+  tmp_enrichment_df$elapsed=round(runtime[[3]],5)
   ### FOR ALL METHODS
   return(tmp_enrichment_df)
 }

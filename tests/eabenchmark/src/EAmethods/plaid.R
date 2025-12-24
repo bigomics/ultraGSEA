@@ -1,22 +1,23 @@
 
-run_plaid = function(se, matG){
+run_plaid = function(se, matG, method){
   
-  es = plaid::plaid(assay(se), matG)
-
-  # set design matrix
+  X = assay(se)
   group = factor(se$GROUP)
-  design = model.matrix(formula("~group"))  
-  
-  # fit the linear model to the GSVA enrichment scores
-  fit = limma::lmFit(es, design)
-  fit = limma::eBayes(fit)
-  res = limma::topTable(fit, 
-                        number=nrow(es), 
-                        coef="group1", 
-                        sort.by="none", 
-                        adjust.method="none")
-  
+
+  if(method == "ttest") {
+    res <- ultragsea::plaid.ttest(X, matG, group, ref=0)
+  }
+  if(method == "limma") {
+    res <- ultragsea::plaid.limma(X, matG, group, ref=0)
+  }
+  if(method == "cortest") {
+    res <- ultragsea::plaid.cortest(X, matG, group, ref=0)
+  }
+  if(method == "dual") {
+    res <- ultragsea::plaid.dualtest(X, matG, group, ref=0)
+  }
+    
   # process output
-  res = res[,c("t", "P.Value")]
+  res = res[,c("pval","padj")]
   return(res)
 }
