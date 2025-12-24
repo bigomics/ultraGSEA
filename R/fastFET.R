@@ -4,7 +4,7 @@
 #' @param G Sparse matrix containing gene sets
 #'
 #' @export
-gset.fastFET <- function(genes, G, bg, report.genes=TRUE) {
+gset.fastFET <- function(genes, G, bg, report.genes=FALSE) {
   bgnull <- FALSE
   if(is.null(bg)) {
     message("[gset.fisher] note: it is recommended to specify background")
@@ -42,12 +42,17 @@ gset.fastFET <- function(genes, G, bg, report.genes=TRUE) {
 
   gsgenes <- NULL
   if(report.genes) {
-    gsgenes <- apply( G[genes,], 2, function(x) paste(sort(genes[which(x!=0)]),collapse="|") )
+    G1 <- G[sort(genes),]
+    idx <- Matrix::which(G1 != 0, arr.ind=TRUE)
+    idx[,1] <- rownames(G1)[idx[,1]]
+    gsgenes <- tapply( idx[,1], idx[,2], c)
+    gsgenes <- sapply(gsgenes, function(s) paste(s,collapse="|"))    
+    names(gsgenes) <- colnames(G1)[as.integer(names(gsgenes))]    
+    gsgenes <- gsgenes[match(colnames(G),names(gsgenes))]
   }
   
   df <- data.frame(p.value=pv, q.value=qv, odd.ratio=odd.ratio, overlap=overlap)
-
-  if(!is.null(gsgenes)) df <- cbind(df, genes=gsgenes)
+  if(report.genes) df <- cbind(df, genes=gsgenes)
   return(df)
 }
 
