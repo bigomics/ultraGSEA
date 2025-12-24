@@ -5,6 +5,7 @@
 ##===========================================================
 source("../R/ultragsea.R")
 source("../R/gsetcor.R")
+source("../R/gsetztest.R")
 source("../R/gmt-utils.R")
 source("../R/utils.R")
 source("../R/goat.R")
@@ -31,7 +32,7 @@ gmt <- kegg.gmt
 gmt <- c(kegg.gmt, go.gmt)
 length(gmt)
 range(sapply(gmt,length))
-gmt <- gmt[sapply(gmt,length)>=10 & sapply(gmt,length) < 500]
+#gmt <- gmt[sapply(gmt,length)>=10 & sapply(gmt,length) < 1000]
 length(gmt)
 matG <- ultragsea::gmt2mat(gmt)
 dim(matG)
@@ -133,6 +134,19 @@ run.plaid <- function(se,gs) {
   pv
 }
 
+run.plaidC <- function(se,gs) {
+  rd <- rowData(se, use.names=TRUE)
+  fc <- rd$FC
+  names(fc) <- rownames(rd)
+  y <- se$GROUP
+  X <- assay(se)
+  res <- plaid.cortest(X, matG, y, ref=0)
+  res <- res[match(names(gs),rownames(res)),]
+  pv <- res$pval
+  names(pv) <- rownames(res)
+  pv
+}
+
 run.dual <- function(se,gs) {
   y <- se$GROUP
   X <- assay(se)
@@ -158,7 +172,8 @@ par.methods = list(
   #gsetcor = run.gsetcor,
   ultraZ = run.ultraZ,
   ultraC = run.ultraC,
-  plaid = run.plaid,
+  plaidTT = run.plaid,
+  plaidCOR = run.plaidC,  
   dual = run.dual
 )
 methods <- names(par.methods)
@@ -189,7 +204,8 @@ for(k in names(geo)) {
     run.goat(se,gs),
     run.ultraZ(se,gs),
     run.ultraC(se,gs),
-    run.plaid(se,gs),      
+    run.plaid(se,gs),
+    run.plaidC(se,gs),          
     run.dual(se,gs)
   )
   tt2 <- tt[,2]
@@ -207,7 +223,7 @@ save(ea.rtimes, file="eartimes.rda")
 ## gather results
 ##-----------------------------------------------
 
-png("figures/benchmark-runtime.png",w=700, h=550, pointsize=20)
+png("benchmark-runtime.png",w=700, h=550, pointsize=20)
 par(mfrow=c(1,1),mar=c(5.8,4.5,2,1))
 ## plot runtime
 ## ea.rtimes <- readResults(
@@ -221,7 +237,6 @@ boxplot(ea.rtimes[sel], log='y', col=2:10,
   ylab="runtime (sec)", las=2, srt=45)
 title("Runtime",cex.main=1.3)
 dev.off()
-
 
 ## MALA relevance ranking
 ea.ranks <- readResults(res.dir, names(geo),  methods=methods, type="ranking")
@@ -241,7 +256,7 @@ avg.rt <- colMeans(rt)
 avg.rel <- colMeans(all.kegg.res)
 avg.rt <- 1/(10**avg.rt)
 
-png("figures/benchmark-relevance-vs-runtime.png",w=650, h=600, pointsize=20)
+png("benchmark-relevance-vs-runtime.png",w=650, h=600, pointsize=20)
 par(mar=c(5,4.5,2,1))
 plot( avg.rt, avg.rel, pch=19, cex=1.2,
   xlab="relative speedup (larger is faster)",

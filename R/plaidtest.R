@@ -7,6 +7,7 @@
 ## =============== single-sample based enrichment tests ===================
 ## ========================================================================
 
+#' @export
 plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
   if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
   if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
@@ -27,6 +28,35 @@ plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
   df
 }
 
+#' @export
+plaid.limma <- function(X, G, y, ref, nsmooth=3) {
+  if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
+  sel <- which(!is.na(y))
+  y1 <- y[sel]
+  X1 <- X[,sel,drop=FALSE]
+  gsetX <- plaid::plaid(X1, G, nsmooth=nsmooth)
+  # fit the linear model to the GSVA enrichment scores
+  group = factor(y1!=ref)
+  design = model.matrix(formula("~group"))  
+  fit = limma::lmFit(gsetX, design)
+  fit = limma::eBayes(fit)
+  res = limma::topTable(fit, 
+                        number=nrow(gsetX), 
+                        coef="groupTRUE", 
+                        sort.by="none", 
+                        adjust.method="none")
+  df <- data.frame(
+    pathway = rownames(res),
+    logFC = res[,"logFC"],
+    pval = res[,"P.Value"],
+    padj = res[,"adj.P.Val"]
+  )
+  rownames(df) <- rownames(res)
+  df
+}
+
+#' @export
 plaid.cortest <- function(X, G, y, ref, nsmooth=3) {
   if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
   if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
@@ -46,6 +76,7 @@ plaid.cortest <- function(X, G, y, ref, nsmooth=3) {
   df
 }
 
+#' @export
 plaid.dualtest <- function(X, G, y, ref=0, test1="ttest", pbalance=TRUE) {
   if(!ref %in% y) stop("need to specify ref")
   if(test1 == "ttest") {
@@ -89,7 +120,6 @@ plaid.dualtest <- function(X, G, y, ref=0, test1="ttest", pbalance=TRUE) {
 #' Matrix version for combining p-values using fisher or stouffer
 #' method. Much faster than doing metap::sumlog() and metap::sumz()
 #'
-#' @export
 matrix_metap <- function(plist, method = c("stouffer","fisher","maxp")[1]) {
   if (inherits(plist, "matrix")) {
     plist <- as.list(data.frame(plist))

@@ -21,6 +21,9 @@ fc <- rowMeans(X[,y!=ref],na.rm=TRUE) - rowMeans(X[,y==ref],na.rm=TRUE)
 test1 <- plaid.ttest(X, G, y, ref, nsmooth=10)
 test1 <- test1[colnames(G),]
 
+test1a <- plaid.limma(X, G, y, ref, nsmooth=10)
+test1a <- test1a[colnames(G),]
+
 test2 <- plaid.cortest(X, G, y, ref)
 test2 <- test2[colnames(G),]
 
