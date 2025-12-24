@@ -45,17 +45,20 @@ bg = names(fc)
 bg = names(fc)
 system.time(res1 <- playbase::gset.fisher(sig.genes, gmt, fdr=1, background=bg))
 system.time(res2 <- playbase::gset.fisher(sig.genes, G, fdr=1, background=bg))
-system.time(res3 <- gset.fastFET(sig.genes, G, bg=bg, report.genes=FALSE))
-system.time(res4 <- manual.ft(sig.genes, gmt, bg=bg))
+system.time(res3 <- gset.fastFET(sig.genes, G, bg=bg, report.genes=FALSE, method='phyper'))
+system.time(res4 <- gset.fastFET(sig.genes, G, bg=bg, report.genes=FALSE, method='genesetr'))
+system.time(res5 <- manual.ft(sig.genes, gmt, bg=bg))
 
 res1 <- res1[match(names(gmt),rownames(res1)),]
 res2 <- res2[match(names(gmt),rownames(res2)),]
 res3 <- res3[match(names(gmt),rownames(res3)),]
 res4 <- res4[match(names(gmt),rownames(res4)),]
+res5 <- res5[match(names(gmt),rownames(res5)),]
 head(res1$p.value)
 head(res2$p.value)
 
-P <- cbind( res1$p.value, res2$p.value, res3$p.value, res4[,"pval"])
+P <- cbind( res1$p.value, res2$p.value, res3$p.value,
+  res4$p.value, res5[,"pval"])
 pairs(-log10(P), cex=0.4)
 
 

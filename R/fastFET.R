@@ -4,7 +4,8 @@
 #' @param G Sparse matrix containing gene sets
 #'
 #' @export
-gset.fastFET <- function(genes, G, bg, report.genes=FALSE) {
+gset.fastFET <- function(genes, G, bg, report.genes=FALSE,
+                         method=c('phyper','genesetr')[1]) {
   bgnull <- FALSE
   if(is.null(bg)) {
     message("[gset.fisher] note: it is recommended to specify background")
@@ -33,8 +34,13 @@ gset.fastFET <- function(genes, G, bg, report.genes=FALSE) {
   b <- length(genes) - a
   c <- gsize - a
   d <- length.bg - (a+b+c) 
-  pv <- corpora.fastFET(a,b,c,d)
-
+  if(method=='phyper') {
+    pv <- phyper.fastFET(a,b,c,d,alternative="greater")
+  } else if(method=='genesetr') {
+    pv <- genesetr::fastFET(a,b,c,d,alternative="greater")
+  } else {
+    stop("invalid method")
+  }
   names(pv) <- colnames(G)
   odd.ratio <- (a/b)/(c/d)
   qv <- p.adjust(pv, method="fdr")
@@ -57,9 +63,9 @@ gset.fastFET <- function(genes, G, bg, report.genes=FALSE) {
 }
 
 
-#' Wrapper superfast version of Fisher Exact Test from 'corpora' R
-#' package. This is the fastest implementation currently
-#' available. Uses phyper inside.
+#' Wrapper superfast version of Fisher Exact Test. This is the fastest
+#' implementation currently available. Uses phyper inside. Original
+#' code from 'corpora' R package
 #' 
 #'            setAn ¬setA
 #'        setB  a     b | a+b
@@ -78,7 +84,7 @@ gset.fastFET <- function(genes, G, bg, report.genes=FALSE) {
 #' d=c(500, 100, 1000)
 #' pvals = fastFET(a,b,c,d)
 #'
-corpora.fastFET <- function(a, b, c, d, alternative = c("two.sided", "less", 
+phyper.fastFET <- function(a, b, c, d, alternative = c("two.sided", "less", 
     "greater")[3], log.p = FALSE) {
   ## this is really-really-really fast...
   pv <- rep(NA, length(a))

@@ -8,9 +8,10 @@
 ## ========================================================================
 
 #' @export
-plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
+plaid.ttest <- function(X, G, y, ref=0, nsmooth=3) {
+  if(!ref %in% y) stop("need to specify ref")
   if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
-  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] error: need 2 classes")
   sel <- which(!is.na(y))
   y1 <- y[sel]
   X1 <- X[,sel,drop=FALSE]
@@ -29,9 +30,10 @@ plaid.ttest <- function(X, G, y, ref, nsmooth=3) {
 }
 
 #' @export
-plaid.limma <- function(X, G, y, ref, nsmooth=3) {
+plaid.limma <- function(X, G, y, ref=0, nsmooth=3) {
+  if(!ref %in% y) stop("need to specify ref")  
   if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
-  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] error: need 2 classes")
   sel <- which(!is.na(y))
   y1 <- y[sel]
   X1 <- X[,sel,drop=FALSE]
@@ -57,9 +59,10 @@ plaid.limma <- function(X, G, y, ref, nsmooth=3) {
 }
 
 #' @export
-plaid.cortest <- function(X, G, y, ref, nsmooth=3) {
+plaid.cortest <- function(X, G, y, ref=0, nsmooth=3) {
+  if(!ref %in% y) stop("need to specify ref")
   if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
-  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] warning: less than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] error: need 2 classes")
   sel <- which(!is.na(y))
   y1 <- 1*(y[sel]!=ref)
   X1 <- X[,sel,drop=FALSE]
@@ -79,6 +82,8 @@ plaid.cortest <- function(X, G, y, ref, nsmooth=3) {
 #' @export
 plaid.dualtest <- function(X, G, y, ref=0, test1="ttest", pbalance=TRUE) {
   if(!ref %in% y) stop("need to specify ref")
+  if(length(unique(y[!is.na(y)]))>2) message("[plaid.test] warning: more than 2 classes")
+  if(length(unique(y[!is.na(y)]))<2) stop("[plaid.test] error: need 2 classes")
   if(test1 == "ttest") {
     t1 <- plaid.ttest(X=X, G=G, y=y, ref=ref)
     t1 <- t1[colnames(G),]
