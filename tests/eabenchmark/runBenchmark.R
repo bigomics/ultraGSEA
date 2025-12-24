@@ -4,7 +4,8 @@ methods = c(
   'ultragsea.cor', 'ultragsea.ztest', 
   'cameraPR','goat', 'fgsea','fisher', ##'gsva',
   'fastFET',
-  'plaid.ttest', 'plaid.limma', 'plaid.cortest', 'plaid.dual',
+  'plaid.ttest', 'plaid.limma', 'plaid.cortest',
+  'plaid.dual',
   'replaid.gsva')
 
 methods = sort(methods)

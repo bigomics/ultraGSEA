@@ -4,7 +4,13 @@
 \alias{gset.fastFET}
 \title{Calculate fast Fisher exact test.}
 \usage{
-gset.fastFET(genes, G, bg, report.genes = TRUE)
+gset.fastFET(
+  genes,
+  G,
+  bg,
+  report.genes = FALSE,
+  method = c("phyper", "genesetr")[1]
+)
 }
 \arguments{
 \item{genes}{Vector of significant genes}
