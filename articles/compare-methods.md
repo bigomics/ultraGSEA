@@ -91,7 +91,7 @@ tt <- peakRAM::peakRAM(
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
   res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
   res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
-  res.cortest <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.cortest <- gset.cortest(G, fc, compute.p=TRUE, use.rank=FALSE),
   res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
@@ -101,13 +101,13 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.377 |                4.0 |              43.8 |
-| cameraPR      |            0.302 |                0.8 |              42.5 |
-| ultragsea.z   |            0.025 |                0.1 |               5.8 |
-| ultragsea.c   |            0.036 |                0.9 |               9.5 |
-| cortest       |            0.004 |                0.1 |               2.8 |
-| ztest         |            0.004 |                0.0 |               2.8 |
-| goat          |            0.250 |                4.4 |              23.7 |
+| fgsea         |            4.361 |                4.0 |              43.8 |
+| cameraPR      |            0.300 |                0.8 |              42.5 |
+| ultragsea.z   |            0.027 |                0.1 |               5.8 |
+| ultragsea.c   |            0.039 |                0.9 |               9.5 |
+| cortest       |            0.004 |                0.0 |               2.8 |
+| ztest         |            0.005 |                0.1 |               2.9 |
+| goat          |            0.242 |                4.4 |              23.7 |
 
 ``` r
 rt <- tt[,2]
@@ -185,8 +185,8 @@ fgsea::fgsea()
 ``` r
 system.time(res1 <- fgsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   5.775   0.058   3.706
+#>   3.045   0.046   3.625
 system.time(res2 <- ultragsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   0.209   0.084   0.238
+#>   0.221   0.118   0.270
 ```

@@ -64,7 +64,7 @@ but they are much faster as they are optimized for matrix inputs `F`.
 
 ``` r
 F <- cbind(fc,fc,fc,fc,fc)
-res1 <- gset.cor(G, F, compute.p=TRUE)
+res1 <- gset.cortest(G, F, compute.p=TRUE)
 res2 <- gset.ztest(G, F)
 ```
 

@@ -149,7 +149,7 @@ of each method.</p>
 <span>  <span class="va">res.cameraPR</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/camera.html" class="external-link">cameraPR</a></span><span class="op">(</span><span class="va">fc</span>, <span class="va">gmt</span>, use.ranks<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
 <span>  <span class="va">res.ultragsea.z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, method<span class="op">=</span><span class="st">'ztest'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
 <span>  <span class="va">res.ultragsea.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ultragsea.html">ultragsea</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, method<span class="op">=</span><span class="st">'cor'</span><span class="op">)</span><span class="op">[</span><span class="va">gs</span>,<span class="op">]</span>,</span>
-<span>  <span class="va">res.cortest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.cor.html">gset.cor</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, compute.p<span class="op">=</span><span class="cn">TRUE</span>, use.rank<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="va">res.cortest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.cortest.html">gset.cortest</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span>, compute.p<span class="op">=</span><span class="cn">TRUE</span>, use.rank<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>  <span class="va">res.ztest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gset.ztest.html">gset.ztest</a></span><span class="op">(</span><span class="va">G</span>, <span class="va">fc</span><span class="op">)</span>,</span>
 <span>  <span class="va">res.goat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/goat.html">goat</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span>, filter<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -171,43 +171,43 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.377</td>
+<td align="right">4.361</td>
 <td align="right">4.0</td>
 <td align="right">43.8</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.302</td>
+<td align="right">0.300</td>
 <td align="right">0.8</td>
 <td align="right">42.5</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.025</td>
+<td align="right">0.027</td>
 <td align="right">0.1</td>
 <td align="right">5.8</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.036</td>
+<td align="right">0.039</td>
 <td align="right">0.9</td>
 <td align="right">9.5</td>
 </tr>
 <tr class="odd">
 <td align="left">cortest</td>
 <td align="right">0.004</td>
-<td align="right">0.1</td>
+<td align="right">0.0</td>
 <td align="right">2.8</td>
 </tr>
 <tr class="even">
 <td align="left">ztest</td>
-<td align="right">0.004</td>
-<td align="right">0.0</td>
-<td align="right">2.8</td>
+<td align="right">0.005</td>
+<td align="right">0.1</td>
+<td align="right">2.9</td>
 </tr>
 <tr class="odd">
 <td align="left">goat</td>
-<td align="right">0.250</td>
+<td align="right">0.242</td>
 <td align="right">4.4</td>
 <td align="right">23.7</td>
 </tr>
@@ -279,10 +279,10 @@ fgsea::fgsea()</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   5.775   0.058   3.706</span></span>
+<span><span class="co">#&gt;   3.045   0.046   3.625</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">ultragsea</span><span class="fu">::</span><span class="fu"><a href="../reference/fgsea.html">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.209   0.084   0.238</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.221   0.118   0.270</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

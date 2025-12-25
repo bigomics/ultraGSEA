@@ -11,6 +11,7 @@ goat(
   minSize = 10L,
   maxSize = 1500L,
   filter = TRUE,
-  method = c("goat", "gsea")[1]
+  method = c("goat", "gsea")[1],
+  verbose = 1
 )
 ```
