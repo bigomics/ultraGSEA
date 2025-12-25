@@ -101,8 +101,9 @@ test) are the fastest.
 
 ![**Figure 4**. P-value distribution histograms. Under the null hypothesis, enrichment analysis methods should produce P-values that are uniformly distributed. The colors correspond to the different method classes preranked (blue), ORA based (green) and single-sample based (red).](fig/SkewenessHistogram.png)
 
-
 ![**Figure 5**. True positive rate (TPR) vs. false positive rate (1-FPR) of the various enrichment methods. The best methods have high TPR and low FPR.](fig/TPRvsFPR.png)
 
 ![**Figure 6**. Relative runtime of the enrichment methods. Time axis is in logscale. The colors correspond to the different method classes preranked (blue), ORA based (green) and single-sample based (red).](fig/RuntimeDataset.png)
+
+![**Figure 7**. Relative speed of the enrichment methods vs TPR. Time axis is in logscale. The colors correspond to the different method classes preranked (blue), ORA based (green) and single-sample based (red).](fig/TPRvsSpeed.png)
 

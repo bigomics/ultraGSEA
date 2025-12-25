@@ -53,7 +53,7 @@ For the fastest speed, especially when computing enrichment for multiple foldcha
 
 ```{r}
 F <- cbind(fc,fc,fc,fc,fc)
-res1 <- gset.cor(G, F, compute.p=TRUE)
+res1 <- gset.cortest(G, F, compute.p=TRUE)
 res2 <- gset.ztest(G, F)
 ```
 

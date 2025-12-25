@@ -48,6 +48,7 @@ system.time(res2 <- playbase::gset.fisher(sig.genes, G, fdr=1, background=bg))
 system.time(res3 <- gset.fastFET(sig.genes, G, bg=bg, report.genes=FALSE, method='phyper'))
 system.time(res4 <- gset.fastFET(sig.genes, G, bg=bg, report.genes=FALSE, method='genesetr'))
 system.time(res5 <- manual.ft(sig.genes, gmt, bg=bg))
+system.time(res6 <- gset.cortest(G, fc, compute.p=TRUE))
 
 res1 <- res1[match(names(gmt),rownames(res1)),]
 res2 <- res2[match(names(gmt),rownames(res2)),]
