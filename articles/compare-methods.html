@@ -171,25 +171,25 @@ of each method.</p>
 <tbody>
 <tr class="odd">
 <td align="left">fgsea</td>
-<td align="right">4.361</td>
+<td align="right">4.280</td>
 <td align="right">4.0</td>
 <td align="right">43.8</td>
 </tr>
 <tr class="even">
 <td align="left">cameraPR</td>
-<td align="right">0.300</td>
+<td align="right">0.301</td>
 <td align="right">0.8</td>
 <td align="right">42.5</td>
 </tr>
 <tr class="odd">
 <td align="left">ultragsea.z</td>
-<td align="right">0.027</td>
+<td align="right">0.026</td>
 <td align="right">0.1</td>
 <td align="right">5.8</td>
 </tr>
 <tr class="even">
 <td align="left">ultragsea.c</td>
-<td align="right">0.039</td>
+<td align="right">0.038</td>
 <td align="right">0.9</td>
 <td align="right">9.5</td>
 </tr>
@@ -279,10 +279,10 @@ fgsea::fgsea()</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">fgsea</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   3.045   0.046   3.625</span></span>
+<span><span class="co">#&gt;   5.541   0.084   3.602</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">ultragsea</span><span class="fu">::</span><span class="fu"><a href="../reference/fgsea.html">fgsea</a></span><span class="op">(</span><span class="va">gmt</span>, <span class="va">fc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.221   0.118   0.270</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.225   0.109   0.267</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -101,10 +101,10 @@ kableExtra::kable(tt)
 
 | Function_Call | Elapsed_Time_sec | Total_RAM_Used_MiB | Peak_RAM_Used_MiB |
 |:--------------|-----------------:|-------------------:|------------------:|
-| fgsea         |            4.361 |                4.0 |              43.8 |
-| cameraPR      |            0.300 |                0.8 |              42.5 |
-| ultragsea.z   |            0.027 |                0.1 |               5.8 |
-| ultragsea.c   |            0.039 |                0.9 |               9.5 |
+| fgsea         |            4.280 |                4.0 |              43.8 |
+| cameraPR      |            0.301 |                0.8 |              42.5 |
+| ultragsea.z   |            0.026 |                0.1 |               5.8 |
+| ultragsea.c   |            0.038 |                0.9 |               9.5 |
 | cortest       |            0.004 |                0.0 |               2.8 |
 | ztest         |            0.005 |                0.1 |               2.9 |
 | goat          |            0.242 |                4.4 |              23.7 |
@@ -185,8 +185,8 @@ fgsea::fgsea()
 ``` r
 system.time(res1 <- fgsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   3.045   0.046   3.625
+#>   5.541   0.084   3.602
 system.time(res2 <- ultragsea::fgsea(gmt, fc))
 #>    user  system elapsed 
-#>   0.221   0.118   0.270
+#>   0.225   0.109   0.267
 ```

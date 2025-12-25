@@ -122,3 +122,12 @@ preranked (blue), ORA based (green) and single-sample based
 **Figure 6**. Relative runtime of the enrichment methods. Time axis is
 in logscale. The colors correspond to the different method classes
 preranked (blue), ORA based (green) and single-sample based (red).
+
+![Figure 7. Relative speed of the enrichment methods vs TPR. Time axis
+is in logscale. The colors correspond to the different method classes
+preranked (blue), ORA based (green) and single-sample based
+(red).](fig/TPRvsSpeed.png)
+
+**Figure 7**. Relative speed of the enrichment methods vs TPR. Time axis
+is in logscale. The colors correspond to the different method classes
+preranked (blue), ORA based (green) and single-sample based (red).
