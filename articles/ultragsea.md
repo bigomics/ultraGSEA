@@ -45,14 +45,14 @@ head(res)
 #> 4:         HALLMARK_KRAS_SIGNALING_UP 0.9757536 0.9757536      NA -0.01199556
 #> 5: HALLMARK_OXIDATIVE_PHOSPHORYLATION 0.8677728 0.9696221      NA -0.06570964
 #> 6:              HALLMARK_ADIPOGENESIS 0.2364614 0.7389418      NA  0.46725361
-#>            NES  size                             leadingEdge
-#>          <num> <int>                                  <list>
-#> 1:  0.19461526   200 CRAT,HRAS,INSIG1,PIK3R3,ACTN2,ADAM9,...
-#> 2:  0.14946660   200    CA2,BNIP3L,CDC27,H1-0,BCAM,BLVRA,...
-#> 3:  0.34439870   200    IL4R,CCL2,HBEGF,INHBA,ITGB3,EREG,...
-#> 4: -0.02834246   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...
-#> 5: -0.15525515   200 ACAA1,SDHC,ECHS1,GPI,GRPEL1,ATP6V1F,...
-#> 6:  1.10400136   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...
+#>            NES  size                                 leadingEdge
+#>          <num> <int>                                      <list>
+#> 1:  0.19461526   200 CRAT,HRAS,INSIG1,PIK3R3,ACTN2,ADAM9,...[32]
+#> 2:  0.14946660   200    CA2,BNIP3L,CDC27,H1-0,BCAM,BLVRA,...[33]
+#> 3:  0.34439870   200    IL4R,CCL2,HBEGF,INHBA,ITGB3,EREG,...[37]
+#> 4: -0.02834246   200        BMP2,CCND2,LIF,CFB,CSF2,PLAT,...[33]
+#> 5: -0.15525515   200 ACAA1,SDHC,ECHS1,GPI,GRPEL1,ATP6V1F,...[27]
+#> 6:  1.10400136   200  ALDOA,ECH1,GPX4,CRAT,DHCR7,GADD45A,...[40]
 ```
 
 For the fastest speed, especially when computing enrichment for multiple
@@ -121,7 +121,7 @@ sessionInfo()
 #> [34] pkgdown_2.2.0       withr_3.0.2         magrittr_2.0.4     
 #> [37] grid_4.5.2          digest_0.6.39       docopt_0.7.2       
 #> [40] lifecycle_1.0.4     vctrs_0.6.5         sparsesvd_0.2-3    
-#> [43] data.table_1.17.8   evaluate_1.0.5      glue_1.8.0         
+#> [43] data.table_1.18.0   evaluate_1.0.5      glue_1.8.0         
 #> [46] ragg_1.5.0          rmarkdown_2.30      matrixStats_1.5.0  
 #> [49] tools_4.5.2         pkgconfig_2.0.3     htmltools_0.5.9
 ```
