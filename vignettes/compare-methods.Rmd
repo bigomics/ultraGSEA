@@ -89,7 +89,7 @@ tt <- peakRAM::peakRAM(
   res.cameraPR <- limma::cameraPR(fc, gmt, use.ranks=FALSE)[gs,],
   res.ultragsea.z <- ultragsea(G, fc, method='ztest')[gs,],
   res.ultragsea.c <- ultragsea(G, fc, method='cor')[gs,],
-  res.cortest <- gset.cor(G, fc, compute.p=TRUE, use.rank=FALSE),
+  res.cortest <- gset.cortest(G, fc, compute.p=TRUE, use.rank=FALSE),
   res.ztest <- gset.ztest(G, fc),
   res.goat <- goat(gmt, fc, filter=FALSE)
 )
