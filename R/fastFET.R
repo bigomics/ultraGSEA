@@ -57,7 +57,9 @@ gset.fastFET <- function(genes, G, bg, report.genes=FALSE,
     gsgenes <- gsgenes[match(colnames(G),names(gsgenes))]
   }
   
-  df <- data.frame(p.value=pv, q.value=qv, odd.ratio=odd.ratio, overlap=overlap)
+  df <- data.frame(pathway=colnames(G), p.value=pv, q.value=qv,
+    odd.ratio=odd.ratio, overlap=overlap)
+  ##rownames(df) <- colnames(G)
   if(report.genes) df <- cbind(df, genes=gsgenes)
   return(df)
 }
